@@ -4,3 +4,27 @@ CurrentProject=mynn.vpj
 mynn.vpj=20101006050244892
 [ActiveConfig]
 mynn.vpj=,Debug
+[State]
+SCREEN: 1680 1050 207 207 1260 724 0 0 M 0 0 0 0 1630 832 0
+CWD: ..\mynn
+FILEHIST: 9
+..\..\OS\unb-os\branches\mydesign-sems\interrupts.h
+..\..\OS\unb-os\branches\mydesign-sems\build.bat
+..\..\OS\unb-os\branches\mydesign-sems\fifo.h
+..\..\OS\unb-os\branches\mydesign-sems\os.h
+..\..\OS\unb-os\branches\mydesign-sems\os.c
+..\..\..\..\Downloads\RemotelyAnywhere v8.0.668 Workstation and Server Edition\RemotelyAnywhere v8.0.668 Workstation and Server Edition\file_id.diz
+..\..\OS\unb-os\branches\mydesign-sems\process.h
+..\..\PDP2\unb-pdp2\proj\apps\app0\compressedIdx.sln
+..\..\OS\unb-os\branches\mydesign-sems\main.c
+DEBUG: 0 0 0 0 3 0 gdb
+printf
+strcpy
+std::*
+DEBUG2: 0
+PROJECT_CACHE: 1
+20101006050244892 3 C:\Users\Viper\Documents\UNB-Courses\NN\mynn\mynn.vpj
+mynn.cpp
+mynn.h
+Makefile
+TBCLASS: 0 0
