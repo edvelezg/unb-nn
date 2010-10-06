@@ -67,4 +67,5 @@ vector<int> layer::compute_layer(vector <int> &input)
     {
         output.push_back(nrns[x].compute_sum(input));
     }
+    return output;
 }
