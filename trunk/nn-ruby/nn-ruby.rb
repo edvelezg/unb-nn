@@ -29,6 +29,7 @@ class Network
     n4 = Neuron.new
 
     @nrns  = [n0, n1, n2, n3, n4]
+    
     n0.sum = 1
     n1.sum = 1
   end
