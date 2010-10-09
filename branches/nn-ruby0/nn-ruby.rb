@@ -1,3 +1,4 @@
+@@ver = false
 class Neuron
   attr_accessor :output
   def initialize
@@ -45,7 +46,7 @@ class Network
     n0.output = 0
     n1.output = 1
 
-    # seconde
+    # second
     n2 = Neuron.new
     n3 = Neuron.new
     l1 = Layer.new
@@ -53,6 +54,7 @@ class Network
     l1.insert(n3)
     l1.weights = [[0.6, 0.7], [0.3, 0.4]]
 
+    # third
     n4 = Neuron.new
     l2 = Layer.new
     l2.insert(n4)
@@ -62,31 +64,29 @@ class Network
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
 
+  def test(input, tar)
+    input.each_index do |i|
+      puts tar[i] - ffwd(input[i])[0].output
+    end
+  end
+
+
   def ffwd(input)
     input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
-
-    @layers.each_index do |i| # each layer
-      if i >= 1
-        puts
-        layers[i].weights.each_index do |j| # each neuron
-          sum = 0
-          layers[i].weights[j].each_index do |k| # each connection to neuron
-            # puts layers[i].weights[j][k]
-            print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n"
-            sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
-            layers[i].nrns[j].linear(sum)
-          end
-          puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}"
-          puts "\n#{sum}"
+    for i in 1..@layers.size-1 # each layer without input layer
+      layers[i].weights.each_index do |j| # each neuron
+        sum = 0
+        layers[i].weights[j].each_index do |k| # each connection to neuron
+          print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n" if @@ver == true
+          sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
+          #  calculates output, output is within neuron
+          layers[i].nrns[j].linear(sum)
         end
+        puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}" if @@ver == true
+        puts "\n#{sum}" if @@ver == true
       end
     end
-    # @layers.each_index do |i|
-    #   @layers[i].each_index do |j|
-    #     neuron = @layers[i][j]
-    #     p neuron
-    #   end
-    # end
+    return layers.last.nrns
   end
 
 
@@ -98,9 +98,8 @@ end
 # op  = Array.new
 net = Network.new
 # op  = net.ffwd
-input = [[0, 1], [0, 1], [1, 0], [1, 1]]
+input = [[0, 0], [0, 1], [1, 0], [1, 1]]
 target = [0, 1, 1, 0]
 
-net.ffwd(input[0])
-
+net.test(input, target)
 # net.display
