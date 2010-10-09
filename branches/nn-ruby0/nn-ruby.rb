@@ -1,36 +1,6 @@
+require "Neuron"
+require "Layer"
 @@ver = false
-class Neuron
-  attr_accessor :output
-  def initialize
-    @output = 0
-  end
-
-  def threshld k
-    if k >= 0.5
-      @output = 1
-    else
-      @output = 0
-    end
-  end
-
-  def linear k
-    @output = k
-  end
-
-end
-
-class Layer
-  attr_accessor :nrns
-  attr_accessor :weights
-  def initialize
-    @weights = [[]]
-    @nrns = []
-  end
-
-  def insert(neuron)
-    @nrns.push(neuron)
-  end
-end
 
 class Network
   attr_accessor :layers
@@ -64,11 +34,16 @@ class Network
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
 
-  def test(input, tar)
+  def bpgt(input, tar)
+    delta = Array.new
     input.each_index do |i|
-      puts tar[i] - ffwd(input[i])[0].output
+      delta.push(tar[i] - ffwd2(input[i])[0].output)
+      # puts tar[i] - ffwd(input[i])[0].output
     end
+    delta.each { |e| puts e  }
   end
+  
+  
 
 
   def ffwd(input)
@@ -89,6 +64,24 @@ class Network
     return layers.last.nrns
   end
 
+  def ffwd2(input)
+    input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
+    for i in 1..@layers.size-1 # each layer without input layer
+      layers[i].fptr = layers[i].method(:linear)
+      layers[i].weights.each_index do |j| # each neuron
+        sum = 0
+        layers[i].weights[j].each_index do |k| # each connection to neuron (from neuron k to neuron j)
+          print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n" if @@ver == true
+          sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
+          #  calculates output within neuron
+          layers[i].fptr.call(j, sum)
+        end
+        puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}" if @@ver == true
+        puts "\n#{sum}" if @@ver == true
+      end
+    end
+    return layers.last.nrns
+  end
 
   def display
     p @layers
@@ -101,5 +94,6 @@ net = Network.new
 input = [[0, 0], [0, 1], [1, 0], [1, 1]]
 target = [0, 1, 1, 0]
 
-net.test(input, target)
+net.bpgt(input, target)
+
 # net.display
