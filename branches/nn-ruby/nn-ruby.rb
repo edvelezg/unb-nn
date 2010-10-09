@@ -11,6 +11,10 @@ class Neuron
       @output = 0
     end
   end
+  
+  def linear k
+      @output = k
+  end
 
 end
 
@@ -29,7 +33,6 @@ class Network
     n4 = Neuron.new
 
     @nrns  = [n0, n1, n2, n3, n4]
-
     n0.output = 0
     n1.output = 1
   end
@@ -43,13 +46,20 @@ class Network
   end
 
   def bpgt(input, target)
-    input.each_index { |i| p input[i]; puts ffwd(input[i]) }
-    
-
+    # each example e in the training set
+    input.each_index do |i|
+      p input[i]
+      nno = ffwd(input[i])
+      error = target[i] - nno
+      puts error
+    end
   end
 
 
   def ffwd(input)
+    #  copy input to first layer
+    input.each_index { |x| @nrns[x].output = input[x] }
+
     @weights.each_index do |i|
       if i >= input.length
         print "neuron #{i} = "
@@ -59,7 +69,7 @@ class Network
           print "#{@weights[i][j] * @nrns[j].output} + "
         end
         print " #{@nrns[i].threshld sum}"
-        @nrns[i].threshld sum
+        @nrns[i].linear sum
         puts "\n"
       end
     end
