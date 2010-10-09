@@ -1,6 +1,7 @@
 #include "mynn.h"
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 #include <math.h>
 
 using namespace std;
