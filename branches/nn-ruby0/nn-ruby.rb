@@ -11,78 +11,96 @@ class Neuron
       @output = 0
     end
   end
-  
+
   def linear k
-      @output = k
+    @output = k
   end
 
 end
 
-class Network
+class Layer
+  attr_accessor :nrns
+  attr_accessor :weights
   def initialize
-    @weights = [[0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-                [0.6, 0.7, 0, 0, 0],
-                [0.3, 0.4, 0, 0, 0],
-                [0, 0, 0.6, -0.8, 0]];
+    @weights = [[]]
+    @nrns = []
+  end
 
+  def insert(neuron)
+    @nrns.push(neuron)
+  end
+end
+
+class Network
+  attr_accessor :layers
+  def initialize
+
+    # first layer
     n0 = Neuron.new
     n1 = Neuron.new
-    n2 = Neuron.new
-    n3 = Neuron.new
-    n4 = Neuron.new
-
-    @nrns  = [n0, n1, n2, n3, n4]
+    l0 = Layer.new
+    l0.insert(n0)
+    l0.insert(n1)
+    l0.weights = [[1,1]]
     n0.output = 0
     n1.output = 1
-  end
 
-  def insert(i, j, val)
-    @weights[i][j] = val
-  end
+    # seconde
+    n2 = Neuron.new
+    n3 = Neuron.new
+    l1 = Layer.new
+    l1.insert(n2)
+    l1.insert(n3)
+    l1.weights = [[0.6, 0.7], [0.3, 0.4]]
 
-  def display
-    p @weights
-  end
+    n4 = Neuron.new
+    l2 = Layer.new
+    l2.insert(n4)
+    l2.weights = [[0.6, -0.8]]
 
-  def bpgt(input, target)
-    # each example e in the training set
-    input.each_index do |i|
-      p input[i]
-      nno = ffwd(input[i])
-      error = target[i] - nno
-      puts error
-    end
+    @layers = [l0, l1, l2]
+    # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
-
 
   def ffwd(input)
-    #  copy input to first layer
-    input.each_index { |x| @nrns[x].output = input[x] }
+    input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
 
-    @weights.each_index do |i|
-      if i >= input.length
-        print "neuron #{i} = "
-        sum = 0;
-        @weights[i].each_index do |j|
-          sum += @weights[i][j] * @nrns[j].output
-          print "#{@weights[i][j] * @nrns[j].output} + "
+    @layers.each_index do |i| # each layer
+      if i >= 1
+        puts
+        layers[i].weights.each_index do |j| # each neuron
+          sum = 0
+          layers[i].weights[j].each_index do |k| # each connection to neuron
+            # puts layers[i].weights[j][k]
+            print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n"
+            sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
+            layers[i].nrns[j].linear(sum)
+          end
+          puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}"
+          puts "\n#{sum}"
         end
-        print " #{@nrns[i].threshld sum}"
-        @nrns[i].linear sum
-        puts "\n"
       end
     end
-    lastn = @nrns.index(@nrns.last)
-    return @nrns[lastn].output
+    # @layers.each_index do |i|
+    #   @layers[i].each_index do |j|
+    #     neuron = @layers[i][j]
+    #     p neuron
+    #   end
+    # end
   end
 
+
+  def display
+    p @layers
+  end
 end
 
 # op  = Array.new
 net = Network.new
 # op  = net.ffwd
-input = [[0, 0], [0, 1], [1, 0], [1, 1]]
+input = [[0, 1], [0, 1], [1, 0], [1, 1]]
 target = [0, 1, 1, 0]
 
-net.bpgt(input, target)
+net.ffwd(input[0])
+
+# net.display
