@@ -1,8 +1,6 @@
 class Neuron
-  attr_accessor :sum
   attr_accessor :output
   def initialize
-    @sum = 0
     @output = 0
   end
 
