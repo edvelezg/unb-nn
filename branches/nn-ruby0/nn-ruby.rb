@@ -13,6 +13,7 @@ class Network
     l0.insert(n0)
     l0.insert(n1)
     l0.weights = [[1,1]]
+    l0.new_weights = Marshal.load(Marshal.dump(l0.weights))
     n0.output = 0
     n1.output = 1
 
@@ -23,12 +24,14 @@ class Network
     l1.insert(n2)
     l1.insert(n3)
     l1.weights = [[0.1, 0.8], [0.4, 0.6]]
+    l1.new_weights = Marshal.load(Marshal.dump(l1.weights))
 
     # third
     n4 = Neuron.new
     l2 = Layer.new
     l2.insert(n4)
     l2.weights = [[0.3, 0.9]]
+    l2.new_weights = Marshal.load(Marshal.dump(l2.weights))
 
     @layers = [l0, l1, l2]
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
@@ -36,8 +39,11 @@ class Network
 
   def bpgt(inputs, tars)
     calc_delta_out(inputs, tars)
+    up_weights
+    puts "///////////////new weights /////////////////"
+    disp_new_weights
   end
-  
+
   def calc_delta_out(inputs, tars)
     lay_idx = layers.size-1
     inputs.each_index do |p|
@@ -50,29 +56,48 @@ class Network
       end
     end
   end
-  
 
-  def calc_delta
-    layers.each_index do |i|
-      p layers[i]
-      numCols = layers[i].weights[0].index(layers[i].weights[0].last)
-      numRows = layers[i].weights.index(layers[i].weights.last)
-      k = 0
-      while k <= numCols
-        j = 0
-        wsum_k = 0
-        # TODO: change this
-        rho_j = 3
-        while j <= numRows
-          wsum_k += layers[i].weights[j][k]*rho_j
-          print  "[#{j}] [#{k}], "
-          j += 1
+  def up_weights
+    lay_idx = layers.size-1
+    while lay_idx >= 1
+      layers[lay_idx].nrns.each_index do |j|
+        rho = layers[lay_idx].nrns[j].delta
+        layers[lay_idx].weights[j].each_index do |k|
+          puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" # if @@ver == true
+          layers[lay_idx].new_weights[j][k] = layers[lay_idx].weights[j][k] + rho*layers[lay_idx-1].nrns[k].output
         end
-        puts wsum_k
-        k += 1
       end
+      calc_delta lay_idx
+      lay_idx -= 1
     end
-    exit
+  end
+
+  def disp_new_weights
+    layers.each_index do |i|
+      p layers[i].new_weights
+    end
+  end
+
+  def calc_delta lay_idx
+    numCols = layers[lay_idx].weights[0].index(layers[lay_idx].weights[0].last)
+    numRows = layers[lay_idx].weights.index(layers[lay_idx].weights.last)
+    k = 0
+    while k <= numCols
+      j = 0
+      out_k = layers[lay_idx-1].nrns[k].output
+      puts "out_k: #{out_k}" if @@ver == true
+      drv_k = out_k*(1 - out_k)
+      wsum_k = 0
+      rho_j = layers[lay_idx].nrns[j].delta
+      while j <= numRows
+        wsum_k += layers[lay_idx].new_weights[j][k] * rho_j
+        puts "+ #{layers[lay_idx].new_weights[j][k]}*#{rho_j}"
+        j += 1
+      end
+      layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
+      puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
+      k += 1
+    end
   end
 
 
