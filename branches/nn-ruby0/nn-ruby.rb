@@ -85,17 +85,17 @@ class Network
     while k <= numCols
       j = 0
       out_k = layers[lay_idx-1].nrns[k].output
-      puts "out_k: #{out_k}" if @@ver == true
+      # puts "out_k: #{out_k}" if @@ver == true
       drv_k = out_k*(1 - out_k)
       wsum_k = 0
       rho_j = layers[lay_idx].nrns[j].delta
       while j <= numRows
         wsum_k += layers[lay_idx].new_weights[j][k] * rho_j
-        puts "+ #{layers[lay_idx].new_weights[j][k]}*#{rho_j}"
+        # puts "+ #{layers[lay_idx].new_weights[j][k]}*#{rho_j}"
         j += 1
       end
       layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
-      puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
+      # puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
       k += 1
     end
   end
