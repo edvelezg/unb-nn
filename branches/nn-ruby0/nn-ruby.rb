@@ -22,7 +22,7 @@ class Network
     l1 = Layer.new
     l1.insert(n2)
     l1.insert(n3)
-    l1.weights = [[0.1, 0.4], [0.8, 0.6]]
+    l1.weights = [[0.1, 0.8], [0.4, 0.6]]
 
     # third
     n4 = Neuron.new
@@ -35,29 +35,37 @@ class Network
   end
 
   def bpgt(inputs, tars)
-    deltas = Array.new
-    derror = 0
-    inputs.each_index do |i|
-      # deltas.push(tars[i] - ffwd2(inputs[i])[0].output)
-      ou_i = ffwd2(inputs[i])[0].output
-      delta = ou_i*(1-ou_i)*(tars[i]-ou_i)
-      deltas.push(ou_i*(1-ou_i)*(tars[i]-ou_i))
-      # puts tars[i] - ffwd(inputs[i])[0].output
+    calc_delta_out(inputs, tars)
+  end
+  
+  def calc_delta_out(inputs, tars)
+    lay_idx = layers.size-1
+    inputs.each_index do |p|
+      outnrns = ffwd(inputs[p])
+      outnrns.each_index do |j|
+        out_j = outnrns[j].output
+        delta = out_j*(1-out_j)*(tars[p] - out_j)
+        layers[lay_idx].nrns[j].delta = delta
+        puts layers[lay_idx].nrns[j].delta if @@ver == true
+      end
     end
   end
+  
 
   def calc_delta
     layers.each_index do |i|
       p layers[i]
       numCols = layers[i].weights[0].index(layers[i].weights[0].last)
       numRows = layers[i].weights.index(layers[i].weights.last)
-      wsum_k = 0
       k = 0
       while k <= numCols
         j = 0
+        wsum_k = 0
+        # TODO: change this
+        rho_j = 3
         while j <= numRows
-          wsum_k += layers[i].weights[j][k]
-          # print  "[#{j}] [#{k}], "
+          wsum_k += layers[i].weights[j][k]*rho_j
+          print  "[#{j}] [#{k}], "
           j += 1
         end
         puts wsum_k
@@ -87,10 +95,10 @@ class Network
   #   return layers.last.nrns
   # end
 
-  def ffwd2(input)
+  def ffwd(input)
     input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
     for i in 1..@layers.size-1 # each layer without input layer
-      layers[i].fptr = layers[i].method(:linear)
+      layers[i].fptr = layers[i].method(:sigmoid)
       layers[i].weights.each_index do |j| # each neuron
         sum = 0
         layers[i].weights[j].each_index do |k| # each connection to neuron (from neuron k to neuron j)
@@ -114,10 +122,11 @@ end
 # op  = Array.new
 net = Network.new
 # op  = net.ffwd
-input = [[0, 0], [0, 1], [1, 0], [1, 1]]
-target = [0, 1, 1, 0]
+input = [[0.35, 0.9]]
+target = [0.5]
+# puts net.ffwd(input[0])[0].output
 
-# net.bpgt(input, target)
-net.calc_delta()
+net.bpgt(input, target)
+# net.calc_delta()
 
 # net.display
