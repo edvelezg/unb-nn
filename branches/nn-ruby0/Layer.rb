@@ -1,12 +1,12 @@
 class Layer
   attr_accessor :nrns
   attr_accessor :weights
-  attr_accessor :new_weights
+  attr_accessor :old_weights
   attr_accessor :fptr
   
   def initialize
     @weights = [[]]
-    @new_weights = [[]]
+    @old_weights = []
     @nrns = []
     fptr = method( :linear )
   end

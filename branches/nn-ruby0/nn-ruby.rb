@@ -13,7 +13,6 @@ class Network
     l0.insert(n0)
     l0.insert(n1)
     l0.weights = [[1,1]]
-    l0.new_weights = Marshal.load(Marshal.dump(l0.weights))
     n0.output = 0
     n1.output = 1
 
@@ -24,14 +23,15 @@ class Network
     l1.insert(n2)
     l1.insert(n3)
     l1.weights = [[0.1, 0.8], [0.4, 0.6]]
-    l1.new_weights = Marshal.load(Marshal.dump(l1.weights))
+    l1.old_weights.push(Marshal.load(Marshal.dump(l1.weights)))
 
     # third
     n4 = Neuron.new
     l2 = Layer.new
     l2.insert(n4)
     l2.weights = [[0.3, 0.9]]
-    l2.new_weights = Marshal.load(Marshal.dump(l2.weights))
+    l2.old_weights.push(Marshal.load(Marshal.dump(l2.weights)))
+
 
     @layers = [l0, l1, l2]
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
@@ -41,7 +41,7 @@ class Network
     calc_delta_out(inputs, tars)
     up_weights
     puts "///////////////new weights /////////////////"
-    disp_new_weights
+    disp_weights
   end
 
   def calc_delta_out(inputs, tars)
@@ -64,21 +64,25 @@ class Network
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
           puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" # if @@ver == true
-          layers[lay_idx].new_weights[j][k] = layers[lay_idx].weights[j][k] + rho*layers[lay_idx-1].nrns[k].output
+          layers[lay_idx].weights[j][k] = layers[lay_idx].weights[j][k] + rho*layers[lay_idx-1].nrns[k].output
         end
       end
-      calc_delta lay_idx
+      calc_delta(lay_idx)
       lay_idx -= 1
     end
   end
 
-  def disp_new_weights
+  def disp_weights
     layers.each_index do |i|
-      p layers[i].new_weights
+      p layers[i].weights
+    end
+    puts
+    layers.each_index do |i|
+      p layers[i].old_weights
     end
   end
 
-  def calc_delta lay_idx
+  def calc_delta(lay_idx)
     numCols = layers[lay_idx].weights[0].index(layers[lay_idx].weights[0].last)
     numRows = layers[lay_idx].weights.index(layers[lay_idx].weights.last)
     k = 0
@@ -90,8 +94,8 @@ class Network
       wsum_k = 0
       rho_j = layers[lay_idx].nrns[j].delta
       while j <= numRows
-        wsum_k += layers[lay_idx].new_weights[j][k] * rho_j
-        # puts "+ #{layers[lay_idx].new_weights[j][k]}*#{rho_j}"
+        wsum_k += layers[lay_idx].weights[j][k] * rho_j
+        # puts "+ #{layers[lay_idx].weights[j][k]}*#{rho_j}"
         j += 1
       end
       layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
@@ -99,26 +103,6 @@ class Network
       k += 1
     end
   end
-
-
-
-  # def ffwd(input)
-  #   input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
-  #   for i in 1..@layers.size-1 # each layer without input layer
-  #     layers[i].weights.each_index do |j| # each neuron
-  #       sum = 0
-  #       layers[i].weights[j].each_index do |k| # each connection to neuron
-  #         print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n" if @@ver == true
-  #         sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
-  #         #  calculates output, output is within neuron
-  #         layers[i].nrns[j].linear(sum)
-  #       end
-  #       puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}" if @@ver == true
-  #       puts "\n#{sum}" if @@ver == true
-  #     end
-  #   end
-  #   return layers.last.nrns
-  # end
 
   def ffwd(input)
     input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
