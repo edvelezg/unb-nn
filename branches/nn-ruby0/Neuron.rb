@@ -1,4 +1,5 @@
 class Neuron
+  attr_accessor :delta
   attr_accessor :output
   def initialize
     @output = 0
