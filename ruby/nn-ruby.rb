@@ -50,7 +50,7 @@ class Network
       outnrns = ffwd(inputs[p])
       outnrns.each_index do |j|
         out_j = outnrns[j].output
-        delta = out_j*(1-out_j)*(tars[p] - out_j)
+        delta = layers[lay_idx].deriv(out_j, 0.0001)*(tars[p] - out_j)
         layers[lay_idx].nrns[j].delta = delta
         puts layers[lay_idx].nrns[j].delta if @@ver == true
       end
@@ -90,7 +90,7 @@ class Network
       j = 0
       out_k = layers[lay_idx-1].nrns[k].output
       # puts "out_k: #{out_k}" if @@ver == true
-      drv_k = out_k*(1 - out_k)
+      drv_k = layers[lay_idx-1].deriv(out_k, 0.0001)
       wsum_k = 0
       rho_j = layers[lay_idx].nrns[j].delta
       while j <= numRows

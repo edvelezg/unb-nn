@@ -8,7 +8,7 @@ class Layer
     @weights = [[]]
     @old_weights = []
     @nrns = []
-    fptr = method( :linear )
+    @fptr = method( :sigmoid )
   end
 
   def insert(neuron)
@@ -35,7 +35,10 @@ class Layer
     @nrns[idx].output = k
   end
   
-  def deriv( func, x, dx )
-    return (func.call(x+dx) - func.call(x))/dx
+  def deriv( x, dx )
+    return (fptr.call(x+dx) - fptr.call(x))/dx
   end    
 end
+
+# l = Layer.new
+# puts l.deriv(10, 0.001) # answer should be 4.5396e-005                            
