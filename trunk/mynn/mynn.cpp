@@ -37,6 +37,15 @@ neuron::neuron()
     weights.push_back(20);
 }
 
+/**
+ * 
+ * 
+ * @author Viper (10/10/2010)
+ * 
+ * @param input 
+ * 
+ * @return int 
+ */
 int neuron::compute_sum(vector <int> &input)
 {
     int sum = 0;
@@ -59,11 +68,22 @@ layer::layer()
     nrns.push_back(n1);
     nrns.push_back(n2);
     nrns.push_back(n3);
+    
 }
 
+/*!
+ * 
+ * 
+ * \author Viper (10/10/2010)
+ * 
+ * \param input 
+ * 
+ * \return vector<int> 
+ */
 vector<int> layer::compute_layer(vector <int> &input)
 {
     vector<int> output;
+    
     for (int x = 0; x < nrns.size(); ++x)
     {
         output.push_back(nrns[x].compute_sum(input));
