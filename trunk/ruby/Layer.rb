@@ -35,4 +35,7 @@ class Layer
     @nrns[idx].output = k
   end
   
+  def deriv( func, x, dx )
+    return (func.call(x+dx) - func.call(x))/dx
+  end    
 end
