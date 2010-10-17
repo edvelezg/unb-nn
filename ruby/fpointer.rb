@@ -16,14 +16,7 @@ class MyClass
     return 1/(1+Math.exp(-x))
   end  
 
-  def derivative( func, x, dx )
-    if m.fptr.name == :sigm
-      x = 1/(1+Math.exp(-x))
-      dx = 
-      
-    else
-    end
-    
+  def deriv( func, x, dx )
     return (func.call(x+dx) - func.call(x))/dx
   end  
 end
@@ -38,4 +31,4 @@ puts m.fptr.call(4)
 
 # puts fp.call(1, 2)           # ->  3
 
-puts m.derivative( m.fptr, 4, 0.000001 )
+puts m.deriv( m.fptr, 4, 0.000001 )
