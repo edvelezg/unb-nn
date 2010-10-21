@@ -23,48 +23,46 @@ class Network
     l1.insert(n2)
     l1.insert(n3)
     l1.weights = [[0.1, 0.8], [0.4, 0.6]]
-    l1.old_weights.push(Marshal.load(Marshal.dump(l1.weights)))
 
     # third
     n4 = Neuron.new
     l2 = Layer.new
     l2.insert(n4)
     l2.weights = [[0.3, 0.9]]
-    l2.old_weights.push(Marshal.load(Marshal.dump(l2.weights)))
-
 
     @layers = [l0, l1, l2]
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
 
-  def bpgt(inputs, tars)
-    calc_delta_out(inputs, tars)
-    up_weights
-    puts "///////////////new weights /////////////////"
-    disp_weights
-  end
-
-  def calc_delta_out(inputs, tars)
-    lay_idx = layers.size-1
+  def bpgt(inputs, tars, rate=1)
     inputs.each_index do |p|
-      outnrns = ffwd(inputs[p])
-      outnrns.each_index do |j|
-        out_j = outnrns[j].output
-        delta = layers[lay_idx].deriv(out_j, 0.0001)*(tars[p] - out_j)
-        layers[lay_idx].nrns[j].delta = delta
-        puts layers[lay_idx].nrns[j].delta if @@ver == true
-      end
+      calc_delta_out(inputs[p], tars[p])
+      up_weights(rate)
+      # disp_weights
     end
   end
 
-  def up_weights
+  def calc_delta_out(input, tar)
+    lay_idx = layers.size-1
+    outnrns = ffwd(input)
+    outnrns.each_index do |j|
+      out_j = outnrns[j].output
+      puts "out_j is now: #{out_j}"
+      delta = layers[lay_idx].deriv(out_j, 0.0001)*(tar - out_j)
+      layers[lay_idx].nrns[j].delta = delta
+      puts layers[lay_idx].nrns[j].delta if @@ver == true
+    end
+  end
+
+  def up_weights(rate)
     lay_idx = layers.size-1
     while lay_idx >= 1
+      layers[lay_idx].old_weights.push(Marshal.load(Marshal.dump(layers[lay_idx].weights))) # adds weights to weight history
       layers[lay_idx].nrns.each_index do |j|
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
-          puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" # if @@ver == true
-          layers[lay_idx].weights[j][k] = layers[lay_idx].weights[j][k] + rho*layers[lay_idx-1].nrns[k].output
+          puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" if @@ver == true
+          layers[lay_idx].weights[j][k] = layers[lay_idx].weights[j][k] + rate*rho*layers[lay_idx-1].nrns[k].output
         end
       end
       calc_delta(lay_idx)
@@ -73,14 +71,26 @@ class Network
   end
 
   def disp_weights
+    puts "\n///////////////FINAL WEIGHTS////////////////"
     layers.each_index do |i|
       p layers[i].weights
     end
-    puts
-    layers.each_index do |i|
-      p layers[i].old_weights
+  end
+
+  def weight_history
+    puts "\n///////////////WEIGHT HISTORY///////////////"
+    i = 1
+    while i < layers.length
+      puts "\n--- :. Weight history for layer #{i} .: ---"
+      layers[i].old_weights.each_index do |j|
+        puts "---- Epoch #{j} ----"
+        layers[i].old_weights[j].each_index { |x| p layers[i].old_weights[j][x] }
+      end
+      i += 1
     end
   end
+
+
 
   def calc_delta(lay_idx)
     numCols = layers[lay_idx].weights[0].index(layers[lay_idx].weights[0].last)
@@ -89,17 +99,14 @@ class Network
     while k <= numCols
       j = 0
       out_k = layers[lay_idx-1].nrns[k].output
-      # puts "out_k: #{out_k}" if @@ver == true
       drv_k = layers[lay_idx-1].deriv(out_k, 0.0001)
       wsum_k = 0
       rho_j = layers[lay_idx].nrns[j].delta
       while j <= numRows
         wsum_k += layers[lay_idx].weights[j][k] * rho_j
-        # puts "+ #{layers[lay_idx].weights[j][k]}*#{rho_j}"
         j += 1
       end
       layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
-      # puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
       k += 1
     end
   end
@@ -131,11 +138,14 @@ end
 # op  = Array.new
 net = Network.new
 # op  = net.ffwd
-input = [[0.35, 0.9]]
-target = [0.5]
+input = [[0.35, 0.9], [0.35, 0.9], [0.35, 0.9]]
+target = [0.5, 0.5, 0.5]
 # puts net.ffwd(input[0])[0].output
 
-net.bpgt(input, target)
-# net.calc_delta()
+net.bpgt(input, target, 4)
+net.weight_history
+net.disp_weights
+
+p net.ffwd(input[0])
 
 # net.display
