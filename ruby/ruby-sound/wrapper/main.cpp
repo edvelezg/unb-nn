@@ -1,6 +1,8 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
 
+// add this line to project properties: qmake -project &&  qmake &&  mingw32-make
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
