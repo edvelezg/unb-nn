@@ -142,7 +142,7 @@ input = [[0.35, 0.9], [0.35, 0.9], [0.35, 0.9]]
 target = [0.5, 0.5, 0.5]
 # puts net.ffwd(input[0])[0].output
 
-net.bpgt(input, target, 4)
+net.bpgt(input, target, 10)
 net.weight_history
 net.disp_weights
 
