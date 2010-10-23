@@ -34,12 +34,14 @@ class Network
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
 
-  def bpgt(inputs, tars, rate=1)
-    inputs.each_index do |p|
+  def bpgt(inputs, strt_p, end_p, tars, rate=1)
+    p = strt_p
+    while p <= end_p
       calc_delta_out(inputs[p], tars[p])
       up_weights(rate)
-      # disp_weights
+      p += 1
     end
+    # disp_weights
   end
 
   def calc_delta_out(input, tar)
@@ -130,6 +132,18 @@ class Network
     return layers.last.nrns
   end
 
+  def test(inputs, strt_p, end_p)
+    p = strt_p
+    while p <= end_p
+      op = []
+      ops = ffwd(inputs[p])
+      ops.each { |e| op.push(e.output) }
+      puts "#{inputs[p].join(',')} = #{op.join(',')}"
+      p += 1
+    end
+  end
+
+
   def display
     p @layers
   end
@@ -142,9 +156,10 @@ input = [[0.35, 0.9], [0.35, 0.9], [0.35, 0.9]]
 target = [0.5, 0.5, 0.5]
 # puts net.ffwd(input[0])[0].output
 
-net.bpgt(input, target, 10)
-net.weight_history
-net.disp_weights
+net.bpgt(input, 0, 2, target, 10)
+net.test(input, 0, 2)
+# net.weight_history
+# net.disp_weights
 
 p net.ffwd(input[0])
 
