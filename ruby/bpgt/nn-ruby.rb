@@ -97,23 +97,24 @@ class Network
   end
 
   def weight_history(lay_idx)
-    puts "\n--- :. Weight history for layer #{lay_idx} .: ---"
-    ow = layers[lay_idx].old_weights
-    header = []
-
-    #header
-    ow[0].each_index { |lay_idx| ow[lay_idx].each_index { |j|  header << "(#{lay_idx},#{j})"} }
-    puts header.join("\t")
-    
-    ow.each_index do |j|
-      fout = []
-      ow[j].each_index do |x|
-        ow[j].each_index do |y|
-          fout << "#{ow[j][x][y]}"
-        end        
-      end
-      puts fout.join("\t")
-    end
+    puts "\n--- :. Weight history between layers #{lay_idx} and #{lay_idx-1} .: ---"
+    layers[lay_idx].weight_history
+    # ow = layers[lay_idx].old_weights
+    # header = []
+    # 
+    # #header
+    # ow[0].each_index { |lay_idx| ow[lay_idx].each_index { |j|  header << "(#{lay_idx},#{j})"} }
+    # puts header.join("\t")
+    # 
+    # ow.each_index do |j|
+    #   fout = []
+    #   ow[j].each_index do |x|
+    #     ow[j].each_index do |y|
+    #       fout << "#{ow[j][x][y]}"
+    #     end        
+    #   end
+    #   puts fout.join("\t")
+    # end
   end
 
   def calc_delta(lay_idx)
