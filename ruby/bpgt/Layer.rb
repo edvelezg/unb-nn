@@ -38,6 +38,25 @@ class Layer
   def deriv( x, dx )
     return (fptr.call(x+dx) - fptr.call(x))/dx
   end    
+  
+  def weight_history
+    header = []
+
+    #header
+    old_weights[0].each_index { |i| old_weights[0][i].each_index { |j|  header << "(#{i},#{j})"} }
+    puts header.join("\t")
+    
+    old_weights.each_index do |j|
+      fout = []
+      old_weights[j].each_index do |x|
+        old_weights[j][x].each_index do |y|
+          fout << "#{old_weights[j][x][y]}"
+        end        
+      end
+      puts fout.join("\t")
+    end
+  end
+
 end
 
 # l = Layer.new
