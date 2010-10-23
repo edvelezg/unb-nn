@@ -55,7 +55,15 @@ class Layer
       end
       puts fout.join("\t")
     end
+    puts curr_weights
   end
+  
+  def curr_weights
+    fout = []
+    weights.each { |e| e.each_index { |i| fout << "#{e[i]}" } }
+    return fout.join("\t")
+  end
+  
 
 end
 
