@@ -33,7 +33,7 @@ class Network
     @layers = [l0, l1, l2]
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
-
+  
   def bpgt(inputs, strt_p, end_p, tars, rate=1)
     p = strt_p
     while p <= end_p
@@ -49,8 +49,8 @@ class Network
     outnrns = ffwd(input)
     outnrns.each_index do |j|
       out_j = outnrns[j].output
-      puts "out_j is now: #{out_j}"
       delta = layers[lay_idx].deriv(out_j, 0.0001)*(tar - out_j)
+      puts "output is now: #{out_j} and error is: #{tar - out_j}"
       layers[lay_idx].nrns[j].delta = delta
       puts layers[lay_idx].nrns[j].delta if @@ver == true
     end
@@ -132,13 +132,21 @@ class Network
     return layers.last.nrns
   end
 
-  def test(inputs, strt_p, end_p)
+  def test(inputs, strt_p, end_p, target)
+    output_file = File.open("output.txt", "w")
+    error_file = File.open("error.txt", "w")
     p = strt_p
     while p <= end_p
       op = []
+      error = []
       ops = ffwd(inputs[p])
-      ops.each { |e| op.push(e.output) }
-      puts "#{inputs[p].join(',')} = #{op.join(',')}"
+      for i in 0..ops.length-1
+        error.push(ops[i].output - target[p])
+        op.push(ops[i].output)
+      end
+      # ops.each { |e| ; error.push(e)}
+      output_file.puts "#{inputs[p].join(',')} = #{op.join(',')} with error\: #{error.join(',')}"
+      error_file.puts "#{p}, #{error.join(',')}"
       p += 1
     end
   end
@@ -149,15 +157,13 @@ class Network
   end
 end
 
-# op  = Array.new
 net = Network.new
-# op  = net.ffwd
+
 input = [[0.35, 0.9], [0.35, 0.9], [0.35, 0.9]]
 target = [0.5, 0.5, 0.5]
-# puts net.ffwd(input[0])[0].output
 
-net.bpgt(input, 0, 2, target, 10)
-net.test(input, 0, 2)
+net.bpgt(input, 0, 2, target, 20)
+net.test(input, 0, 2, target)
 # net.weight_history
 # net.disp_weights
 
