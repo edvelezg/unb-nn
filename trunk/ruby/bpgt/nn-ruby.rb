@@ -1,5 +1,6 @@
 require "Neuron"
 require "Layer"
+require "CSVFile"
 @@ver = false
 
 class Network
@@ -159,14 +160,18 @@ end
 
 net = Network.new
 
-input = [[0.35, 0.9], [0.35, 0.9], [0.35, 0.9]]
-target = [0.5, 0.5, 0.5]
-
-net.bpgt(input, 0, 2, target, 20)
-net.test(input, 0, 2, target)
-# net.weight_history
-# net.disp_weights
-
-p net.ffwd(input[0])
-
-# net.display
+input = CSVFile.new("input.csv").read_data
+p input
+target = CSVFile.new("target.csv").read_data
+p target
+# input = 
+# target = [0.5, 0.5, 0.5]
+# 
+# net.bpgt(input, 0, 2, target, 20)
+# net.test(input, 0, 2, target)
+# # net.weight_history
+# # net.disp_weights
+# 
+# p net.ffwd(input[0])
+# 
+# # net.display
