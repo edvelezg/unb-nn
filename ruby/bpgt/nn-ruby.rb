@@ -36,25 +36,58 @@ class Network
   end
 
   def bpgt(inputs, strt_p, end_p, tars, rate=1)
+    op_file  = File.open("training.txt", "w")
+
+    # header
+    header = ["p"]
+    inputs[0].each_index { |i| header << "input#{i}\t" }
+    tars[0].each_index { |i| header << "target#{i}\t" }
+    for i in 0..tars[0].length-1
+      header << "output#{i}\t"
+    end
+    for i in 0..tars[0].length-1
+      header << "error#{i}\t"
+    end
+
+    # op_file.puts header.join("\t")
+    puts header.join("\t")
+
     p = strt_p
     while p <= end_p
-      calc_delta_out(inputs[p], tars[p])
+
+      fout  = ["#{p}"]
+
+      inputs[p].each { |e| fout << "#{e}" }
+      tars[p].each { |e| fout << "#{e}" }
+
+      calc_delta_out(inputs[p], tars[p], fout)
       up_weights(rate)
+      # op_file.puts fout.join("\t")
+      puts fout.join("\t")
       p += 1
     end
-    # disp_weights
   end
 
-  def calc_delta_out(input, tar)
+  def calc_delta_out(input, tar, fout)
     lay_idx = layers.size-1
     outnrns = ffwd(input)
+    ops     = []
+    error   = []
+
     outnrns.each_index do |j|
+
       out_j = outnrns[j].output
       delta = layers[lay_idx].deriv(out_j, 0.0001)*(tar[j] - out_j)
-      puts "output is now: #{out_j} and error is: #{tar[j] - out_j}"
+
+      ops << "#{out_j}"
+      error << "#{tar[j] - out_j}"
+      # puts "output is now: #{out_j} and error is: #{tar[j] - out_j}"
       layers[lay_idx].nrns[j].delta = delta
       # puts layers[lay_idx].nrns[j].delta if @@ver == true
     end
+
+    ops.each { |e| fout << "#{e}" }
+    error.each { |e| fout << "#{e}" }
   end
 
   def up_weights(rate)
@@ -79,10 +112,10 @@ class Network
       p layers[i].weights
     end
   end
-  
+
   # def curr_wgts(i)
   # end
-  
+
   def weight_history
     puts "\n///////////////WEIGHT HISTORY///////////////"
     i = 1
@@ -101,17 +134,17 @@ class Network
     layers[lay_idx].weight_history
     # ow = layers[lay_idx].old_weights
     # header = []
-    # 
+    #
     # #header
     # ow[0].each_index { |lay_idx| ow[lay_idx].each_index { |j|  header << "(#{lay_idx},#{j})"} }
     # puts header.join("\t")
-    # 
+    #
     # ow.each_index do |j|
     #   fout = []
     #   ow[j].each_index do |x|
     #     ow[j].each_index do |y|
     #       fout << "#{ow[j][x][y]}"
-    #     end        
+    #     end
     #   end
     #   puts fout.join("\t")
     # end
@@ -159,9 +192,9 @@ class Network
     op_file  = File.open("output.txt", "w")
 
     # header
-    header = []
+    header = ["p"]
     inputs[0].each_index { |i| header << "input#{i}\t" }
-    targets[0].each_index { |i| header << "targets#{i}\t" }
+    targets[0].each_index { |i| header << "target#{i}\t" }
     for i in 0..targets[0].length-1
       header << "output#{i}\t"
     end
@@ -175,7 +208,7 @@ class Network
     p = strt_p
     while p <= end_p
 
-      fout  = []
+      fout  = ["#{p}"]
       ops   = []
       error = []
 
@@ -203,14 +236,18 @@ class Network
 end
 
 net = Network.new
-
-input = CSVFile.new("input.csv").read_data
-target = CSVFile.new("target.csv").read_data
+csv_ip = CSVFile.new("xorIn.csv")
+csv_tar = CSVFile.new("xorTar.csv")
+input = csv_ip.read_data
+target = csv_tar.read_data
 #
-net.bpgt(input, 0, 2, target, 20)
-net.test(input, 0, 2, target)
+net.bpgt(input, 0, 9, target, 30)
+net.test(input, 0, 19, target)
+net.bpgt(input, 10, 19, target, 30)
+net.test(input, 0, 19, target)
+
 net.weight_history(1)
-# # net.disp_weights
+# net.disp_weights
 #
 # p net.ffwd(input[0])
 #
