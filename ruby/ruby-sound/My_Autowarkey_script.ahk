@@ -54,11 +54,14 @@ DragAndDrop()
   iMouseGotoY := A_ScreenHeight*5//6
   Click, Right, %iMouseGotoX%, %iMouseGotoY%
   Click, Left, %iMousePosX%, %iMousePosY%
-  Sleep, 500
+  BirdGotoX := %iMouseGotoX%
+  BirdGotoY := %iMouseGotoY%
+  Sleep, 1000
   SendInput, 2
-  Click, Right, %iMousePosX%, %iMousePosY%
+  Click, Right, %BirdGotoX%, %BirdGotoY%
   SendInput, +z
-  SendInput, +r
+  Sleep, 50
+  SendInput, 1
 }
 
 ; AutoCast Function
@@ -196,12 +199,12 @@ Lwin::return
 +!f::SendInput, +{Numpad8}
 +d::SendInput, {Numpad4}
 !d::SendInput, {Numpad5}
-+!d::SendInput, +{Numpad5}
+;+!d::SendInput, +{Numpad5}
 +s::SendInput, {Numpad1}
 !s::SendInput, {Numpad2}
 +!s::SendInput, +{Numpad2}
-#z::Run C:\Users\Viper\Documents\UNB-Courses\NN\ruby\ruby-sound\HearThat
-^!e::DragAndDrop()
++!r::Run C:\Users\Viper\Documents\UNB-Courses\NN\ruby\ruby-sound\HearThat
++!d::DragAndDrop()
 
 ; Hotkeys Remapper:
 
@@ -213,4 +216,3 @@ IfWinExist Untitled - Notepad
 else
 	Run Notepad
 return
-
