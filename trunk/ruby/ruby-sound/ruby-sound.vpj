@@ -45,7 +45,7 @@
 				MenuCaption="E&amp;xecute"
 				SaveOption="SaveNone"
 				RunFromDir="%rw">
-				<Exec CmdLine='".exe"'/>
+				<Exec CmdLine="ruby %f"/>
 			</Target>
 		</Menu>
 	</Config>
@@ -68,6 +68,7 @@
 		</Folder>
 	</CustomFolders>
 	<Files AutoFolders="DirectoryView">
+		<F N="global_hk.rb"/>
 		<F N="ruby-sound.rb"/>
 	</Files>
 </Project>

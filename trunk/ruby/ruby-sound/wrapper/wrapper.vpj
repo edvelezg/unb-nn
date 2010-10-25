@@ -37,11 +37,12 @@
 			<Target
 				Name="Build"
 				MenuCaption="&amp;Build"
-				CaptureOutputWith="ProcessBuffer"
 				Deletable="0"
 				SaveOption="SaveWorkspaceFiles"
 				RunFromDir="%rw">
-				<Exec CmdLine="qmake -project &amp;&amp;  qmake &amp;&amp;  mingw32-make"/>
+				<Exec
+					CmdLine="build-qt"
+					Type="Slick-C"/>
 			</Target>
 			<Target
 				Name="Rebuild"
@@ -49,14 +50,13 @@
 				CaptureOutputWith="ProcessBuffer"
 				Deletable="0"
 				SaveOption="SaveWorkspaceFiles"
-				RunFromDir="%rw">
-				<Exec CmdLine=""/>
+				RunFromDir=".">
+				<Exec CmdLine="make -f Makefile.Debug clean all"/>
 			</Target>
 			<Target
 				Name="Debug"
 				MenuCaption="&amp;Debug"
 				Dialog="_gnuc_options_form Run/Debug"
-				BuildFirst="1"
 				CaptureOutputWith="ProcessBuffer"
 				Deletable="0"
 				SaveOption="SaveNone"
@@ -67,7 +67,6 @@
 				Name="Execute"
 				MenuCaption="E&amp;xecute"
 				Dialog="_gnuc_options_form Run/Debug"
-				BuildFirst="1"
 				CaptureOutputWith="ProcessBuffer"
 				Deletable="0"
 				SaveOption="SaveWorkspaceFiles"
@@ -132,11 +131,12 @@
 			<Target
 				Name="Build"
 				MenuCaption="&amp;Build"
-				CaptureOutputWith="ProcessBuffer"
 				Deletable="0"
 				SaveOption="SaveWorkspaceFiles"
 				RunFromDir="%rw">
-				<Exec CmdLine="qmake -project &amp;&amp;  qmake &amp;&amp;  mingw32-make"/>
+				<Exec
+					CmdLine="build-qt"
+					Type="Slick-C"/>
 			</Target>
 			<Target
 				Name="Rebuild"
@@ -151,7 +151,6 @@
 				Name="Debug"
 				MenuCaption="&amp;Debug"
 				Dialog="_gnuc_options_form Run/Debug"
-				BuildFirst="1"
 				CaptureOutputWith="ProcessBuffer"
 				Deletable="0"
 				SaveOption="SaveNone"
@@ -162,7 +161,6 @@
 				Name="Execute"
 				MenuCaption="E&amp;xecute"
 				Dialog="_gnuc_options_form Run/Debug"
-				BuildFirst="1"
 				CaptureOutputWith="ProcessBuffer"
 				Deletable="0"
 				SaveOption="SaveWorkspaceFiles"
@@ -217,6 +215,9 @@
 			Name="Other Files"
 			Filters="">
 			<F N="mainwindow.ui"/>
+			<F
+				N="Makefile.Debug"
+				Type="Makefile"/>
 			<F N="wrapper.pro"/>
 			<F N="wrapper.pro.user"/>
 			<F N="wrapper.vpj"/>
