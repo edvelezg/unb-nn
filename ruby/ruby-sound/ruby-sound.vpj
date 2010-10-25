@@ -69,6 +69,7 @@
 	</CustomFolders>
 	<Files AutoFolders="DirectoryView">
 		<F N="global_hk.rb"/>
+		<F N="My_Autowarkey_script.ahk"/>
 		<F N="ruby-sound.rb"/>
 	</Files>
 </Project>
