@@ -1,5 +1,6 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
+//#include <QxtGui>
 
 // add this line to project properties: qmake -project &&  qmake &&  mingw32-make
 
