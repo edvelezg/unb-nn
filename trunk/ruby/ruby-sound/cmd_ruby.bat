@@ -10,4 +10,3 @@ ECHO You are in directory %CD%
 rem C:
 rem CD\
 rem CLS
-
