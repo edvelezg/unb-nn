@@ -36,7 +36,6 @@ class Network
   end
 
   def bpgt(inputs, strt_p, end_p, tars, rate=1)
-    op_file  = File.open("training.txt", "a")
 
     # header
     header = ["p"]

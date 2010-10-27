@@ -158,28 +158,33 @@ class Network
     return layers.last.nrns
   end
 
+  def calc_rms(inputs, strt_p, end_p, targets)
+    # body
+    sum = Array.new(layers[layers.length-1].count,0)
+
+    p = strt_p
+    while p <= end_p
+      diff = []
+      op_nrns = ffwd(inputs[p])
+      op_nrns.each_index do |i|
+        diff << (op_nrns[i].output - targets[p][i])
+        sum[i] += (op_nrns[i].output - targets[p][i])**2
+      end
+      p += 1
+    end
+    rms = []
+    sum.each { |e| rms << e/(end_p.to_f) }
+    p "sum: #{sum}"
+    p "rms: #{rms}"
+  end
+
   def test(inputs, strt_p, end_p, targets, op_file)
-    # header
-    header = ["p"]
-    inputs[0].each_index { |i| header << "input#{i}\t" }
-    targets[0].each_index { |i| header << "target#{i}\t" }
-    for i in 0..targets[0].length-1
-      header << "output#{i}\t"
-    end
-    for i in 0..targets[0].length-1
-      header << "error#{i}\t"
-    end
-
-    op_file.puts header.join("\t")
-    puts header.join("\t")
-
     # body
     p = strt_p
     while p <= end_p
 
       fout  = ["#{p}"]
       ops   = []
-      error = []
 
       inputs[p].each { |e| fout << "#{e}" }
       targets[p].each { |e| fout << "#{e}" }
@@ -230,7 +235,8 @@ op_file  = File.open("output.txt", "w")
 tr_file  = File.open("training.txt", "w")
 
 net.put_header(input, target, tr_file)
-500.times { |n|  net.bpgt(input, 0, csv_ip.count-1, target, 0.95, tr_file, (n+1)) }
+# 20.times { |n|  net.bpgt(input, 0, csv_ip.count-1, target, 1, tr_file, (n+1)) }
+1.times { |n|  net.calc_rms(input, 0, csv_ip.count-1, target) }
 
 # net.test(input, 0, csv_ip.count-1, target)
 
