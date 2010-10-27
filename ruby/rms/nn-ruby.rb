@@ -179,7 +179,15 @@ class Network
     sum.each { |e| rms << e/(end_p.to_f) }
     p "sum: #{sum}"
     p "rms: #{rms}"
+    return rms
   end
+
+  def alter_weight
+    old_weight = layers[1].weights[0][0]
+    layers[1].weights[0][0] +=  3
+    return layers[1].weights[0][0] - old_weight
+  end
+
 
   def test(inputs, strt_p, end_p, targets, op_file)
     # body
@@ -234,13 +242,16 @@ csv_tar = CSVFile.new("target.csv")
 input   = csv_ip.read_data
 target  = csv_tar.read_data
 
-op_file  = File.open("output.txt", "w")
 tr_file  = File.open("training.txt", "w")
 
-net.put_header(input, target, tr_file)
-# 20.times { |n|  net.bpgt(input, 0, csv_ip.count-1, target, 1, tr_file, (n+1)) }
-1.times { |n|  net.calc_rms(input, 0, csv_ip.count-1, target) }
-
+rms_drv = []
+old_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
+wgt_dif = net.alter_weight
+new_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
+new_rms.each_index { |i| rms_drv << (new_rms[i] - old_rms[i])/wgt_dif }
+# p "#{new_rms} - #{old_rms} #{new_rms - old_rms}"
+net.layers[1].weights 
+rms_drv.each { |e| puts "#{e} " }
 # net.test(input, 0, csv_ip.count-1, target)
 
 # net.weight_history(2)
