@@ -140,6 +140,9 @@ class Network
   end
 
   def ffwd(input)
+    if input.length != layers[0].nrns.length
+      raise "inputs from file and input layer length mismatch"
+    end
     input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
     for i in 1..@layers.size-1 # each layer without input layer
       layers[i].fptr = layers[i].method(:sigmoid)
