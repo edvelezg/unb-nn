@@ -20,7 +20,7 @@ File.foreach("input.csv") do |line|
   end
 end
 
-outFile = File.open("normalized.csv", "w")
+outFile = File.open("#{inFile.sub(".csv", "")}.nor", "w")
 
 File.foreach("input.csv") do |line|
   arr = line.chomp.split(',')
