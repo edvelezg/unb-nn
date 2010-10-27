@@ -3,16 +3,19 @@ class Layer
   attr_accessor :weights
   attr_accessor :old_weights
   attr_accessor :fptr
+  attr_reader :count
   
   def initialize
     @weights = [[]]
     @old_weights = []
     @nrns = []
     @fptr = method( :sigmoid )
+    @count = 0
   end
 
   def insert(neuron)
     @nrns.push(neuron)
+    @count = @count + 1
   end
 
   def threshld(k)
@@ -67,5 +70,13 @@ class Layer
 
 end
 
-# l = Layer.new
+# l1 = Layer.new
+# n2 = Neuron.new
+# n3 = Neuron.new
+# n4 = Neuron.new
+# l1 = Layer.new
+# l1.insert(n2)
+# l1.insert(n3)
+# l1.insert(n4)
+# puts l1.count
 # puts l.deriv(10, 0.001) # answer should be 4.5396e-005                            
