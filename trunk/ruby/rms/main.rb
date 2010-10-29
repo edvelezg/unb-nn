@@ -1,7 +1,7 @@
 require "Neuron"
 require "Layer"
 require "CSVFile"
-require "nn-ruby.rb"
+require "Network"
 @@ver = false
 
 net     = Network.new
