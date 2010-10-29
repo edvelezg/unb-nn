@@ -30,8 +30,8 @@ class Network
     # third
     n5 = Neuron.new
     l2 = Layer.new
-    l2.insert(n4)
-    l2.weights = [[rand, rand]]
+    l2.insert(n5)
+    l2.weights = [[rand, rand, rand]]
 
 
 
@@ -194,7 +194,7 @@ class Network
     elsif drms < 0
       layers[i].weights[j][k] += drms*10.0
     else
-      raise "WARNING: Flat slope warning"
+      raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
     # puts "weight is now #{layers[1].weights[0][0]}"
   end
@@ -258,19 +258,27 @@ class Network
           puts "wgt_dif: #{wgt_dif}"
           new_rms = calc_rms(input, 0, csv_ip.count-1, target)
           new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/wgt_dif }
-          if j == 2
-            p layers[i].weights
-            exit
-          end
+          # if j == 2
+          #   p layers[i].weights
+          #   exit
+          # end
           update_weight(wgt_dif, drms[0], i, j, k)
-          
         end
       end
       puts
     end
   end
 
-
+  def travers_layij(input, target, csv_ip, i, j, k)
+      drms    = []
+      old_rms = calc_rms(input, 0, csv_ip.count-1, target)
+      wgt_dif = alter_weight(i, j, k)
+      puts "wgt_dif: #{wgt_dif}"
+      new_rms = calc_rms(input, 0, csv_ip.count-1, target)
+      new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/wgt_dif }
+      update_weight(wgt_dif, drms[0], i, j, k)
+      puts
+  end
 end
 
 net     = Network.new
