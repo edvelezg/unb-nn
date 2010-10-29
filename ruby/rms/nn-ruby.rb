@@ -183,7 +183,7 @@ class Network
 
   def alter_weight(i,j,k)
     old_weight = layers[i].weights[j][k]
-    layers[i].weights[j][k] +=  0.001
+    layers[i].weights[j][k] +=  0.01
     return layers[i].weights[j][k] - old_weight
   end
 
@@ -246,15 +246,31 @@ class Network
     op_file.puts header.join("\t")
     puts header.join("\t")
   end
-  
-  def travers_lay
+
+  def travers_lay(input, target, csv_ip)
     for i in 1..layers.length-1
-      layers[i].weights.each_index { |j| layers[i].weights[j].each_index { |k| puts "#{j}, #{k}" } }
+      layers[i].weights.each_index do |j|
+        layers[i].weights[j].each_index do |k|
+          puts "#{i}, #{j}, #{k}"
+          drms    = []
+          old_rms = calc_rms(input, 0, csv_ip.count-1, target)
+          wgt_dif = alter_weight(i, j, k)
+          puts "wgt_dif: #{wgt_dif}"
+          new_rms = calc_rms(input, 0, csv_ip.count-1, target)
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/wgt_dif }
+          if j == 2
+            p layers[i].weights
+            exit
+          end
+          update_weight(wgt_dif, drms[0], i, j, k)
+          
+        end
+      end
       puts
     end
   end
-  
-  
+
+
 end
 
 net     = Network.new
@@ -264,23 +280,4 @@ input   = csv_ip.read_data
 target  = csv_tar.read_data
 
 tr_file  = File.open("training.txt", "w")
-
-
-  # drms = []
-  # old_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
-  # wgt_dif = net.alter_weight
-  # new_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
-  # new_rms.each_index { |i| drms << (new_rms[i] - old_rms[i])/wgt_dif }
-  # net.update_weight(wgt_dif, drms[0])
-  
-  net.travers_lay
-
-# drms.each { |e| puts "drms: #{e} " }
-# net.test(input, 0, csv_ip.count-1, target)
-
-# net.weight_history(2)
-# net.disp_weights
-#
-# p net.ffwd(input[0])
-#
-# # net.display
+net.travers_lay(input, target, csv_ip)
