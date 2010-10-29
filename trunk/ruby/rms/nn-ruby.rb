@@ -33,10 +33,7 @@ class Network
     l2.insert(n5)
     l2.weights = [[rand, rand, rand]]
 
-
-
     @layers = [l0, l1, l2]
-    # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
 
   def bpgt(inputs, strt_p, end_p, tars, rate, op_file, num)
@@ -177,7 +174,7 @@ class Network
     end
     rms = []
     sum.each { |e| rms << e/(end_p.to_f) }
-    rms.each_index { |i| puts "rms for output #{i} is now #{rms[i]}" }
+    # rms.each_index { |i| puts "rms for output #{i} is now #{rms[i]}" }
     return rms
   end
 
@@ -188,18 +185,36 @@ class Network
   end
 
   def update_weight(wgt_dif, drms, i, j, k)
-    layers[i].weights[j][k] -= wgt_dif
-    if drms > 0
-      layers[i].weights[j][k] -= drms*10.0
-    elsif drms < 0
-      layers[i].weights[j][k] += drms*10.0
+    
+    if i < 1
+      raise "i must never be less than 1, layer 0 is input layer"
+    end
+    
+    layers[i].weights[j][k] -= 0.01
+    # if i == 2
+    #   puts "OLD WEIGHT WAS: #{layers[i].weights[j][k]}"
+    #   if drms > 0.0
+    #     puts "I AM positive"
+    #   else
+    #     puts "I am NEGATIVE"
+    #   end
+    #   puts "#{drms*10.0}"
+    # end
+    
+    if drms != 0.0
+      layers[i].weights[j][k] -= drms*40.0
+      # if i == 2
+      #   puts "NEW WEIGHT SHOULD BE: #{layers[i].weights[j][k]}"
+      # end
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
-    # puts "weight is now #{layers[1].weights[0][0]}"
   end
-
-
+  
+  def print_wgt(i,j,k)
+    puts "layer #{i}, weight[#{j},#{k}] is #{layers[i].weights[j][k]}"
+  end
+  
 
   def test(inputs, strt_p, end_p, targets, op_file)
     # body
@@ -247,37 +262,33 @@ class Network
     puts header.join("\t")
   end
 
-  def travers_lay(input, target, csv_ip)
+  def rms_train_core(input, target, csv_ip)
     for i in 1..layers.length-1
+      # Adding to weight history
+      layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
+      
       layers[i].weights.each_index do |j|
         layers[i].weights[j].each_index do |k|
-          puts "#{i}, #{j}, #{k}"
           drms    = []
           old_rms = calc_rms(input, 0, csv_ip.count-1, target)
           wgt_dif = alter_weight(i, j, k)
-          puts "wgt_dif: #{wgt_dif}"
           new_rms = calc_rms(input, 0, csv_ip.count-1, target)
-          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/wgt_dif }
-          # if j == 2
-          #   p layers[i].weights
-          #   exit
-          # end
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+          puts "error is now #{new_rms[0]}"
           update_weight(wgt_dif, drms[0], i, j, k)
+
         end
       end
-      puts
     end
   end
 
-  def travers_layij(input, target, csv_ip, i, j, k)
+  def rms_train_sngl_wgt(input, target, csv_ip, i, j, k)
       drms    = []
       old_rms = calc_rms(input, 0, csv_ip.count-1, target)
       wgt_dif = alter_weight(i, j, k)
-      puts "wgt_dif: #{wgt_dif}"
       new_rms = calc_rms(input, 0, csv_ip.count-1, target)
       new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/wgt_dif }
       update_weight(wgt_dif, drms[0], i, j, k)
-      puts
   end
 end
 
@@ -288,4 +299,5 @@ input   = csv_ip.read_data
 target  = csv_tar.read_data
 
 tr_file  = File.open("training.txt", "w")
-net.travers_lay(input, target, csv_ip)
+1000.times { |n| net.rms_train_core(input, target, csv_ip) }
+# net.weight_history(1)
