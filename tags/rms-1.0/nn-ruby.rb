@@ -216,13 +216,14 @@ class Network
   end
   
 
-  def test(inputs, strt_p, end_p, targets, op_file)
+  def test(inputs, strt_p, end_p, targets)
     # body
     p = strt_p
     while p <= end_p
 
       fout  = ["#{p}"]
       ops   = []
+      error = []
 
       inputs[p].each { |e| fout << "#{e}" }
       targets[p].each { |e| fout << "#{e}" }
@@ -236,7 +237,6 @@ class Network
       ops.each { |e| fout << "#{e}" }
       error.each { |e| fout << "#{e}" }
 
-      op_file.puts fout.join("\t")
       puts fout.join("\t")
       p += 1
     end
@@ -287,7 +287,7 @@ class Network
       old_rms = calc_rms(input, 0, csv_ip.count-1, target)
       wgt_dif = alter_weight(i, j, k)
       new_rms = calc_rms(input, 0, csv_ip.count-1, target)
-      new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/wgt_dif }
+      new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
       update_weight(wgt_dif, drms[0], i, j, k)
   end
 end
@@ -299,5 +299,7 @@ input   = csv_ip.read_data
 target  = csv_tar.read_data
 
 tr_file  = File.open("training.txt", "w")
-1000.times { |n| net.rms_train_core(input, target, csv_ip) }
+100.times { |n| net.rms_train_core(input, target, csv_ip) }
+net.test(input, 0, csv_ip.count-1, target)
+
 # net.weight_history(1)
