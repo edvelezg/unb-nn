@@ -249,7 +249,8 @@ class Network
   
   def travers_lay
     for i in 1..layers.length-1
-      puts i
+      layers[i].weights.each_index { |j| layers[i].weights[j].each_index { |k| puts "#{j}, #{k}" } }
+      puts
     end
   end
   
