@@ -250,7 +250,6 @@ class Network
       ops.each { |e| fout << "#{e}" }
       error.each { |e| fout << "#{e}" }
 
-      op_file.puts fout.join("\t")
       puts fout.join("\t")
       p += 1
     end
