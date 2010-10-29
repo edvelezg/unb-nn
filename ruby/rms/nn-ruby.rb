@@ -177,16 +177,28 @@ class Network
     end
     rms = []
     sum.each { |e| rms << e/(end_p.to_f) }
-    p "sum: #{sum}"
-    p "rms: #{rms}"
+    rms.each_index { |i| puts "rms for output #{i} is now #{rms[i]}" }
     return rms
   end
 
-  def alter_weight
-    old_weight = layers[1].weights[0][0]
-    layers[1].weights[0][0] +=  3
-    return layers[1].weights[0][0] - old_weight
+  def alter_weight(i,j,k)
+    old_weight = layers[i].weights[j][k]
+    layers[i].weights[j][k] +=  0.001
+    return layers[i].weights[j][k] - old_weight
   end
+
+  def update_weight(wgt_dif, drms, i, j, k)
+    layers[i].weights[j][k] -= wgt_dif
+    if drms > 0
+      layers[i].weights[j][k] -= drms*10.0
+    elsif drms < 0
+      layers[i].weights[j][k] += drms*10.0
+    else
+      raise "WARNING: Flat slope warning"
+    end
+    # puts "weight is now #{layers[1].weights[0][0]}"
+  end
+
 
 
   def test(inputs, strt_p, end_p, targets, op_file)
@@ -234,6 +246,14 @@ class Network
     op_file.puts header.join("\t")
     puts header.join("\t")
   end
+  
+  def travers_lay
+    for i in 1..layers.length-1
+      puts i
+    end
+  end
+  
+  
 end
 
 net     = Network.new
@@ -244,14 +264,17 @@ target  = csv_tar.read_data
 
 tr_file  = File.open("training.txt", "w")
 
-rms_drv = []
-old_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
-wgt_dif = net.alter_weight
-new_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
-new_rms.each_index { |i| rms_drv << (new_rms[i] - old_rms[i])/wgt_dif }
-# p "#{new_rms} - #{old_rms} #{new_rms - old_rms}"
-net.layers[1].weights 
-rms_drv.each { |e| puts "#{e} " }
+
+  # drms = []
+  # old_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
+  # wgt_dif = net.alter_weight
+  # new_rms = net.calc_rms(input, 0, csv_ip.count-1, target)
+  # new_rms.each_index { |i| drms << (new_rms[i] - old_rms[i])/wgt_dif }
+  # net.update_weight(wgt_dif, drms[0])
+  
+  net.travers_lay
+
+# drms.each { |e| puts "drms: #{e} " }
 # net.test(input, 0, csv_ip.count-1, target)
 
 # net.weight_history(2)
