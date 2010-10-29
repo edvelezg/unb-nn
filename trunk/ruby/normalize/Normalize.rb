@@ -1,8 +1,12 @@
 class Normalize
   attr_accessor :inFile
+  attr_accessor :max
+  attr_accessor :min
 
   def initialize(inFile)
     @inFile = inFile
+    @max = []
+    @min = []
   end
 
   def normalize
@@ -11,8 +15,6 @@ class Normalize
     arr1 = line.split(',')
     num_cols = arr1.length
 
-    max = []
-    min = []
     for i in 0..num_cols-1
       max << arr1[i].to_f
       min << arr1[i].to_f
@@ -39,5 +41,9 @@ class Normalize
       outFile.puts out_arr.join(',')
     end
     return outFileName
+  end
+  
+  def denormalize(input, col)
+    return (input*(max[col]-min[col])/1.6)+(max[col]+min[col])/2
   end
 end
