@@ -5,31 +5,40 @@ require "CSVFile"
 class Network
   attr_accessor :layers
   def initialize
+    @layers = []
+    nrn_cnt = [2, 3, 1]
+    for i in 0..nrn_cnt.size-1
+      lay = Layer.new
+      nrn_cnt[i].times do |n|
+        lay.insert(Neuron.new)
+      end
+      layers << lay
+    end
 
     # first layer
-    n0 = Neuron.new
-    n1 = Neuron.new
-    l0 = Layer.new
-    l0.insert(n0)
-    l0.insert(n1)
-    n0.output = nil
-    n1.output = nil
+    # n0 = Neuron.new
+    # n1 = Neuron.new
+    # l0 = Layer.new
+    # l0.insert(n0)
+    # l0.insert(n1)
+    # n0.output = nil
+    # n1.output = nil
+    # 
+    # # second
+    # n2 = Neuron.new
+    # n3 = Neuron.new
+    # n4 = Neuron.new
+    # l1 = Layer.new
+    # l1.insert(n2)
+    # l1.insert(n3)
+    # l1.insert(n4)
+    # 
+    # # third
+    # n5 = Neuron.new
+    # l2 = Layer.new
+    # l2.insert(n5)
 
-    # second
-    n2 = Neuron.new
-    n3 = Neuron.new
-    n4 = Neuron.new
-    l1 = Layer.new
-    l1.insert(n2)
-    l1.insert(n3)
-    l1.insert(n4)
-
-    # third
-    n5 = Neuron.new
-    l2 = Layer.new
-    l2.insert(n5)
-
-    @layers = [l0, l1, l2]
+    # @layers = [l0, l1, l2]
   end
 
   def reset
@@ -283,3 +292,5 @@ class Network
     end
   end
 end
+# net = Network.new
+# net.layers.each { |e| p e } if net.layers.nil? == false
