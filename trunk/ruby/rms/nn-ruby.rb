@@ -12,8 +12,8 @@ class Network
     l0 = Layer.new
     l0.insert(n0)
     l0.insert(n1)
-    n0.output = 0
-    n1.output = 1
+    n0.output = nil
+    n1.output = nil
 
     # second
     n2 = Neuron.new
@@ -156,18 +156,18 @@ class Network
 
     input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output of first layer
 
-    for i in 1..@layers.size-1 # each layer without input layer
+    # each layer without input layer
+    for i in 1..@layers.size-1 
       layers[i].fptr = layers[i].method(:sigmoid)
-      layers[i].weights.each_index do |j| # each neuron
+      # each neuron
+      layers[i].weights.each_index do |j| 
         sum = 0
-        layers[i].weights[j].each_index do |k| # each connection to neuron (from neuron k to neuron j)
-          print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n" if @@ver == true
+        # each connection to neuron (from neuron k to neuron j)
+        layers[i].weights[j].each_index do |k| 
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
           #  calculates output within neuron
           layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
-        puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}" if @@ver == true
-        puts "\n#{sum}" if @@ver == true
       end
     end
     return layers.last.nrns
@@ -189,7 +189,6 @@ class Network
     end
     rms = []
     sum.each { |e| rms << e/(end_p.to_f) }
-    # rms.each_index { |i| puts "rms for output #{i} is now #{rms[i]}" }
     return rms
   end
 
@@ -206,21 +205,9 @@ class Network
     end
 
     layers[i].weights[j][k] -= 0.01
-    # if i == 2
-    #   puts "OLD WEIGHT WAS: #{layers[i].weights[j][k]}"
-    #   if drms > 0.0
-    #     puts "I AM positive"
-    #   else
-    #     puts "I am NEGATIVE"
-    #   end
-    #   puts "#{drms*10.0}"
-    # end
 
     if drms != 0.0
       layers[i].weights[j][k] -= drms*10.0
-      # if i == 2
-      #   puts "NEW WEIGHT SHOULD BE: #{layers[i].weights[j][k]}"
-      # end
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
