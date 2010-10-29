@@ -1,7 +1,6 @@
 require "Neuron"
 require "Layer"
 require "CSVFile"
-@@ver = false
 
 class Network
   attr_accessor :layers
@@ -13,7 +12,6 @@ class Network
     l0 = Layer.new
     l0.insert(n0)
     l0.insert(n1)
-    l0.weights = [[1,1]]
     n0.output = 0
     n1.output = 1
 
@@ -25,16 +23,31 @@ class Network
     l1.insert(n2)
     l1.insert(n3)
     l1.insert(n4)
-    l1.weights = [[rand, rand], [rand, rand], [rand, rand]]
 
     # third
     n5 = Neuron.new
     l2 = Layer.new
     l2.insert(n5)
-    l2.weights = [[rand, rand, rand]]
 
     @layers = [l0, l1, l2]
   end
+
+  def reset
+    for i in 1..layers.length-1
+      layers[i].nrns.each_index do |j|
+        wgt_array = []
+        layers[i-1].nrns.each_index do |k|
+          print "#{j},#{k} "
+          wgt_array << rand
+        end
+        layers[i].weights << wgt_array
+        puts
+      end
+      layers[i].weights.each { |e| p e }
+      puts
+    end
+  end
+
 
   def bpgt(inputs, strt_p, end_p, tars, rate, op_file, num)
     p = strt_p
@@ -138,9 +151,11 @@ class Network
 
   def ffwd(input)
     if input.length != layers[0].nrns.length
-      raise "inputs from file and input layer length mismatch"
+      raise "inputs from file and neurons in the input layer do not match in size"
     end
-    input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output
+
+    input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output of first layer
+
     for i in 1..@layers.size-1 # each layer without input layer
       layers[i].fptr = layers[i].method(:sigmoid)
       layers[i].weights.each_index do |j| # each neuron
@@ -185,11 +200,11 @@ class Network
   end
 
   def update_weight(wgt_dif, drms, i, j, k)
-    
+
     if i < 1
       raise "i must never be less than 1, layer 0 is input layer"
     end
-    
+
     layers[i].weights[j][k] -= 0.01
     # if i == 2
     #   puts "OLD WEIGHT WAS: #{layers[i].weights[j][k]}"
@@ -200,9 +215,9 @@ class Network
     #   end
     #   puts "#{drms*10.0}"
     # end
-    
+
     if drms != 0.0
-      layers[i].weights[j][k] -= drms*40.0
+      layers[i].weights[j][k] -= drms*10.0
       # if i == 2
       #   puts "NEW WEIGHT SHOULD BE: #{layers[i].weights[j][k]}"
       # end
@@ -210,19 +225,20 @@ class Network
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
   end
-  
+
   def print_wgt(i,j,k)
     puts "layer #{i}, weight[#{j},#{k}] is #{layers[i].weights[j][k]}"
   end
-  
 
-  def test(inputs, strt_p, end_p, targets, op_file)
+
+  def test(inputs, strt_p, end_p, targets)
     # body
     p = strt_p
     while p <= end_p
 
       fout  = ["#{p}"]
       ops   = []
+      error = []
 
       inputs[p].each { |e| fout << "#{e}" }
       targets[p].each { |e| fout << "#{e}" }
@@ -236,7 +252,6 @@ class Network
       ops.each { |e| fout << "#{e}" }
       error.each { |e| fout << "#{e}" }
 
-      op_file.puts fout.join("\t")
       puts fout.join("\t")
       p += 1
     end
@@ -262,11 +277,11 @@ class Network
     puts header.join("\t")
   end
 
-  def rms_train_core(input, target, csv_ip)
+  def rms_train_core(input, target, csv_ip, tr_file)
     for i in 1..layers.length-1
       # Adding to weight history
       layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
-      
+
       layers[i].weights.each_index do |j|
         layers[i].weights[j].each_index do |k|
           drms    = []
@@ -274,30 +289,10 @@ class Network
           wgt_dif = alter_weight(i, j, k)
           new_rms = calc_rms(input, 0, csv_ip.count-1, target)
           new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
-          puts "error is now #{new_rms[0]}"
           update_weight(wgt_dif, drms[0], i, j, k)
-
+          tr_file.puts "error is now #{new_rms[0]}"
         end
       end
     end
   end
-
-  def rms_train_sngl_wgt(input, target, csv_ip, i, j, k)
-      drms    = []
-      old_rms = calc_rms(input, 0, csv_ip.count-1, target)
-      wgt_dif = alter_weight(i, j, k)
-      new_rms = calc_rms(input, 0, csv_ip.count-1, target)
-      new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/wgt_dif }
-      update_weight(wgt_dif, drms[0], i, j, k)
-  end
 end
-
-net     = Network.new
-csv_ip  = CSVFile.new("input.csv")
-csv_tar = CSVFile.new("target.csv")
-input   = csv_ip.read_data
-target  = csv_tar.read_data
-
-tr_file  = File.open("training.txt", "w")
-1000.times { |n| net.rms_train_core(input, target, csv_ip) }
-# net.weight_history(1)

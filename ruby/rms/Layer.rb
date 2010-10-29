@@ -6,7 +6,7 @@ class Layer
   attr_reader :count
   
   def initialize
-    @weights = [[]]
+    @weights = []
     @old_weights = []
     @nrns = []
     @fptr = method( :sigmoid )
@@ -31,7 +31,7 @@ class Layer
   end
   
   def sigmoid (k)
-    return 1/(1+(1/Math.exp(k)))
+    return 1/(1+(Math.exp(-k)))
   end
   
   def update_neuron (idx, k)
@@ -59,7 +59,7 @@ class Layer
       puts fout.join("\t")
     end
     puts curr_weights
-  end
+  end  
   
   def curr_weights
     fout = []
