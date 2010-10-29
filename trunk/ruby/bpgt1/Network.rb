@@ -6,38 +6,59 @@ require "CSVFile"
 class Network
   attr_accessor :layers
   def initialize
+    @layers = []
+    nrn_cnt = [2, 3, 1]
+    for i in 0..nrn_cnt.size-1
+      lay = Layer.new
+      nrn_cnt[i].times do |n|
+        lay.insert(Neuron.new)
+      end
+      layers << lay
+    end
 
     # first layer
-    n0 = Neuron.new
-    n1 = Neuron.new
-    l0 = Layer.new
-    l0.insert(n0)
-    l0.insert(n1)
-    l0.weights = [[1,1]]
-    n0.output = 0
-    n1.output = 1
+    # n0 = Neuron.new
+    # n1 = Neuron.new
+    # l0 = Layer.new
+    # l0.insert(n0)
+    # l0.insert(n1)
+    # n0.output = nil
+    # n1.output = nil
+    # 
+    # # second
+    # n2 = Neuron.new
+    # n3 = Neuron.new
+    # n4 = Neuron.new
+    # l1 = Layer.new
+    # l1.insert(n2)
+    # l1.insert(n3)
+    # l1.insert(n4)
+    # 
+    # # third
+    # n5 = Neuron.new
+    # l2 = Layer.new
+    # l2.insert(n5)
 
-    # second
-    n2 = Neuron.new
-    n3 = Neuron.new
-    n4 = Neuron.new
-    l1 = Layer.new
-    l1.insert(n2)
-    l1.insert(n3)
-    l1.insert(n4)
-    l1.weights = [[rand, rand], [rand, rand], [rand, rand]]
-
-    # third
-    n5 = Neuron.new
-    l2 = Layer.new
-    l2.insert(n4)
-    l2.weights = [[rand, rand]]
-
-
-
-    @layers = [l0, l1, l2]
+    # @layers = [l0, l1, l2]
     # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
+
+  def reset
+    for i in 1..layers.length-1
+      layers[i].nrns.each_index do |j|
+        wgt_array = []
+        layers[i-1].nrns.each_index do |k|
+          print "#{j},#{k} "
+          wgt_array << rand
+        end
+        layers[i].weights << wgt_array
+        puts
+      end
+      layers[i].weights.each { |e| p e }
+      puts
+    end
+  end
+
 
   def bpgt(inputs, strt_p, end_p, tars, rate, op_file, num)
     p = strt_p
@@ -141,21 +162,23 @@ class Network
 
   def ffwd(input)
     if input.length != layers[0].nrns.length
-      raise "inputs from file and input layer length mismatch"
+      raise "inputs from file and neurons in the input layer do not match in size"
     end
-    input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
-    for i in 1..@layers.size-1 # each layer without input layer
+
+    input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output of first layer
+
+    # each layer without input layer
+    for i in 1..@layers.size-1 
       layers[i].fptr = layers[i].method(:sigmoid)
-      layers[i].weights.each_index do |j| # each neuron
+      # each neuron
+      layers[i].weights.each_index do |j| 
         sum = 0
-        layers[i].weights[j].each_index do |k| # each connection to neuron (from neuron k to neuron j)
-          print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n" if @@ver == true
+        # each connection to neuron (from neuron k to neuron j)
+        layers[i].weights[j].each_index do |k| 
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
           #  calculates output within neuron
           layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
-        puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}" if @@ver == true
-        puts "\n#{sum}" if @@ver == true
       end
     end
     return layers.last.nrns
@@ -177,17 +200,43 @@ class Network
     end
     rms = []
     sum.each { |e| rms << e/(end_p.to_f) }
-    p "sum: #{sum}"
-    p "rms: #{rms}"
+    return rms
   end
 
-  def test(inputs, strt_p, end_p, targets, op_file)
+  def alter_weight(i,j,k)
+    old_weight = layers[i].weights[j][k]
+    layers[i].weights[j][k] +=  0.01
+    return layers[i].weights[j][k] - old_weight
+  end
+
+  def update_weight(wgt_dif, drms, i, j, k)
+
+    if i < 1
+      raise "i must never be less than 1, layer 0 is input layer"
+    end
+
+    layers[i].weights[j][k] -= 0.01
+
+    if drms != 0.0
+      layers[i].weights[j][k] -= drms*10.0
+    else
+      raise "WARNING: Flat slope warning, something may be wrong with the network"
+    end
+  end
+
+  def print_wgt(i,j,k)
+    puts "layer #{i}, weight[#{j},#{k}] is #{layers[i].weights[j][k]}"
+  end
+
+
+  def test(inputs, strt_p, end_p, targets)
     # body
     p = strt_p
     while p <= end_p
 
       fout  = ["#{p}"]
       ops   = []
+      error = []
 
       inputs[p].each { |e| fout << "#{e}" }
       targets[p].each { |e| fout << "#{e}" }
