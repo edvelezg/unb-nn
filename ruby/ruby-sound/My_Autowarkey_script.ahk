@@ -70,6 +70,24 @@ DragAndDrop()
 }
 
 
+MoveMouseToPos()
+{
+  SendPlay, 1
+  SendPlay, e
+  MouseGetPos, iMousePosX, iMousePosY
+  iMouseGotoX := A_ScreenWidth*1//40
+  iMouseGotoY := A_ScreenHeight*39//40
+  MouseMove, %iMouseGotoX%, %iMouseGotoY%
+; Click, Left, %iMousePosX%, %iMousePosY%
+; Sleep, 1000
+; SendInput, 2
+; Click, Right, %BirdGotoX%, %BirdGotoY%
+; SendInput, +z
+; Sleep, 50
+; SendInput, 1
+}
+
+
 BirdPickUp()
 {
   SendPlay, 2
@@ -80,15 +98,13 @@ BirdPickUp()
   SendPlay, 1
   Sleep, 2000
   SendPlay, 2
-  SendPlay, +r
-; MoveMouseToPosition(10)
-; SendPlay, +LButton
+  ClickMouseInPosition(10)
   SendPlay, 1
 }
 
-MoveMouseToPosition(iSpellQWERHotkey)
+ClickMouseInPosition(iSpellQWERHotkey)
 {
-  MouseGetPos, iMousePosX, IMousePosY
+  MouseGetPos, iMousePosX, iMousePosY
   if (iSpellQWERHotkey == 1)
   {
     iMouseGotoX := A_ScreenWidth*4//5
@@ -148,8 +164,8 @@ MoveMouseToPosition(iSpellQWERHotkey)
     iMouseGotoX := A_ScreenWidth*19//20
     iMouseGotoY := A_ScreenHeight*19//20
   }
-  MouseMove, %iMouseGotoX%, %iMouseGotoY%
-; MouseMove, %iMousePosX%, %iMousePosY%
+  Click, Left, %iMouseGotoX%, %iMouseGotoY%
+  MouseMove, %iMousePosX%, %iMousePosY%
 }
 
 ; AutoCast Function
@@ -280,6 +296,7 @@ return
 Lwin::return
 ; Disable Left Alt-Q GG
 !q::BirdPickUp()
+Mbutton::MoveMouseToPos()
 
 ; Inventory Keys:
 +f::SendInput, {Numpad7}
