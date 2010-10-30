@@ -76,7 +76,11 @@ BirdPickUp()
   SendPlay, e
   Click, Right, %BirdGotoX%, %BirdGotoY%
   SendPlay, f
-  SendPlay, +z+r
+  SendPlay, +z
+  SendPlay, 1
+  Sleep, 2000
+  SendPlay, 2
+  SendPlay, +r
 ; MoveMouseToPosition(10)
 ; SendPlay, +LButton
   SendPlay, 1
