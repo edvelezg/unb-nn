@@ -15,6 +15,9 @@ IfExist, Warcraft III.ico
 ;;;;; Variables ;;;;;
 bInChatRoom := False
 bHealthBarOn := False
+bBirdGotoX := 0
+bBirdGotoY := 0
+
 ;;;;; Timers ;;;;;
 ;; this timer checks to see if warcraft is active and turns on the health bars
 settimer, timer_Warcraft, 1000 ;check every 1 second
@@ -49,6 +52,8 @@ Return ; End Auto-Execute Section
 ; Drag and Drop Function
 DragAndDrop()
 {
+  SendPlay, 1
+  SendPlay, e
   MouseGetPos, iMousePosX, IMousePosY
   iMouseGotoX := A_ScreenWidth*4//6
   iMouseGotoY := A_ScreenHeight*5//6
@@ -56,12 +61,91 @@ DragAndDrop()
   Click, Left, %iMousePosX%, %iMousePosY%
   BirdGotoX := %iMouseGotoX%
   BirdGotoY := %iMouseGotoY%
-  Sleep, 1000
-  SendInput, 2
+; Sleep, 1000
+; SendInput, 2
+; Click, Right, %BirdGotoX%, %BirdGotoY%
+; SendInput, +z
+; Sleep, 50
+; SendInput, 1
+}
+
+
+BirdPickUp()
+{
+  SendPlay, 2
+  SendPlay, e
   Click, Right, %BirdGotoX%, %BirdGotoY%
-  SendInput, +z
-  Sleep, 50
-  SendInput, 1
+  SendPlay, f
+  SendPlay, +z
+  MoveMouseToPosition(10)
+  SendPlay, +LButton
+  SendPlay, 1
+}
+
+MoveMouseToPosition(iSpellQWERHotkey)
+{
+  MouseGetPos, iMousePosX, IMousePosY
+  if (iSpellQWERHotkey == 1)
+  {
+    iMouseGotoX := A_ScreenWidth*4//5
+    iMouseGotoY := A_ScreenHeight*4//5
+  }
+  else if (iSpellQWERHotkey == 2)
+  {
+    iMouseGotoX := A_ScreenWidth*4//5
+    iMouseGotoY := A_ScreenHeight*22//25
+  }
+  else if (iSpellQWERHotkey == 3)
+  {    iMouseGotoX := A_ScreenWidth*4//5
+    iMouseGotoY := A_ScreenHeight*19//20
+  }
+  else if (iSpellQWERHotkey == 4)
+  {
+    iMouseGotoX := A_ScreenWidth*17//20
+    iMouseGotoY := A_ScreenHeight*4//5
+  }
+  else if (iSpellQWERHotkey == 5)
+  {
+    iMouseGotoX := A_ScreenWidth*17//20
+    iMouseGotoY := A_ScreenHeight*22//25
+  }
+  else if (iSpellQWERHotkey == 6)
+  {
+    iMouseGotoX := A_ScreenWidth*17//20
+    iMouseGotoY := A_ScreenHeight*19//20
+  }
+  else if (iSpellQWERHotkey == 7)
+  {
+    iMouseGotoX := A_ScreenWidth*9//10
+    iMouseGotoY := A_ScreenHeight*4//5
+  }
+  else if (iSpellQWERHotkey == 8)
+  {
+    iMouseGotoX := A_ScreenWidth*9//10
+    iMouseGotoY := A_ScreenHeight*22//25
+  }
+  else if (iSpellQWERHotkey == 9)
+  {
+    iMouseGotoX := A_ScreenWidth*9//10
+    iMouseGotoY := A_ScreenHeight*19//20
+  }
+  else if (iSpellQWERHotkey == 10)
+  {
+    iMouseGotoX := A_ScreenWidth*19//20
+    iMouseGotoY := A_ScreenHeight*4//5
+  }
+  else if (iSpellQWERHotkey == 11)
+  {
+    iMouseGotoX := A_ScreenWidth*19//20
+    iMouseGotoY := A_ScreenHeight*22//25
+  }
+  else if (iSpellQWERHotkey == 12)
+  {
+    iMouseGotoX := A_ScreenWidth*19//20
+    iMouseGotoY := A_ScreenHeight*19//20
+  }
+  MouseMove, %iMouseGotoX%, %iMouseGotoY%
+; MouseMove, %iMousePosX%, %iMousePosY%
 }
 
 ; AutoCast Function
@@ -191,12 +275,12 @@ return
 ; Disable Left Windows Key
 Lwin::return
 ; Disable Left Alt-Q GG
-<!q::return
+!q::BirdPickUp()
 
 ; Inventory Keys:
 +f::SendInput, {Numpad7}
 !f::SendInput, {Numpad8}
-+!f::SendInput, +{Numpad8}
+;+!f::SendInput, +{Numpad8}
 +d::SendInput, {Numpad4}
 !d::SendInput, {Numpad5}
 ;+!d::SendInput, +{Numpad5}
@@ -204,7 +288,8 @@ Lwin::return
 !s::SendInput, {Numpad2}
 +!s::SendInput, +{Numpad2}
 +!r::Run C:\Users\Viper\Documents\UNB-Courses\NN\ruby\ruby-sound\HearThat
-+!d::DragAndDrop()
+;!q::DragAndDrop()
++!q::DragAndDrop()
 
 ; Hotkeys Remapper:
 
