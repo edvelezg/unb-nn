@@ -72,8 +72,6 @@ DragAndDrop()
 
 MoveMouseToPos()
 {
-  SendPlay, 1
-  SendPlay, e
   MouseGetPos, iMousePosX, iMousePosY
   iMouseGotoX := A_ScreenWidth*1//45
   iMouseGotoY := A_ScreenHeight*68/70
