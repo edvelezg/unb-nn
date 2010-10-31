@@ -79,7 +79,7 @@ MoveMouseToPos()
   iMouseGotoY := A_ScreenHeight*68/70
   MouseMove, %iMouseGotoX%, %iMouseGotoY%
   Click, Left, %iMouseGotoX%, %iMouseGotoY%
-
+  MouseMove, %iMousePosX%, %iMousePosY%
 ; Sleep, 1000
 ; SendInput, 2
 ; Click, Right, %BirdGotoX%, %BirdGotoY%
@@ -96,10 +96,6 @@ BirdPickUp()
   Click, Right, %BirdGotoX%, %BirdGotoY%
   SendPlay, f
   SendPlay, +z
-  SendPlay, 1
-  Sleep, 2000
-  SendPlay, 2
-  ClickMouseInPosition(10)
   SendPlay, 1
 }
 
