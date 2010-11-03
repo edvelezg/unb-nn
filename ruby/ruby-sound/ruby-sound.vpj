@@ -68,6 +68,9 @@
 		</Folder>
 	</CustomFolders>
 	<Files AutoFolders="DirectoryView">
+		<Folder Name="../../">
+			<F N="../../sample.ahk"/>
+		</Folder>
 		<F N="cmd_ruby.bat"/>
 		<F N="global_hk.rb"/>
 		<F N="My_Autowarkey_script.ahk"/>
