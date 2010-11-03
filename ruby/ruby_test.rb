@@ -15,6 +15,7 @@ a << 5 << 6 # => [6, 3, 4, 5, 2, 1]
 p a
 # That was fun; now let's get some of those entries back.
 
+
 p a[0] # => 1
 p a[0] # => 2
 p a[0] # => 5
@@ -33,3 +34,5 @@ p a[0] # => 6
 a << 7 # => [6, 3, 4, 7, 5, 2, 1]
 
 p [1, 2, 3, 4].map { |e| e**6 + 3*e }
+
+p [1,2, 3].each { |e| e**2 + 3*4 }
