@@ -24,7 +24,7 @@ class Network
     # l0.insert(n1)
     # n0.output = nil
     # n1.output = nil
-    # 
+    #
     # # second
     # n2 = Neuron.new
     # n3 = Neuron.new
@@ -33,7 +33,7 @@ class Network
     # l1.insert(n2)
     # l1.insert(n3)
     # l1.insert(n4)
-    # 
+    #
     # # third
     # n5 = Neuron.new
     # l2 = Layer.new
@@ -55,6 +55,7 @@ class Network
         layers[i].weights << wgt_array
       end
       layers[i].weights.each { |e| p e }
+      p layers[i].bias
       puts
     end
   end
@@ -101,13 +102,13 @@ class Network
   end
 
   def up_weights(rate)
-    
+
     lay_idx = layers.size-1
-    
+
     while lay_idx >= 1
-      
+
       layers[lay_idx].old_weights.push(Marshal.load(Marshal.dump(layers[lay_idx].weights))) # adds weights to weight history
-      
+
       layers[lay_idx].nrns.each_index do |j|
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
@@ -159,6 +160,8 @@ class Network
         wsum_k += layers[lay_idx].weights[j][k] * rho_j
         j += 1
       end
+      # added this line that repeats the process for the bias
+      wsum_k += layers[lay_idx].bias[j] * rho_j
       layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
       k += 1
     end
@@ -172,18 +175,19 @@ class Network
     input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output of first layer
 
     # each layer without input layer
-    for i in 1..@layers.size-1 
+    for i in 1..@layers.size-1
       layers[i].fptr = layers[i].method(:sigmoid)
       # each neuron
-      layers[i].weights.each_index do |j| 
+      layers[i].weights.each_index do |j|
         sum = 0
         # each connection to neuron (from neuron k to neuron j)
-        layers[i].weights[j].each_index do |k| 
+        layers[i].weights[j].each_index do |k|
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
-          #  calculates output within neuron
-          layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
-        sum += layers[i].weights[j][k+1] # extra column for the bias 
+        # extra column for the bias
+        sum += layers[i].bias[j]
+        #  calculates output within neuron
+        layers[i].update_neuron(j, layers[i].fptr.call(sum))
       end
     end
     return layers.last.nrns
@@ -278,7 +282,7 @@ class Network
     op_file.puts header.join("\t")
     puts header.join("\t")
   end
-  
+
 end
 
 net     = Network.new
@@ -293,5 +297,5 @@ net.reset
 # 150.times { |n| net.bpgt(input, 0, csv_ip.count-1, target, 0.9, tr_file, n+1) }
 # tr_file.close
 # # net.weight_history(1)
-# 
-# net.test(input, 0, csv_ip.count-1, target)
+#
+net.test(input, 0, csv_ip.count-1, target)
