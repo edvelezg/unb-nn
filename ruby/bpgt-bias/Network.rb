@@ -94,7 +94,7 @@ class Network
       error << "#{tar[j] - out_j}"
       # puts "output is now: #{out_j} and error is: #{tar[j] - out_j}"
       layers[lay_idx].nrns[j].delta = delta
-      # puts layers[lay_idx].nrns[j].delta if @@ver == true
+        puts layers[lay_idx].nrns[j].delta if @@ver == true
     end
 
     ops.each { |e| fout << "#{e}" }
@@ -112,7 +112,7 @@ class Network
       layers[lay_idx].nrns.each_index do |j|
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
-          puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" if @@ver == true
+          puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output} = #{layers[lay_idx].weights[j][k] +rho*layers[lay_idx-1].nrns[k].output} " # if @@ver == true
           layers[lay_idx].weights[j][k] = layers[lay_idx].weights[j][k] + rate*rho*layers[lay_idx-1].nrns[k].output
         end
       end
@@ -147,24 +147,43 @@ class Network
   end
 
   def calc_delta(lay_idx)
-    numCols = layers[lay_idx].weights[0].index(layers[lay_idx].weights[0].last)
-    numRows = layers[lay_idx].weights.index(layers[lay_idx].weights.last)
+    # numCols = layers[lay_idx].weights[0].index(layers[lay_idx].weights[0].last)
+    # numRows = layers[lay_idx].weights.index(layers[lay_idx].weights.last)
+    numCols = layers[lay_idx].weights[0].length
+    numRows = layers[lay_idx].weights.length
+    
     k = 0
-    while k <= numCols
+    while k < numCols
       j = 0
       out_k = layers[lay_idx-1].nrns[k].output
+      # puts "out_k: #{out_k}" if @@ver == true
       drv_k = layers[lay_idx-1].deriv(out_k, 0.0001)
       wsum_k = 0
       rho_j = layers[lay_idx].nrns[j].delta
-      while j <= numRows
+      while j < numRows
         wsum_k += layers[lay_idx].weights[j][k] * rho_j
+        # puts "+ #{layers[lay_idx].weights[j][k]}*#{rho_j}"
         j += 1
       end
-      # added this line that repeats the process for the bias
-      wsum_k += layers[lay_idx].bias[j] * rho_j
       layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
+      # puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
       k += 1
     end
+    
+    # This is added for the bias. (I have concluded, biases don't need deltas)
+  #   j      = 0
+  #   bsum_k = 0
+  #   rho_j  = layers[lay_idx].nrns[j].delta
+  #   puts "numRows: #{numRows}" 
+  #   puts "rho_j: #{rho_j}" 
+  #   puts "layers[lay_idx-1].bias[j]: #{layers[lay_idx-1].bias[j]}"
+  #   while j < numRows
+  #     bsum_k = bsum_k + layers[lay_idx-1].bias[j] * rho_j
+  #     puts "+ #{layers[lay_idx-1].bias[j]}*#{rho_j}"
+  #     j += 1
+  #   end
+  #   layers[lay_idx-1].bias_delta = bsum_k
+  #   puts "bias_delta: #{layers[lay_idx-1].bias_delta}"
   end
 
   def ffwd(input)
@@ -185,8 +204,9 @@ class Network
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
         end
         # extra column for the bias
-        sum += layers[i].bias[j]
+        sum += layers[i-1].bias[j]
         #  calculates output within neuron
+        puts "output: #{layers[i].fptr.call(sum)}"
         layers[i].update_neuron(j, layers[i].fptr.call(sum))
       end
     end
