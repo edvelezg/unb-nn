@@ -183,6 +183,7 @@ class Network
           #  calculates output within neuron
           layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
+        sum += layers[i].weights[j][k+1] # extra column for the bias 
       end
     end
     return layers.last.nrns
