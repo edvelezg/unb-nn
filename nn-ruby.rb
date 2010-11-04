@@ -105,19 +105,26 @@ class Network
   end
 
   def ffwd(input)
-    input.each_index { |x| @layers[0].nrns[x].output = input[x]} # copy input into output
-    for i in 1..@layers.size-1 # each layer without input layer
+    if input.length != layers[0].nrns.length
+      raise "inputs from file and neurons in the input layer do not match in size"
+    end
+
+    input.each_index { |x| layers[0].nrns[x].output = input[x]} # copy input into output of first layer
+
+    # each layer without input layer
+    for i in 1..@layers.size-1
       layers[i].fptr = layers[i].method(:sigmoid)
-      layers[i].weights.each_index do |j| # each neuron
+      # each neuron
+      layers[i].weights.each_index do |j|
         sum = 0
-        layers[i].weights[j].each_index do |k| # each connection to neuron (from neuron k to neuron j)
-          print " + #{layers[i].weights[j][k]}*#{layers[i-1].nrns[k].output}\n" if @@ver == true
+        # each connection to neuron (from neuron k to neuron j)
+        layers[i].weights[j].each_index do |k|
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
-          #  calculates output within neuron
-          layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
-        puts "layer #{i}, neuron #{j}.output #{layers[i].nrns[j].output}" if @@ver == true
-        puts "\n#{sum}" if @@ver == true
+        # extra column for the bias
+        sum += layers[i].bias[j]
+        #  calculates output within neuron
+          layers[i].update_neuron(j, layers[i].fptr.call(sum))
       end
     end
     return layers.last.nrns
