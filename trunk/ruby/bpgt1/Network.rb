@@ -48,11 +48,11 @@ class Network
       layers[i].nrns.each_index do |j|
         wgt_array = []
         layers[i-1].nrns.each_index do |k|
-          print "#{j},#{k} "
+          # print "#{j},#{k} "
           wgt_array << rand
         end
+        wgt_array << rand # This is for the bias
         layers[i].weights << wgt_array
-        puts
       end
       layers[i].weights.each { |e| p e }
       puts
@@ -60,11 +60,11 @@ class Network
   end
 
 
-  def bpgt(inputs, strt_p, end_p, tars, rate, op_file, num)
+  def bpgt(inputs, strt_p, end_p, tars, rate, op_file, n)
     p = strt_p
     while p <= end_p
 
-      fout  = ["#{num}","#{p}"]
+      fout  = ["#{n}","#{p}"]
 
       inputs[p].each { |e| fout << "#{e}" }
       tars[p].each { |e| fout << "#{e}" }
@@ -101,9 +101,13 @@ class Network
   end
 
   def up_weights(rate)
+    
     lay_idx = layers.size-1
+    
     while lay_idx >= 1
+      
       layers[lay_idx].old_weights.push(Marshal.load(Marshal.dump(layers[lay_idx].weights))) # adds weights to weight history
+      
       layers[lay_idx].nrns.each_index do |j|
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
@@ -228,8 +232,7 @@ class Network
     puts "layer #{i}, weight[#{j},#{k}] is #{layers[i].weights[j][k]}"
   end
 
-
-  def test(inputs, strt_p, end_p, targets)
+  def test(input, strt_p, end_p, target)
     # body
     p = strt_p
     while p <= end_p
@@ -238,13 +241,13 @@ class Network
       ops   = []
       error = []
 
-      inputs[p].each { |e| fout << "#{e}" }
-      targets[p].each { |e| fout << "#{e}" }
+      input[p].each { |e| fout << "#{e}" }
+      target[p].each { |e| fout << "#{e}" }
 
-      output = ffwd(inputs[p])
+      output = ffwd(input[p])
       for i in 0..output.length-1
         ops << output[i].output
-        error << (output[i].output - targets[p][i])
+        error << (output[i].output - target[p][i])
       end
 
       ops.each { |e| fout << "#{e}" }
@@ -274,6 +277,7 @@ class Network
     op_file.puts header.join("\t")
     puts header.join("\t")
   end
+  
 end
 
 net     = Network.new
@@ -282,18 +286,11 @@ csv_tar = CSVFile.new("target.csv")
 input   = csv_ip.read_data
 target  = csv_tar.read_data
 
-op_file  = File.open("output.txt", "w")
-tr_file  = File.open("training.txt", "w")
+net.reset
 
-net.put_header(input, target, tr_file)
-# 20.times { |n|  net.bpgt(input, 0, csv_ip.count-1, target, 1, tr_file, (n+1)) }
-1.times { |n|  net.calc_rms(input, 0, csv_ip.count-1, target) }
-
+# tr_file  = File.open("training.txt", "w")
+# 150.times { |n| net.bpgt(input, 0, csv_ip.count-1, target, 0.9, tr_file, n+1) }
+# tr_file.close
+# # net.weight_history(1)
+# 
 # net.test(input, 0, csv_ip.count-1, target)
-
-# net.weight_history(2)
-# net.disp_weights
-#
-# p net.ffwd(input[0])
-#
-# # net.display
