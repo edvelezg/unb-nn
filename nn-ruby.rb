@@ -78,13 +78,28 @@ class Network
   end
 
   def disp_weights
+    puts "\n///////////////FINAL WEIGHTS////////////////"
     layers.each_index do |i|
       p layers[i].weights
     end
-    puts
-    layers.each_index do |i|
-      p layers[i].old_weights
+  end
+
+  def weight_history
+    puts "\n///////////////WEIGHT HISTORY///////////////"
+    i = 1
+    while i < layers.length
+      puts "\n--- :. Weight history for layer #{i} .: ---"
+      layers[i].old_weights.each_index do |j|
+        puts "---- Epoch #{j} ----"
+        layers[i].old_weights[j].each_index { |x| p layers[i].old_weights[j][x] }
+      end
+      i += 1
     end
+  end
+
+  def weight_history(lay_idx)
+    puts "\n--- :. Weight history between layers #{lay_idx} and #{lay_idx-1} .: ---"
+    layers[lay_idx].weight_history
   end
 
   def calc_delta(lay_idx)
@@ -132,7 +147,7 @@ class Network
       raise "inputs from file and neurons in the input layer do not match in size"
     end
 
-    input.each_index { |x| layers[0].nrns[x].output = input[x]} # copy input into output of first layer
+    input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output of first layer
 
     # each layer without input layer
     for i in 1..@layers.size-1
@@ -154,6 +169,24 @@ class Network
     return layers.last.nrns
   end
 
+  def calc_rms(inputs, strt_p, end_p, targets)
+    # body
+    sum = Array.new(layers[layers.length-1].count,0)
+
+    p = strt_p
+    while p <= end_p
+      diff = []
+      op_nrns = ffwd(inputs[p])
+      op_nrns.each_index do |i|
+        diff << (op_nrns[i].output - targets[p][i])
+        sum[i] += (op_nrns[i].output - targets[p][i])**2
+      end
+      p += 1
+    end
+    rms = []
+    sum.each { |e| rms << e/(end_p.to_f) }
+    return rms
+  end
   def display
     p @layers
   end
