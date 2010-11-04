@@ -6,10 +6,11 @@ class Layer
   attr_accessor :fptr
   
   def initialize
-    @weights = [[]]
+    @bias        = []
+    @weights     = [[]]
     @old_weights = []
-    @nrns = []
-    @fptr = method( :sigmoid )
+    @nrns        = []
+    @fptr        = method( :sigmoid )
   end
 
   def insert(neuron)
