@@ -68,10 +68,12 @@
 		</Folder>
 	</CustomFolders>
 	<Files AutoFolders="DirectoryView">
+		<F N="AimHelp.ahk"/>
 		<F N="cmd_ruby.bat"/>
 		<F N="global_hk.rb"/>
 		<F N="My_Autowarkey_script.ahk"/>
 		<F N="ruby-sound.rb"/>
 		<F N="sample.ahk"/>
+		<F N="ScreenShoot.ahk"/>
 	</Files>
 </Project>
