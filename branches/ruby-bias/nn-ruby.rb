@@ -66,10 +66,10 @@ class Network
       layers[lay_idx].nrns.each_index do |j|
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
-          # puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" # if @@ver == true
+          puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output} = #{layers[lay_idx].weights[j][k] +rho*layers[lay_idx-1].nrns[k].output} " # if @@ver == true
           layers[lay_idx].weights[j][k] = layers[lay_idx].weights[j][k] + rho*layers[lay_idx-1].nrns[k].output
         end
-        # puts "#{layers[lay_idx].bias[j]} + #{rho} = #{layers[lay_idx].bias[j] + rho}}"
+        # puts "#{layers[lay_idx-1].bias[j]} + #{rho} = #{layers[lay_idx-1].bias[j] + rho}}"
         layers[lay_idx-1].bias[j] += rho
       end
       calc_delta(lay_idx)
@@ -103,28 +103,28 @@ class Network
       rho_j = layers[lay_idx].nrns[j].delta
       while j < numRows
         wsum_k += layers[lay_idx].weights[j][k] * rho_j
-        puts "+ #{layers[lay_idx].weights[j][k]}*#{rho_j}"
+        # puts "+ #{layers[lay_idx].weights[j][k]}*#{rho_j}"
         j += 1
       end
       layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
-      puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
+      # puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
       k += 1
     end
     
-    # This is added for the bias.
-    j      = 0
-    bsum_k = 0
-    rho_j  = layers[lay_idx].nrns[j].delta
-    puts "numRows: #{numRows}" 
-    puts "rho_j: #{rho_j}" 
-    puts "layers[lay_idx-1].bias[j]: #{layers[lay_idx-1].bias[j]}"
-    while j < numRows
-      bsum_k = bsum_k + layers[lay_idx-1].bias[j] * rho_j
-      puts "+ #{layers[lay_idx-1].bias[j]}*#{rho_j}"
-      j += 1
-    end
-    layers[lay_idx-1].bias_delta = bsum_k
-    puts "bias_delta: #{layers[lay_idx-1].bias_delta}"
+    # This is added for the bias. (I have concluded, biases don't need deltas)
+  #   j      = 0
+  #   bsum_k = 0
+  #   rho_j  = layers[lay_idx].nrns[j].delta
+  #   puts "numRows: #{numRows}" 
+  #   puts "rho_j: #{rho_j}" 
+  #   puts "layers[lay_idx-1].bias[j]: #{layers[lay_idx-1].bias[j]}"
+  #   while j < numRows
+  #     bsum_k = bsum_k + layers[lay_idx-1].bias[j] * rho_j
+  #     puts "+ #{layers[lay_idx-1].bias[j]}*#{rho_j}"
+  #     j += 1
+  #   end
+  #   layers[lay_idx-1].bias_delta = bsum_k
+  #   puts "bias_delta: #{layers[lay_idx-1].bias_delta}"
   end
 
   def ffwd(input)
