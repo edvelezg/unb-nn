@@ -23,6 +23,7 @@ class Network
     l1.insert(n2)
     l1.insert(n3)
     l1.weights = [[0.1, 0.8], [0.4, 0.6]]
+    l1.bias = [1.0, 1.0]
     l1.old_weights.push(Marshal.load(Marshal.dump(l1.weights)))
 
     # third
@@ -30,6 +31,7 @@ class Network
     l2 = Layer.new
     l2.insert(n4)
     l2.weights = [[0.3, 0.9]]
+    l2.bias = [1.0]
     l2.old_weights.push(Marshal.load(Marshal.dump(l2.weights)))
 
 
@@ -66,6 +68,8 @@ class Network
           puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" # if @@ver == true
           layers[lay_idx].weights[j][k] = layers[lay_idx].weights[j][k] + rho*layers[lay_idx-1].nrns[k].output
         end
+        puts "#{layers[lay_idx].bias[j]} + #{rho} = #{layers[lay_idx].bias[j] + rho}}"
+        layers[lay_idx].bias[j] += rho
       end
       calc_delta(lay_idx)
       lay_idx -= 1
@@ -124,7 +128,8 @@ class Network
         # extra column for the bias
         sum += layers[i].bias[j]
         #  calculates output within neuron
-          layers[i].update_neuron(j, layers[i].fptr.call(sum))
+        puts "output: #{layers[i].fptr.call(sum)}"
+        layers[i].update_neuron(j, layers[i].fptr.call(sum))
       end
     end
     return layers.last.nrns
@@ -140,7 +145,7 @@ net = Network.new
 # op  = net.ffwd
 input = [[0.35, 0.9]]
 target = [0.5]
-# puts net.ffwd(input[0])[0].output
+puts net.ffwd(input[0])[0].output
 
 net.bpgt(input, target)
 # net.calc_delta()
