@@ -51,7 +51,7 @@ class Network
           # print "#{j},#{k} "
           wgt_array << rand
         end
-        wgt_array << rand # This is for the bias
+        layers[i].bias << rand # This is the bias
         layers[i].weights << wgt_array
       end
       layers[i].weights.each { |e| p e }
