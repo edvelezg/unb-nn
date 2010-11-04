@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-w = [0, 1, 2, 3, 4]
+for i in 0..4
   puts i
 end
