@@ -1,6 +1,7 @@
 class Layer
   attr_accessor :nrns
   attr_accessor :weights
+  attr_accessor :bias
   attr_accessor :old_weights
   attr_accessor :fptr
   
@@ -8,7 +9,7 @@ class Layer
     @weights = [[]]
     @old_weights = []
     @nrns = []
-    fptr = method( :linear )
+    @fptr = method( :sigmoid )
   end
 
   def insert(neuron)
@@ -28,14 +29,14 @@ class Layer
   end
   
   def sigmoid (k)
-    return 1/(1+(1/Math.exp(k)))
+    return 1/(1+(Math.exp(-k)))
   end
   
   def update_neuron (idx, k)
     @nrns[idx].output = k
   end
   
-  def deriv( func, x, dx )
-    return (func.call(x+dx) - func.call(x))/dx
+  def deriv( x, dx )
+    return (fptr.call(x+dx) - fptr.call(x))/dx
   end    
 end
