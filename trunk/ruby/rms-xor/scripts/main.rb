@@ -5,14 +5,14 @@ require "Network"
 @@ver = false
 
 net     = Network.new
-csv_ip  = CSVFile.new("input.csv")
-csv_tar = CSVFile.new("target.csv")
+csv_ip  = CSVFile.new("../input/input.csv")
+csv_tar = CSVFile.new("../input/target.csv")
 input   = csv_ip.read_data
 target  = csv_tar.read_data
 
 net.reset
 
-tr_file  = File.open("training.txt", "w")
+tr_file  = File.open("../data/training.txt", "w")
 150.times { |n| net.rms_train_core(input, target, csv_ip, tr_file) }
 tr_file.close
 # net.weight_history(1)
