@@ -14,31 +14,6 @@ class Network
       end
       layers << lay
     end
-
-    # first layer
-    # n0 = Neuron.new
-    # n1 = Neuron.new
-    # l0 = Layer.new
-    # l0.insert(n0)
-    # l0.insert(n1)
-    # n0.output = nil
-    # n1.output = nil
-    # 
-    # # second
-    # n2 = Neuron.new
-    # n3 = Neuron.new
-    # n4 = Neuron.new
-    # l1 = Layer.new
-    # l1.insert(n2)
-    # l1.insert(n3)
-    # l1.insert(n4)
-    # 
-    # # third
-    # n5 = Neuron.new
-    # l2 = Layer.new
-    # l2.insert(n5)
-
-    # @layers = [l0, l1, l2]
   end
 
   def reset
@@ -46,14 +21,14 @@ class Network
       layers[i].nrns.each_index do |j|
         wgt_array = []
         layers[i-1].nrns.each_index do |k|
-          print "#{j},#{k} "
+          # print "#{j},#{k} "
           wgt_array << rand
         end
         layers[i].weights << wgt_array
-        puts
+        # puts
       end
-      layers[i].weights.each { |e| p e }
-      puts
+      # layers[i].weights.each { |e| p e }
+      # puts
     end
   end
 
@@ -167,7 +142,6 @@ class Network
 
     # each layer without input layer
     for i in 1..@layers.size-1 
-      layers[i].fptr = layers[i].method(:sigmoid)
       # each neuron
       layers[i].weights.each_index do |j| 
         sum = 0
@@ -185,7 +159,6 @@ class Network
   def calc_rms(inputs, strt_p, end_p, targets)
     # body
     sum = Array.new(layers[layers.length-1].count,0)
-
     p = strt_p
     while p <= end_p
       diff = []
@@ -227,7 +200,7 @@ class Network
   end
 
 
-  def test(inputs, strt_p, end_p, targets)
+  def test(inputs, strt_p, end_p, targets, outfile)
     # body
     p = strt_p
     while p <= end_p
@@ -248,7 +221,7 @@ class Network
       ops.each { |e| fout << "#{e}" }
       error.each { |e| fout << "#{e}" }
 
-      puts fout.join("\t")
+      outfile.puts fout.join("\t")
       p += 1
     end
   end
@@ -273,7 +246,7 @@ class Network
     puts header.join("\t")
   end
 
-  def rms_train_core(input, target, csv_ip, tr_file)
+  def rms_train_core(input, target, strt_p, end_p, tr_file)
     for i in 1..layers.length-1
       # Adding to weight history
       layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
@@ -281,10 +254,11 @@ class Network
       layers[i].weights.each_index do |j|
         layers[i].weights[j].each_index do |k|
           drms    = []
-          old_rms = calc_rms(input, 0, csv_ip.count-1, target)
+          old_rms = calc_rms(input, strt_p, end_p, target)
           wgt_dif = alter_weight(i, j, k)
-          new_rms = calc_rms(input, 0, csv_ip.count-1, target)
-          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+          new_rms = calc_rms(input, strt_p, end_p, target)
+          # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.1 }
           update_weight(wgt_dif, drms[0], i, j, k)
           tr_file.puts "error is now #{new_rms[0]}"
         end
