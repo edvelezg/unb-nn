@@ -8,9 +8,9 @@ require "../../../normalize/Normalize"
 
 net     = Network.new
 
-net.layers[0].fptr = net.layers[0].method(:tanh)
-net.layers[1].fptr = net.layers[1].method(:tanh)
-net.layers[2].fptr = net.layers[2].method(:tanh)
+net.layers[0].fptr = net.layers[0].method(:sigmoid)
+net.layers[1].fptr = net.layers[1].method(:sigmoid)
+net.layers[2].fptr = net.layers[2].method(:sigmoid)
 
 # norm = Normalize.new("../input/input.csv")
 # puts norm.normalize
