@@ -227,7 +227,7 @@ class Network
   end
 
 
-  def test(inputs, strt_p, end_p, targets)
+  def test(inputs, strt_p, end_p, targets, outfile)
     # body
     p = strt_p
     while p <= end_p
@@ -248,7 +248,7 @@ class Network
       ops.each { |e| fout << "#{e}" }
       error.each { |e| fout << "#{e}" }
 
-      puts fout.join("\t")
+      outfile.puts fout.join("\t")
       p += 1
     end
   end
@@ -273,7 +273,7 @@ class Network
     puts header.join("\t")
   end
 
-  def rms_train_core(input, target, csv_ip, tr_file)
+  def rms_train_core(input, target, strt_p, end_p, tr_file)
     for i in 1..layers.length-1
       # Adding to weight history
       layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
@@ -281,9 +281,9 @@ class Network
       layers[i].weights.each_index do |j|
         layers[i].weights[j].each_index do |k|
           drms    = []
-          old_rms = calc_rms(input, 0, csv_ip.count-1, target)
+          old_rms = calc_rms(input, strt_p, end_p, target)
           wgt_dif = alter_weight(i, j, k)
-          new_rms = calc_rms(input, 0, csv_ip.count-1, target)
+          new_rms = calc_rms(input, strt_p, end_p, target)
           new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
           update_weight(wgt_dif, drms[0], i, j, k)
           tr_file.puts "error is now #{new_rms[0]}"
