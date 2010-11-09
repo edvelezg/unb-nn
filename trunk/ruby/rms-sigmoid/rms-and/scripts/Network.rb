@@ -258,7 +258,7 @@ class Network
           wgt_dif = alter_weight(i, j, k)
           new_rms = calc_rms(input, strt_p, end_p, target)
           # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
-          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.1 }
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
           update_weight(wgt_dif, drms[0], i, j, k)
           tr_file.puts "error is now #{new_rms[0]}"
         end
