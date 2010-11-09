@@ -1,20 +1,11 @@
 #!/usr/bin/env ruby
-function = "xor"
-file_ip  = File.new("xorIn.csv", "w")
-file_tar = File.new("xorTar.csv","w")
-if function == "add"
-  11.times do |n|
-    11.times do |m|
-      puts "#{n*0.1},#{m*0.1},#{n*0.1+m*0.1}"
-    end
+function = "add"
+file_ip  = File.new("../input/input.csv", "w")
+file_tar = File.new("../input/target.csv","w")
+
+11.times do |n|
+  11.times do |m|
+    file_ip.puts "#{n*0.05},#{m*0.05}"
+    file_tar.puts "#{n*0.05+m*0.05}"
   end
-elsif function == "xor"
-  5.times { |n| file_ip.puts "0,0" }
-  5.times { |n| file_ip.puts "1,1" }
-  5.times { |n| file_ip.puts "1,0" }
-  5.times { |n| file_ip.puts "0,1" }
-  5.times { |n| file_tar.puts "0" }
-  5.times { |n| file_tar.puts "0" }
-  5.times { |n| file_tar.puts "1" }
-  5.times { |n| file_tar.puts "1" }
 end
