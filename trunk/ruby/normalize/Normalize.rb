@@ -40,6 +40,7 @@ class Normalize
       end
       outFile.puts out_arr.join(',')
     end
+    outFile.close
     return outFileName
   end
   
