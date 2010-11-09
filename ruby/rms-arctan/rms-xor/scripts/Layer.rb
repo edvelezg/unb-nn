@@ -34,6 +34,10 @@ class Layer
     return 1/(1+(Math.exp(-k)))
   end
   
+  def tanh (k)
+    return (Math.exp(k*2.0)-1)/(Math.exp(k*2.0)+1)
+  end
+  
   def update_neuron (idx, k)
     @nrns[idx].output = k
   end
