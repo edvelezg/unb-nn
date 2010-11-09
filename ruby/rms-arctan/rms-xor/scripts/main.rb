@@ -2,11 +2,25 @@ require "Neuron"
 require "Layer"
 require "CSVFile"
 require "Network"
+require "../../../normalize/Normalize"
+
 @@ver = false
 
 net     = Network.new
+
+net.layers[0].fptr = net.layers[0].method(:tanh)
+net.layers[1].fptr = net.layers[1].method(:tanh)
+net.layers[2].fptr = net.layers[2].method(:tanh)
+
+# norm = Normalize.new("../input/input.csv")
+# puts norm.normalize
+# norm = Normalize.new("../input/target.csv")
+# puts norm.normalize
+
 csv_ip  = CSVFile.new("../input/input.csv")
 csv_tar = CSVFile.new("../input/target.csv")
+
+
 input   = csv_ip.read_data
 target  = csv_tar.read_data
 
