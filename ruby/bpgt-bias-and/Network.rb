@@ -306,8 +306,8 @@ class Network
 end
 
 net     = Network.new
-csv_ip  = CSVFile.new("input2.csv")
-csv_tar = CSVFile.new("target2.csv")
+csv_ip  = CSVFile.new("input.csv")
+csv_tar = CSVFile.new("target.csv")
 input   = csv_ip.read_data
 target  = csv_tar.read_data
 

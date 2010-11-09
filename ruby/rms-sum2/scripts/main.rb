@@ -13,7 +13,7 @@ target  = csv_tar.read_data
 net.reset
 
 tr_file  = File.open("../data/training.txt", "w")
-200.times { |n| net.rms_train_core(input, target, 0, 19, tr_file) }
+200.times { |n| net.rms_train_core(input, target, 0, csv_ip.count-1, tr_file) }
 tr_file.close
 # net.weight_history(1)
 outfile  = File.open("../output/output.txt", "w")
