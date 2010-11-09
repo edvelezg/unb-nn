@@ -1,7 +1,6 @@
 require "Neuron"
 require "Layer"
 require "CSVFile"
-@@ver = false
 
 class Network
   attr_accessor :layers
@@ -24,7 +23,7 @@ class Network
     # l0.insert(n1)
     # n0.output = nil
     # n1.output = nil
-    #
+    # 
     # # second
     # n2 = Neuron.new
     # n3 = Neuron.new
@@ -33,14 +32,13 @@ class Network
     # l1.insert(n2)
     # l1.insert(n3)
     # l1.insert(n4)
-    #
+    # 
     # # third
     # n5 = Neuron.new
     # l2 = Layer.new
     # l2.insert(n5)
 
     # @layers = [l0, l1, l2]
-    # @weights = [[[0, 1]], [[0.6, 0.7], [0.3, 0.4]], [[0.6, -0.8]]]
   end
 
   def reset
@@ -48,24 +46,23 @@ class Network
       layers[i].nrns.each_index do |j|
         wgt_array = []
         layers[i-1].nrns.each_index do |k|
-          # print "#{j},#{k} "
+          print "#{j},#{k} "
           wgt_array << rand
         end
-        layers[i-1].bias << rand # This is the bias
         layers[i].weights << wgt_array
+        puts
       end
       layers[i].weights.each { |e| p e }
-      p layers[i-1].bias
       puts
     end
   end
 
 
-  def bpgt(inputs, strt_p, end_p, tars, rate, op_file, n)
+  def bpgt(inputs, strt_p, end_p, tars, rate, op_file, num)
     p = strt_p
     while p <= end_p
 
-      fout  = ["#{n}","#{p}"]
+      fout  = ["#{num}","#{p}"]
 
       inputs[p].each { |e| fout << "#{e}" }
       tars[p].each { |e| fout << "#{e}" }
@@ -94,7 +91,7 @@ class Network
       error << "#{tar[j] - out_j}"
       # puts "output is now: #{out_j} and error is: #{tar[j] - out_j}"
       layers[lay_idx].nrns[j].delta = delta
-      puts layers[lay_idx].nrns[j].delta if @@ver == true
+      # puts layers[lay_idx].nrns[j].delta if @@ver == true
     end
 
     ops.each { |e| fout << "#{e}" }
@@ -102,17 +99,13 @@ class Network
   end
 
   def up_weights(rate)
-
     lay_idx = layers.size-1
-
     while lay_idx >= 1
-
       layers[lay_idx].old_weights.push(Marshal.load(Marshal.dump(layers[lay_idx].weights))) # adds weights to weight history
-
       layers[lay_idx].nrns.each_index do |j|
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
-          # puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output} = #{layers[lay_idx].weights[j][k] +rho*layers[lay_idx-1].nrns[k].output} " # if @@ver == true
+          puts "#{layers[lay_idx].weights[j][k]} + #{rho} * #{layers[lay_idx-1].nrns[k].output}" if @@ver == true
           layers[lay_idx].weights[j][k] = layers[lay_idx].weights[j][k] + rate*rho*layers[lay_idx-1].nrns[k].output
         end
       end
@@ -147,43 +140,22 @@ class Network
   end
 
   def calc_delta(lay_idx)
-    # numCols = layers[lay_idx].weights[0].index(layers[lay_idx].weights[0].last)
-    # numRows = layers[lay_idx].weights.index(layers[lay_idx].weights.last)
-    numCols = layers[lay_idx].weights[0].length
-    numRows = layers[lay_idx].weights.length
-
+    numCols = layers[lay_idx].weights[0].index(layers[lay_idx].weights[0].last)
+    numRows = layers[lay_idx].weights.index(layers[lay_idx].weights.last)
     k = 0
-    while k < numCols
+    while k <= numCols
       j = 0
       out_k = layers[lay_idx-1].nrns[k].output
-      # puts "out_k: #{out_k}" if @@ver == true
       drv_k = layers[lay_idx-1].deriv(out_k, 0.0001)
       wsum_k = 0
       rho_j = layers[lay_idx].nrns[j].delta
-      while j < numRows
+      while j <= numRows
         wsum_k += layers[lay_idx].weights[j][k] * rho_j
-        # puts "+ #{layers[lay_idx].weights[j][k]}*#{rho_j}"
         j += 1
       end
       layers[lay_idx-1].nrns[k].delta = drv_k*wsum_k
-      # puts "delta[#{k}]: #{layers[lay_idx-1].nrns[k].delta}"
       k += 1
     end
-
-    # This is added for the bias. (I have concluded, biases don't need deltas)
-    #   j      = 0
-    #   bsum_k = 0
-    #   rho_j  = layers[lay_idx].nrns[j].delta
-    #   puts "numRows: #{numRows}"
-    #   puts "rho_j: #{rho_j}"
-    #   puts "layers[lay_idx-1].bias[j]: #{layers[lay_idx-1].bias[j]}"
-    #   while j < numRows
-    #     bsum_k = bsum_k + layers[lay_idx-1].bias[j] * rho_j
-    #     puts "+ #{layers[lay_idx-1].bias[j]}*#{rho_j}"
-    #     j += 1
-    #   end
-    #   layers[lay_idx-1].bias_delta = bsum_k
-    #   puts "bias_delta: #{layers[lay_idx-1].bias_delta}"
   end
 
   def ffwd(input)
@@ -194,20 +166,17 @@ class Network
     input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output of first layer
 
     # each layer without input layer
-    for i in 1..@layers.size-1
+    for i in 1..@layers.size-1 
       layers[i].fptr = layers[i].method(:sigmoid)
       # each neuron
-      layers[i].weights.each_index do |j|
+      layers[i].weights.each_index do |j| 
         sum = 0
         # each connection to neuron (from neuron k to neuron j)
-        layers[i].weights[j].each_index do |k|
+        layers[i].weights[j].each_index do |k| 
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
+          #  calculates output within neuron
+          layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
-        # extra column for the bias
-        sum += layers[i-1].bias[j]
-        #  calculates output within neuron
-        # puts "output: #{layers[i].fptr.call(sum)}"
-        layers[i].update_neuron(j, layers[i].fptr.call(sum))
       end
     end
     return layers.last.nrns
@@ -257,7 +226,8 @@ class Network
     puts "layer #{i}, weight[#{j},#{k}] is #{layers[i].weights[j][k]}"
   end
 
-  def test(input, strt_p, end_p, target)
+
+  def test(inputs, strt_p, end_p, targets)
     # body
     p = strt_p
     while p <= end_p
@@ -266,13 +236,13 @@ class Network
       ops   = []
       error = []
 
-      input[p].each { |e| fout << "#{e}" }
-      target[p].each { |e| fout << "#{e}" }
+      inputs[p].each { |e| fout << "#{e}" }
+      targets[p].each { |e| fout << "#{e}" }
 
-      output = ffwd(input[p])
+      output = ffwd(inputs[p])
       for i in 0..output.length-1
         ops << output[i].output
-        error << (output[i].output - target[p][i])
+        error << (output[i].output - targets[p][i])
       end
 
       ops.each { |e| fout << "#{e}" }
@@ -303,19 +273,24 @@ class Network
     puts header.join("\t")
   end
 
+  def rms_train_core(input, target, csv_ip, tr_file)
+    for i in 1..layers.length-1
+      # Adding to weight history
+      layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
+
+      layers[i].weights.each_index do |j|
+        layers[i].weights[j].each_index do |k|
+          drms    = []
+          old_rms = calc_rms(input, 0, csv_ip.count-1, target)
+          wgt_dif = alter_weight(i, j, k)
+          new_rms = calc_rms(input, 0, csv_ip.count-1, target)
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+          update_weight(wgt_dif, drms[0], i, j, k)
+          tr_file.puts "error is now #{new_rms[0]}"
+        end
+      end
+    end
+  end
 end
-
-net     = Network.new
-csv_ip  = CSVFile.new("input2.csv")
-csv_tar = CSVFile.new("target2.csv")
-input   = csv_ip.read_data
-target  = csv_tar.read_data
-
-net.reset
-
-tr_file  = File.open("training.txt", "w")
-100.times { |n| net.bpgt(input, 0, csv_ip.count-1, target, 1, tr_file, n+1) }
-# tr_file.close
-# # net.weight_history(1)
-#
-# net.test(input, 0, csv_ip.count-1, target)
+# net = Network.new
+# net.layers.each { |e| p e } if net.layers.nil? == false
