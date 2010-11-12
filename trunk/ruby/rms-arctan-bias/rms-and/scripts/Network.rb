@@ -24,10 +24,12 @@ class Network
           # print "#{j},#{k} "
           wgt_array << rand
         end
+        layers[i-1].bias << rand # This is the bias
         layers[i].weights << wgt_array
         # puts
       end
-      # layers[i].weights.each { |e| p e }
+      layers[i].weights.each { |e| p e }
+      p layers[i-1].bias
       # puts
     end
   end
@@ -141,16 +143,19 @@ class Network
     input.each_index { |x| layers[0].nrns[x].output = input[x] } # copy input into output of first layer
 
     # each layer without input layer
-    for i in 1..@layers.size-1 
+    for i in 1..@layers.size-1
       # each neuron
-      layers[i].weights.each_index do |j| 
+      layers[i].weights.each_index do |j|
         sum = 0
         # each connection to neuron (from neuron k to neuron j)
-        layers[i].weights[j].each_index do |k| 
+        layers[i].weights[j].each_index do |k|
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
-          #  calculates output within neuron
-          layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
+        # extra column for the bias
+        sum += layers[i-1].bias[j]
+        #  calculates output within neuron
+        # puts "output: #{layers[i].fptr.call(sum)}"
+        layers[i].update_neuron(j, layers[i].fptr.call(sum))
       end
     end
     return layers.last.nrns
