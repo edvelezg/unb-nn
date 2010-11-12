@@ -1,6 +1,7 @@
 class Layer
   attr_accessor :nrns
   attr_accessor :weights
+  attr_accessor :bias
   attr_accessor :old_weights
   attr_accessor :fptr
   attr_reader :count
