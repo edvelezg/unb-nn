@@ -53,10 +53,11 @@ class Network
         end
         layers[i-1].bias << rand # This is the bias
         layers[i].weights << wgt_array
+        # puts
       end
       layers[i].weights.each { |e| p e }
       p layers[i-1].bias
-      puts
+      # puts
     end
   end
 
@@ -195,7 +196,6 @@ class Network
 
     # each layer without input layer
     for i in 1..@layers.size-1
-      layers[i].fptr = layers[i].method(:sigmoid)
       # each neuron
       layers[i].weights.each_index do |j|
         sum = 0
