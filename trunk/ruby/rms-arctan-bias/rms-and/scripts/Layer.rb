@@ -7,11 +7,12 @@ class Layer
   attr_reader :count
   
   def initialize
-    @weights = []
+    @weights     = []
     @old_weights = []
-    @nrns = []
-    @fptr = method( :tanh )
-    @count = 0
+    @bias        = []
+    @nrns        = []
+    @fptr        = method( :tanh )
+    @count       = 0
   end
 
   def insert(neuron)
