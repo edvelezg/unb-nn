@@ -4,8 +4,13 @@ require "CSVFile"
 
 class Network
   attr_accessor :layers
+  attr_accessor :change
+  attr_accessor :multiplier
+  
   def initialize
     @layers = []
+    @change = 0.01
+    @multiplier = 1
     nrn_cnt = [2, 3, 1]
     for i in 0..nrn_cnt.size-1
       lay = Layer.new
@@ -175,19 +180,20 @@ class Network
       p += 1
     end
     rms = []
+    raise "WARNING: division by 0" if end_p == 0
     sum.each { |e| rms << e/(end_p.to_f) }
     return rms
   end
 
   def alter_weight(i,j,k)
     old_weight = layers[i].weights[j][k]
-    layers[i].weights[j][k] +=  0.01
+    layers[i].weights[j][k] +=  change
     return layers[i].weights[j][k] - old_weight
   end
 
   def alter_bias(i,j)
     old_weight = layers[i].bias[j]
-    layers[i].bias[j] +=  0.01
+    layers[i].bias[j] +=  change
     return layers[i].bias[j] - old_weight
   end
 
@@ -197,10 +203,10 @@ class Network
       raise "i must never be less than 1, layer 0 is input layer"
     end
 
-    layers[i].weights[j][k] -= 0.01
+    layers[i].weights[j][k] -= change
 
     if drms != 0.0
-      layers[i].weights[j][k] -= drms*10.0
+      layers[i].weights[j][k] -= drms*multiplier
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
@@ -215,10 +221,10 @@ class Network
       raise "Bias must not be an output neuron"
     end
 
-    layers[i].bias[j] -= 0.01
+    layers[i].bias[j] -= change
 
     if drms != 0.0
-      layers[i].bias[j] -= drms*10.0
+      layers[i].bias[j] -= drms*multiplier
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
@@ -285,10 +291,14 @@ class Network
           old_rms = calc_rms(input, strt_p, end_p, target)
           wgt_dif = alter_weight(i, j, k)
           new_rms = calc_rms(input, strt_p, end_p, target)
-          # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
-          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+          
+          if (new_rms[0] - old_rms[0]) == 0
+            msg = "WARNING, with change in weight old_rms = new_rms: #{old_rms} == #{new_rms}" 
+            return [1, msg] 
+          end
+          
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/change; tr_file.puts "weight [#{j},#{k}]: #{new_rms[d]} - #{old_rms[d]} / #{change} =  #{(new_rms[d] - old_rms[d])/change}" }
           update_weight(wgt_dif, drms[0], i, j, k)
-          tr_file.puts "error is now #{new_rms[0]}"
         end
       end
       layers[i-1].bias.each_index do |l|
@@ -296,11 +306,15 @@ class Network
         old_rms = calc_rms(input, strt_p, end_p, target)
         wgt_dif = alter_bias(i-1, l)
         new_rms = calc_rms(input, strt_p, end_p, target)
-        new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+        new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/change; tr_file.puts "bias [#{l}]: #{new_rms[d]} - #{old_rms[d]} / #{change} =  #{(new_rms[d] - old_rms[d])/change}" }
+        if (new_rms[0] - old_rms[0]) == 0
+          msg = "WARNING: with change in bias, old_rms = new_rms: #{old_rms} == #{new_rms}" 
+          return [1, msg] 
+        end
         update_bias(wgt_dif, drms[0], i-1, l)
-        tr_file.puts "bias error is now #{new_rms[0]}"
       end
     end
+    return [0]
   end
 end
     
