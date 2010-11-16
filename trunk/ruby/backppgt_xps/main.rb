@@ -1,4 +1,4 @@
-require "../normalize/Normalize"
+require "../normalize/Normalize.rb"
 
 norm = Normalize.new("input.csv")
 puts norm.normalize
