@@ -2,15 +2,15 @@ require "Neuron"
 require "Layer"
 require "CSVFile"
 require "Network"
-require "../../../normalize/Normalize"
+require "../../normalize/Normalize"
 
 @@ver = false
 
 net     = Network.new
 
-net.layers[0].fptr = net.layers[0].method(:sigmoid)
-net.layers[1].fptr = net.layers[1].method(:sigmoid)
-net.layers[2].fptr = net.layers[2].method(:sigmoid)
+net.layers[0].fptr = net.layers[0].method(:tanh)
+net.layers[1].fptr = net.layers[1].method(:tanh)
+net.layers[2].fptr = net.layers[2].method(:linear)
 
 norm = Normalize.new("../input/input.csv")
 puts norm.normalize

@@ -189,7 +189,7 @@ class Network
     layers[i].weights[j][k] -= 0.01
 
     if drms != 0.0
-      layers[i].weights[j][k] -= drms*10.0
+      layers[i].weights[j][k] -= drms*1.0
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
