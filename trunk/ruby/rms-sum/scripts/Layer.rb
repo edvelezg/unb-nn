@@ -9,7 +9,7 @@ class Layer
     @weights = []
     @old_weights = []
     @nrns = []
-    @fptr = method( :sigmoid )
+    @fptr = method( :tanh )
     @count = 0
   end
 
@@ -30,8 +30,12 @@ class Layer
     return k
   end
   
-  def sigmoid (k)
+  def sigmoid(k)
     return 1/(1+(Math.exp(-k)))
+  end
+  
+  def tanh(k)
+    return (Math.exp(k*2.0)-1)/(Math.exp(k*2.0)+1)
   end
   
   def update_neuron (idx, k)
@@ -71,6 +75,9 @@ class Layer
 end
 
 # l1 = Layer.new
+# l1.fptr = l1.method(:linear)
+# p l1.fptr
+# puts l1.fptr.call(-0.8)
 # n2 = Neuron.new
 # n3 = Neuron.new
 # n4 = Neuron.new
