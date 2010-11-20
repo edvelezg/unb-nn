@@ -108,8 +108,8 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
       def initialize(network_structure)
         @structure = network_structure
         @initial_weight_function = lambda { |n, i, j| ((rand 2000)/1000.0) - 1}
-        @propagation_function = lambda { |x| 1/(1+Math.exp(-1*(x))) } #lambda { |x| Math.tanh(x) }
-        @derivative_propagation_function = lambda { |y| y*(1-y) } #lambda { |y| 1.0 - y**2 }
+        @propagation_function = lambda { |x| Math.tanh(x) } #lambda { |x| Math.tanh(x) } { |x| 1/(1+Math.exp(-1*(x))) }
+        @derivative_propagation_function = lambda { |y| 1.0 - y**2 } #lambda { |y| 1.0 - y**2 } { |y| y*(1-y) }
         @disable_bias = false
         @learning_rate = 0.25
         @momentum = 0.1
@@ -142,36 +142,38 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
           eval(inputs[i])
           error += rms_sqd_error(outputs[i])
         end
-        return error/(inputs.size-1)
+        return error/(inputs.size-1)        
       end
 
       def rms_train(inputs, outputs)
-        change = 0.1
+        change     = 0.05
         multiplier = 1
+        error      = 0.0
         @weights.each_index do |n|
           @weights[n].each_index do |i|
             @weights[n][i].each_index do |j|
+              new_rms =  rms_calc(inputs, outputs)
+              @weights[n][i][j] +=  change
+              old_rms =  rms_calc(inputs, outputs)
+              error = (old_rms - new_rms)
+              drms = (old_rms - new_rms)/change
+
+              # Update Weight
+              @weights[n][i][j] -= change
+              if drms != 0.0
+                # puts "was: weights[#{n}][#{i}][#{j}] #{@weights[n][i][j]}"
+                @weights[n][i][j] -= drms*multiplier
+                # puts "now: weights[#{n}][#{i}][#{j}] #{@weights[n][i][j]}"
+              else
+                raise "WARNING: Flat slope warning, something may be wrong with the network"
+              end
             end
           end
         end
+        return error
+        # puts "count #{count}"
       end
-      
-      def rms_train_core(n, i, j, change, multiplier)
-        # Calculate slope
-        new_rms =  rms_calc(inputs, outputs)
-        @weights[n][i][j] +=  change
-        old_rms =  rms_calc(inputs, outputs)
-        drms = old_rms - new_rms
-
-        # Update Weight
-        @weights[i][j][k] -= change
-        if drms != 0.0
-          @weights[i][j][k] -= drms*multiplier
-        else
-          raise "WARNING: Flat slope warning, something may be wrong with the network"
-        end
-      end
-      
+            
       # Evaluates the input.
       # E.g.
       #     net = Backpropagation.new([4, 3, 2])
