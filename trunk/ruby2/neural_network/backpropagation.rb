@@ -151,7 +151,7 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
 
       def rms_train(inputs, outputs)
         change     = 0.01
-        multiplier = 0.1
+        multiplier = 1
         error      = 0.0
         @weights.each_index do |n|
           @weights[n].each_index do |i|
