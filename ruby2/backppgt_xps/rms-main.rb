@@ -31,33 +31,34 @@ target = csv_ip.out_data
 # end
 
 # puts "#{norm.denormalize(0,inputs[0][0])} #{norm.denormalize(1,inputs[0][1])} #{norm.denormalize(2,inputs[0][2])}"
-times = Benchmark.measure do
-
+# times = Benchmark.measure do
+# 
   srand 1
-  
+#   
   net = NeuralNetwork::Backpropagation.new([2, 3, 1])
-  out_f = File.open("output.txt", "w") 
-  
-  net.propagation_function            = lambda { |x| Math.tanh(x) } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
-  net.derivative_propagation_function = lambda { |y| y*(1-y) } # lambda { |y| y*(1-y) }
   net.disable_bias = false
   net.init_network
-  10.times { puts net.rms_train(inputs, target) }
+  net.propagation_functions[0] = lambda { |x| Math.tanh(x) } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
+  net.propagation_functions[1] = lambda { |x| x } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
+  # puts net.eval([0,1])
+  out_f = File.open("output.txt", "w") 
   
+  100.times { puts net.rms_train(inputs, target) }
+
   puts "Test data"
   for j in 0..inputs.size-1
     out_f.puts "#{j}\t#{net.eval(inputs[j])[0]}\t#{target[j]}"
   end
-  
-  # puts "Training the network, please wait."
-  # 100.times do |i|
-  #   for j in 0...example.size-1
-  # net.train(example[j], result[j])
-  #   end
-  #   error = net.train(example[example.size-1], result[example.size-1])
-  #   tr_f.puts "#{i}\t#{error}" if i%5 == 0
-  # end
-  
-
-  #
-end
+#   
+#   # puts "Training the network, please wait."
+#   # 100.times do |i|
+#   #   for j in 0...example.size-1
+#   # net.train(example[j], result[j])
+#   #   end
+#   #   error = net.train(example[example.size-1], result[example.size-1])
+#   #   tr_f.puts "#{i}\t#{error}" if i%5 == 0
+#   # end
+#   
+# 
+#   #
+# end

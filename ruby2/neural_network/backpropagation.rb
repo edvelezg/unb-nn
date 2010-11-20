@@ -82,9 +82,9 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
         :initial_weight_function => "f(n, i, j) must return the initial "+
             "weight for the conection between the node i in layer n, and "+
             "node j in layer n+1. By default a random number in [-1, 1) range.",
-        :propagation_function => "By default: " +
+        :propagation_functions => "By default: " +
             "lambda { |x| 1/(1+Math.exp(-1*(x))) }",
-        :derivative_propagation_function => "Derivative of the propagation "+
+        :derivative_propagation_functions => "Derivative of the propagation "+
             "function, based on propagation function output. By default: " +
             "lambda { |y| y*(1-y) }, where y=propagation_function(x)",
         :learning_rate => "By default 0.25",
@@ -107,9 +107,13 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
       #                                       # 1 output
       def initialize(network_structure)
         @structure = network_structure
+        @propagation_functions = Array.new(@structure.length-1)
+        @derivative_propagation_functions = Array.new(@structure.length-1)
+        for i in 0...@structure.length-1
+          @propagation_functions[i] = lambda { |x| 1/(1+Math.exp(-1*(x))) } #lambda { |x| Math.tanh(x) } { |x| 1/(1+Math.exp(-1*(x))) }
+          @derivative_propagation_functions[i] = lambda { |y| y*(1-y) }          
+        end 
         @initial_weight_function = lambda { |n, i, j| ((rand 2000)/1000.0) - 1}
-        @propagation_function = lambda { |x| Math.tanh(x) } #lambda { |x| Math.tanh(x) } { |x| 1/(1+Math.exp(-1*(x))) }
-        @derivative_propagation_function = lambda { |y| 1.0 - y**2 } #lambda { |y| 1.0 - y**2 } { |y| y*(1-y) }
         @disable_bias = false
         @learning_rate = 0.25
         @momentum = 0.1
@@ -146,8 +150,8 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
       end
 
       def rms_train(inputs, outputs)
-        change     = 0.05
-        multiplier = 1
+        change     = 0.01
+        multiplier = 0.1
         error      = 0.0
         @weights.each_index do |n|
           @weights[n].each_index do |i|
@@ -240,7 +244,8 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
             @activation_nodes[n].each_index do |i|
               sum += (@activation_nodes[n][i] * @weights[n][i][j])
             end
-            @activation_nodes[n+1][j] = @propagation_function.call(sum)
+            # p @propagation_functions[n]
+            @activation_nodes[n+1][j] = @propagation_functions[n].call(sum)
           end
         end
       end
@@ -249,9 +254,13 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
       # Initialize the weight arrays using function specified with the
       # initial_weight_function parameter
       def init_weights
+        puts "@structure.length-1 #{@structure.length-1}"
         @weights = Array.new(@structure.length-1) do |i|
+          puts "i #{i}"
           nodes_origin = @activation_nodes[i].length
+          puts "nodes_origin #{nodes_origin}"
           nodes_target = @structure[i+1]
+          puts "nodes_target #{nodes_target}"
           Array.new(nodes_origin) do |j|
             Array.new(nodes_target) do |k|
               @initial_weight_function.call(i, j, k)
@@ -277,7 +286,7 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
         output_deltas = []
         output_values.each_index do |output_index|
           error = expected_values[output_index] - output_values[output_index]
-          output_deltas << @derivative_propagation_function.call(
+          output_deltas << @derivative_propagation_functions.last.call(
             output_values[output_index]) * error
         end
         @deltas = [output_deltas]
@@ -293,6 +302,7 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
             @structure[layer_index+1].times do |k|
               error += prev_deltas[k] * @weights[layer_index][j][k]
             end
+            raise "TODO: Fix this code"
             layer_deltas[j] = (@derivative_propagation_function.call(
               @activation_nodes[layer_index][j]) * error)
           end
