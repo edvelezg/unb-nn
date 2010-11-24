@@ -8,8 +8,8 @@ require "../../normalize/Normalize"
 
 net     = Network.new
 
-net.layers[0].fptr = net.layers[0].method(:tanh)
-net.layers[1].fptr = net.layers[1].method(:tanh)
+net.layers[0].fptr = net.layers[0].method(:linear)
+net.layers[1].fptr = net.layers[1].method(:linear)
 net.layers[2].fptr = net.layers[2].method(:linear)
 
 norm = Normalize.new("../input/input.csv")
