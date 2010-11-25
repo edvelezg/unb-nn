@@ -9,7 +9,7 @@ require "../../normalize/Normalize"
 net     = Network.new
 
 net.layers[0].fptr = net.layers[0].method(:tanh)
-net.layers[1].fptr = net.layers[1].method(:linear)
+net.layers[1].fptr = net.layers[1].method(:tanh)
 net.layers[2].fptr = net.layers[2].method(:linear)
 
 norm = Normalize.new("../input/input.csv")
@@ -27,7 +27,7 @@ target  = csv_tar.read_data
 net.reset
 
 tr_file  = File.open("../data/training.txt", "w")
-200.times { |n| net.rms_train_core(input, target, 0, csv_ip.count-1, tr_file) }
+1000.times { |n| tr_file.puts "#{n}\t#{net.rms_train_core(input, target, 0, csv_ip.count-1, tr_file)}" }
 tr_file.close
 # net.weight_history(1)
 outfile  = File.open("../output/output.txt", "w")
