@@ -33,17 +33,23 @@ target = csv_ip.out_data
 # puts "#{norm.denormalize(0,inputs[0][0])} #{norm.denormalize(1,inputs[0][1])} #{norm.denormalize(2,inputs[0][2])}"
 # times = Benchmark.measure do
 # 
-  srand 1
+  # srand 1
 #   
   net = NeuralNetwork::Backpropagation.new([2, 3, 1])
   net.disable_bias = false
   net.init_network
-  net.propagation_functions[0] = lambda { |x| Math.tanh(x) } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
+
+  net.propagation_functions[0] = lambda { |x| x } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
   net.propagation_functions[1] = lambda { |x| x } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
+
+  net.derivative_propagation_functions[0] = lambda { |y| 1.0 } # lambda { |y| y*(1-y) } { |y| 1.0 - y**2 } { |y| y }
+  net.derivative_propagation_functions[1] = lambda { |y| 1.0 } # lambda { |y| y*(1-y) } { |y| 1.0 - y**2 }
+
   # puts net.eval([0,1])
   out_f = File.open("output.txt", "w") 
+  tr_f = File.open("training.txt", "w") 
   
-  100.times { puts net.rms_train(inputs, target) }
+  50.times { |n| tr_f.puts "#{n}\t#{net.rms_train(inputs, target)}" }
 
   puts "Test data"
   for j in 0..inputs.size-1
