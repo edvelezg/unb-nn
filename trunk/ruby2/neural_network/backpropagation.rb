@@ -151,17 +151,18 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
 
       def rms_train(inputs, outputs)
         change     = 0.01
-        multiplier = 1
+        multiplier = 1.0
         error      = 0.0
         @weights.each_index do |n|
           @weights[n].each_index do |i|
             @weights[n][i].each_index do |j|
-              new_rms =  rms_calc(inputs, outputs)
-              @weights[n][i][j] +=  change
               old_rms =  rms_calc(inputs, outputs)
-              error = (old_rms - new_rms)
-              drms = (old_rms - new_rms)/change
-
+              @weights[n][i][j] +=  change
+              new_rms =  rms_calc(inputs, outputs)
+              drms = (new_rms - old_rms)/change
+              puts "drms: #{drms}"
+              error = new_rms
+              
               # Update Weight
               @weights[n][i][j] -= change
               if drms != 0.0
@@ -299,15 +300,16 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
           layer_deltas = []
           @activation_nodes[layer_index].each_index do |j|
             error = 0.0
+            # puts "@structure[layer_index+1].times: #{@structure[layer_index+1].times}"
             @structure[layer_index+1].times do |k|
               error += prev_deltas[k] * @weights[layer_index][j][k]
             end
-            raise "TODO: Fix this code"
-            layer_deltas[j] = (@derivative_propagation_function.call(
+            layer_deltas[j] = (@derivative_propagation_functions[layer_index-1].call(
               @activation_nodes[layer_index][j]) * error)
           end
           prev_deltas = layer_deltas
           @deltas.unshift(layer_deltas)
+          # raise "TODO: Fix this code"          
         end
       end
 
