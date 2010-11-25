@@ -247,6 +247,7 @@ class Network
   end
 
   def rms_train_core(input, target, strt_p, end_p, tr_file)
+    new_rms = [] # just make it so that it can be returned.
     for i in 1..layers.length-1
       # Adding to weight history
       layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
@@ -260,10 +261,11 @@ class Network
           # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
           new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
           update_weight(wgt_dif, drms[0], i, j, k)
-          tr_file.puts "error is now #{new_rms[0]}"
+    
         end
       end
     end
+    return new_rms[0]
   end
 end
 # net = Network.new
