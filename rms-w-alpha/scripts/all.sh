@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-arr=(4 5 6)
+arr=(5 10 15 20 100 500 5000 10000 20000 40000)
 INPUTS=""
 for (( i = 0; i < ${#arr[*]}; i++ )); do
 	./main.rb ${arr[i]}
@@ -11,3 +11,5 @@ for (( i = 0; i < ${#arr[*]}; i++ )); do
 	mv training.eps ../graphs/training_${arr[i]}.eps
 done
 
+dir=`pwd`
+echo -e "Hi,\n\n Your script in $dir is done ;)" | mail -s "Job's Done" "edvelez.g@gmail.com"
