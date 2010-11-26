@@ -24,11 +24,13 @@ class Network
           # print "#{j},#{k} "
           wgt_array << rand
         end
+        layers[i-1].bias << rand # This is the bias
         layers[i].weights << wgt_array
         # puts
       end
-      # layers[i].weights.each { |e| p e }
-      # puts
+      layers[i].weights.each { |e| p e }
+      p layers[i-1].bias
+      puts
     end
   end
 
@@ -148,9 +150,12 @@ class Network
         # each connection to neuron (from neuron k to neuron j)
         layers[i].weights[j].each_index do |k| 
           sum += layers[i].weights[j][k] * layers[i-1].nrns[k].output
-          #  calculates output within neuron
-          layers[i].update_neuron(j, layers[i].fptr.call(sum))
         end
+        # extra column for the bias
+        sum += layers[i-1].bias[j]
+        #  calculates output within neuron
+        # puts "output: #{layers[i].fptr.call(sum)}"
+        layers[i].update_neuron(j, layers[i].fptr.call(sum))
       end
     end
     return layers.last.nrns
@@ -180,6 +185,12 @@ class Network
     return layers[i].weights[j][k] - old_weight
   end
 
+  def alter_bias(i,j)
+    old_weight = layers[i].bias[j]
+    layers[i].bias[j] +=  0.01
+    return layers[i].bias[j] - old_weight
+  end
+
   def update_weight(wgt_dif, drms, i, j, k)
 
     if i < 1
@@ -190,6 +201,24 @@ class Network
 
     if drms != 0.0
       layers[i].weights[j][k] -= drms*1.0
+    else
+      raise "WARNING: Flat slope warning, something may be wrong with the network"
+    end
+  end
+
+  def print_wgt(i,j,k)
+    puts "layer #{i}, weight[#{j},#{k}] is #{layers[i].weights[j][k]}"
+  end
+
+  def update_bias(wgt_dif, drms, i, j)
+    if i == layers.length-1
+      raise "Bias must not be an output neuron"
+    end
+
+    layers[i].bias[j] -= 0.01
+
+    if drms != 0.0
+      layers[i].bias[j] -= drms*1.0
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
