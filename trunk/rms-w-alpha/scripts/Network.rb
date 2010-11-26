@@ -4,8 +4,14 @@ require "CSVFile"
 
 class Network
   attr_accessor :layers
+  attr_accessor :alpha
+  attr_accessor :epsilon
+  
   def initialize
     @layers = []
+    @alpha = 0.7 # usually between 0.7 and 0.95
+    @epsilon = 0.03 # usually between 0.03 and 0.1
+    
     nrn_cnt = [2, 3, 1]
     for i in 0..nrn_cnt.size-1
       lay = Layer.new
@@ -205,11 +211,12 @@ class Network
     if i < 1
       raise "i must never be less than 1, layer 0 is input layer"
     end
-
+    
     layers[i].weights[j][k] -= 0.01
 
     if drms != 0.0
-      layers[i].weights[j][k] -= drms*1.0
+      layers[i].delta_weights[j][k] = (alpha * layers[i].delta_weights[j][k]) - (epsilon * drms)
+      layers[i].weights[j][k] = layers[i].weights[j][k] + layers[i].delta_weights[j][k]
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
@@ -225,9 +232,10 @@ class Network
     end
 
     layers[i].bias[j] -= 0.01
-
+    
     if drms != 0.0
-      layers[i].bias[j] -= drms*1.0
+      layers[i].delta_bias[j] = (alpha * layers[i].delta_bias[j]) - (epsilon * drms)
+      layers[i].bias[j] = layers[i].bias[j] + layers[i].delta_bias[j]
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
@@ -299,7 +307,6 @@ class Network
           # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
           new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
           update_weight(wgt_dif, drms[0], i, j, k)
-    
         end
       end
       layers[i-1].bias.each_index do |l|
@@ -309,7 +316,7 @@ class Network
         new_rms = calc_rms(input, strt_p, end_p, target)
         new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
         update_bias(wgt_dif, drms[0], i-1, l)
-        tr_file.puts "bias error is now #{new_rms[0]}"
+        # tr_file.puts "bias error is now #{new_rms[0]}"
       end
     end
     return new_rms[0]

@@ -1,16 +1,22 @@
+#!/usr/bin/env ruby
+
 require "Neuron"
 require "Layer"
 require "CSVFile"
 require "Network"
 require "../normalize/Normalize"
 
+num = ARGV[0]
+
 @@ver = false
+
+srand 1
 
 net     = Network.new
 
-net.layers[0].fptr = net.layers[0].method(:tanh)
-net.layers[1].fptr = net.layers[1].method(:tanh)
-net.layers[2].fptr = net.layers[2].method(:linear)
+# net.layers[0].fptr = net.layers[0].method(:tanh)
+net.layers[1].fptr = net.layers[1].method(:linear)
+net.layers[2].fptr = net.layers[2].method(:tanh)
 
 norm = Normalize.new("../input/input.csv")
 puts norm.normalize
@@ -26,9 +32,12 @@ target  = csv_tar.read_data
 
 net.reset
 
-# tr_file  = File.open("../data/training.txt", "w")
-# 400.times { |n| tr_file.puts "#{n}\t#{net.rms_train_core(input, target, 0, csv_ip.count-1, tr_file)}" }
-# tr_file.close
-# # net.weight_history(1)
-# outfile  = File.open("../output/output.txt", "w")
-# net.test(input, 0, csv_ip.count-1, target, outfile)
+tr_file  = File.open("../data/training.txt", "w")
+for n in 1..num.to_i
+  tr_file.puts "#{n}\t#{net.rms_train_core(input, target, 0, csv_ip.count-1, tr_file)}"
+end
+tr_file.close
+
+# net.weight_history(1)
+outfile  = File.open("../output/output.txt", "w")
+net.test(input, 0, csv_ip.count-1, target, outfile)
