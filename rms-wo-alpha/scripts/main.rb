@@ -1,8 +1,10 @@
+#!/usr/bin/env ruby
+
 require "Neuron"
 require "Layer"
 require "CSVFile"
 require "Network"
-require "../../normalize/Normalize"
+require "../normalize/Normalize"
 
 @@ver = false
 

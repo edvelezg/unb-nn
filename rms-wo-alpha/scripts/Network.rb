@@ -290,8 +290,16 @@ class Network
           # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
           new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
           update_weight(wgt_dif, drms[0], i, j, k)
-    
         end
+      end
+      layers[i-1].bias.each_index do |l|
+        drms    = []
+        old_rms = calc_rms(input, strt_p, end_p, target)
+        wgt_dif = alter_bias(i-1, l)
+        new_rms = calc_rms(input, strt_p, end_p, target)
+        new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+        update_bias(wgt_dif, drms[0], i-1, l)
+        tr_file.puts "bias error is now #{new_rms[0]}"
       end
     end
     return new_rms[0]
