@@ -1,18 +1,22 @@
 class Layer
   attr_accessor :nrns
   attr_accessor :weights
+  attr_accessor :delta_weights
   attr_accessor :bias
+  attr_accessor :delta_bias
   attr_accessor :old_weights
   attr_accessor :fptr
   attr_reader :count
   
   def initialize
-    @bias        = []
-    @weights = []
-    @old_weights = []
-    @nrns = []
-    @fptr        = method( :sigmoid )
-    @count = 0
+    @bias          = []
+    @delta_bias    = []
+    @weights       = []
+    @delta_weights = []
+    @old_weights   = []
+    @nrns          = []
+    @fptr          = method( :sigmoid )
+    @count         = 0
   end
 
   def insert(neuron)

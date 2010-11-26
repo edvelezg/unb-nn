@@ -20,17 +20,26 @@ class Network
     for i in 1..layers.length-1
       layers[i].nrns.each_index do |j|
         wgt_array = []
+        delta_wgt_array = []
         layers[i-1].nrns.each_index do |k|
           # print "#{j},#{k} "
           wgt_array << rand
+          delta_wgt_array << 0.0
         end
         layers[i-1].bias << rand # This is the bias
+        layers[i-1].delta_bias << 0.0 # This is the bias
         layers[i].weights << wgt_array
+        layers[i].delta_weights << delta_wgt_array
+        
         # puts
       end
       layers[i].weights.each { |e| p e }
       p layers[i-1].bias
       puts
+      layers[i].delta_weights.each { |e| p e }
+      p layers[i-1].delta_bias
+      puts
+      
     end
   end
 
