@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require "../normalize/Normalize"
 require "../normalize/CSVFile"
 require "../neural_network/backpropagation"
@@ -6,9 +7,9 @@ require 'benchmark'
 norm = Normalize.new("input.csv")
 norm_file = norm.normalize
 
-for i in 1..1
-  lr = 0.1*i
-  puts lr
+num = ARGV[0].to_i
+
+  lr = 0.1
   
   out_f = File.open("output.txt", "w") 
   tr_f = File.open("training.txt", "w") 
@@ -24,14 +25,14 @@ for i in 1..1
 
     net = NeuralNetwork::Backpropagation.new([2, 3, 1])
 
-    net.propagation_functions[0] = lambda { |x| Math.tanh(x) } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
-    net.propagation_functions[1] = lambda { |x| x } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
+    net.propagation_functions[0]            = lambda { |x| Math.tanh(x) } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
+    net.propagation_functions[1]            = lambda { |x| x } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
     net.derivative_propagation_functions[0] = lambda { |y| 1.0 - y**2 } # lambda { |y| y*(1-y) } { |y| 1.0 - y**2 } { |y| 1.0 }
     net.derivative_propagation_functions[1] = lambda { |y| 1.0 } # lambda { |y| y*(1-y) } { |y| 1.0 - y**2 }
-    net.learning_rate                   = lr
+    net.learning_rate                       = lr
 
     puts "Training the network, please wait."
-    1000.times do |i|
+    for i in 0..num
       for j in 0...example.size-1
         net.train(example[j], result[j])
       end
@@ -47,5 +48,3 @@ for i in 1..1
   out_f.close
   tr_f.close
   # puts "Elapsed time: #{times}"
-  # `./genPlots.sh #{lr}`
-end
