@@ -3,7 +3,7 @@
 file=$1
 change=$2
 
-filename = $(basename $file .txt)
+filename=$(basename $file .txt)
 
 rm "$filename-$change.gnuplot"
 
