@@ -91,7 +91,8 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
         :momentum => "By default 0.1. Set this parameter to 0 to disable "+
             "momentum."
 
-      attr_accessor :structure, :weights, :activation_nodes
+      attr_accessor :structure, :weights, :activation_nodes, :best_weights
+      attr_reader :best_error
 
       # Creates a new network specifying the its architecture.
       # E.g.
@@ -117,6 +118,21 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
         @disable_bias = false
         @learning_rate = 0.25
         @momentum = 0.1
+        @best_weights = nil
+        @best_error = 999 # Hopefully the error is never this amount.
+      end
+      
+      def config_weights(usr_wgts)
+        init_activation_nodes
+        @weights = usr_wgts
+        init_last_changes
+        return self
+      end
+      
+      def save_weights(error)
+        raise "CRITICAL ERROR: Oh no, error is greater than initial error." if error >= 999
+        @best_error = error
+        @best_weights = Marshal.load(Marshal.dump(@weights))
       end
 
       def rms_sqd_error(expected_output)
@@ -126,18 +142,6 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
           error += (output_values[output_index]-expected_output[output_index])**2
         end
         return error
-
-        # @deltas = [output_deltas]
-
-        # res.each_index do |i|
-        #   diff << res - outputs[]
-        #   sum[i] =
-        # end
-        # op_nrns.each_index do |i|
-        #   diff << (op_nrns[i].output - targets[p][i])
-        #   sum[i] += (op_nrns[i].output - targets[p][i])**2
-        # end
-
       end
 
       def rms_calc(inputs, outputs)
@@ -150,6 +154,7 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
       end
 
       def rms_train(inputs, outputs)
+        # There's some bug in here or I don't know, but this method MAY NOT work properly.
         change     = 0.01
         multiplier = 1.0
         error      = 0.0
@@ -204,7 +209,9 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
         backpropagate(outputs)
         calculate_error(outputs)
       end
-
+            
+      protected
+      
       # Initialize (or reset) activation nodes and weights, with the
       # provided net structure and parameters.
       def init_network
@@ -213,8 +220,8 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
         init_last_changes
         return self
       end
+      
       # Initialize neurons structure.
-
       def init_activation_nodes
         @activation_nodes = Array.new(@structure.length) do |n|
           Array.new(@structure[n], 1.0)
@@ -223,8 +230,6 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
           @activation_nodes[0...-1].each {|layer| layer << 1.0 }
         end
       end
-
-      protected
 
       # Propagate error backwards
       def backpropagate(expected_output_values)
@@ -255,13 +260,9 @@ require File.dirname(__FILE__) + '/../data/parameterizable'
       # Initialize the weight arrays using function specified with the
       # initial_weight_function parameter
       def init_weights
-        puts "@structure.length-1 #{@structure.length-1}"
         @weights = Array.new(@structure.length-1) do |i|
-          puts "i #{i}"
           nodes_origin = @activation_nodes[i].length
-          puts "nodes_origin #{nodes_origin}"
           nodes_target = @structure[i+1]
-          puts "nodes_target #{nodes_target}"
           Array.new(nodes_origin) do |j|
             Array.new(nodes_target) do |k|
               @initial_weight_function.call(i, j, k)
