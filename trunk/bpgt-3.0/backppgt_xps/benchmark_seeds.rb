@@ -88,7 +88,7 @@ Benchmark.bm do |x|
   end
 end
 
-info.sort_by { |item| [item[0]] }
+info.sort_by { |item| [item[1]] }
 
 rs_f = File.open("results.txt", "w")
 rs_f.puts "best_iteration\tbest_error\tseed"
