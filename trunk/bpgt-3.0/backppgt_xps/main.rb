@@ -4,6 +4,9 @@ require "../normalize/CSVFile"
 require "../neural_network/backpropagation"
 require 'benchmark'
 
+seeds = ARGV[0].to_i
+iterations = ARGV[1].to_i
+
 def run_with_seed(iterations, seed, norm_file)
 
   best_iteration = 1
@@ -79,9 +82,9 @@ norm_file = norm.normalize
 
 info = []
 Benchmark.bm do |x|
-  for i in 0..1
+  for seed in 0..seeds
     # info is [best_iteration, net.best_error, seed, net.best_weights]
-    x.report("seed:#{i} ") { info << run_with_seed(100, i, norm_file) }
+    x.report("seed:#{seed} ") { info << run_with_seed(iterations, seed, norm_file) }
   end
 end
 
