@@ -44,7 +44,26 @@ class Normalize
     return outFileName
   end
   
-  def denormalize(input, col)
+  def denormalize(outFile = "#{inFile.sub(".csv", "")}.nor")
+    raise "no file found" if inFile.nil?
+    
+    File.foreach(outFile) do |line|
+      arr = line.chomp.split(',')
+      arr = arr.map { |e| e.to_f }
+      # p arr
+      fout = []
+      arr.each_index do |i|
+         fout << "#{denormalize_entry(arr[i], i)}"
+      end
+      puts fout.join(',')
+      # arr.each_index do |i|
+      #   max[i] = arr[i] if max[i] < arr[i]
+      #   min[i] = arr[i] if min[i] > arr[i]
+      # end
+    end
+  end
+
+  def denormalize_entry(input, col)
     return (input*(max[col]-min[col])/1.6)+(max[col]+min[col])/2
   end
 end
