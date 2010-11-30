@@ -27,7 +27,7 @@ def run_with_seed(iterations, seed, norm_file)
   net.propagation_functions[1]            = lambda { |x| x } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
   net.derivative_propagation_functions[0] = lambda { |y| 1.0 - y**2 } # lambda { |y| y*(1-y) } { |y| 1.0 - y**2 } { |y| 1.0 }
   net.derivative_propagation_functions[1] = lambda { |y| 1.0 } # lambda { |y| y*(1-y) } { |y| 1.0 - y**2 }
-  net.learning_rate                       = 0.1
+  net.learning_rate                       = 0.25
 
   for i in 0...iterations
     for j in 0...example.size-1
