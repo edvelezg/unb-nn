@@ -8,8 +8,8 @@ require "../normalize/CSVFile"
 require 'benchmark'
 require "yaml"
 
-seeds      = 2 # ARGV[0].to_i
-iterations = 10 # ARGV[1].to_i
+seeds      = ARGV[0].to_i # 
+iterations = ARGV[1].to_i # 
 
 def run_with_seed(iterations, seed, norm_file)
 
