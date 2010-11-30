@@ -15,7 +15,7 @@ class Layer
     @delta_weights = []
     @old_weights   = []
     @nrns          = []
-    @fptr          = method( :sigmoid )
+    @fptr          = method( :tanh )
     @count         = 0
   end
 

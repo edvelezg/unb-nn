@@ -3,19 +3,21 @@ require "Layer"
 require "CSVFile"
 
 class Network
-  attr_accessor :layers
-  attr_accessor :alpha
-  attr_accessor :epsilon
+  attr_accessor :layers, :alpha, :epsilon, :structure
+  attr_reader :best_weights, :best_error
   
-  def initialize
+  def initialize(network_structure = [2, 3, 1])
+    @structure = network_structure
     @layers = []
     @alpha = 0.7 # usually between 0.7 and 0.95
     @epsilon = 0.03 # usually between 0.03 and 0.1
+    @best_weights = nil
+    @best_error = 999
     
-    nrn_cnt = [2, 3, 1]
-    for i in 0..nrn_cnt.size-1
+    @structure = [2, 3, 1]
+    for i in 0..@structure.size-1
       lay = Layer.new
-      nrn_cnt[i].times do |n|
+      structure[i].times do |n|
         lay.insert(Neuron.new)
       end
       layers << lay
@@ -39,16 +41,21 @@ class Network
         
         # puts
       end
-      layers[i].weights.each { |e| p e }
-      p layers[i-1].bias
-      puts
-      layers[i].delta_weights.each { |e| p e }
-      p layers[i-1].delta_bias
-      puts
-      
+      # layers[i].weights.each { |e| p e }
+      # p layers[i-1].bias
+      # puts
+      # layers[i].delta_weights.each { |e| p e }
+      # p layers[i-1].delta_bias
+      # puts      
     end
   end
-
+  
+  def save_weights(error)
+    raise "error cannot be greater than or equal to 999" if error >= 999
+    @best_error = error
+    # @best_weights = Marshal.load(Marshal.dump(@layers))
+  end
+  
 
   def bpgt(inputs, strt_p, end_p, tars, rate, op_file, num)
     p = strt_p
