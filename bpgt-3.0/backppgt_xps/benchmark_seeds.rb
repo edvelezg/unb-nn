@@ -3,6 +3,7 @@ require "../normalize/Normalize"
 require "../normalize/CSVFile"
 require "../neural_network/backpropagation"
 require 'benchmark'
+require 'yaml'
 
 seeds = ARGV[0].to_i
 iterations = ARGV[1].to_i
@@ -95,6 +96,8 @@ rs_f.puts "best_iteration\tbest_error\tseed"
 info.each do |e|
   rs_f.puts "#{e[0]}\t#{e[1]}\t#{e[2]}"
 end
+
+File.open("info.yaml", "w") { |file| YAML.dump(info, file) }
 
 # test_with_weights(info[0][2], norm_file)
 
