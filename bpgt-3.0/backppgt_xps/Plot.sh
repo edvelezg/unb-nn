@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 
 file=$1
-change=$2
+scale=$2
 
 filename=$(basename $file .txt)
+title="$filename"
 
-rm "$filename-$change.gnuplot"
+rm "$filename.gnuplot"
 
 echo "set term postscript enhanced color 24
+set title \"$title\"" >>  $filename.gnuplot
 
-set title\"Change is at $change \"
-set auto x
-set xlabel \"Probability ({/Times-Italic p})\"
-set ylabel \"Rel. Size to Unsorted Single-Col Index\"
+if [[ $scale == "log" ]]; then
+	echo "set log x" >> $filename.gnuplot
+else
+	echo "set auto x" >> $filename.gnuplot
+fi
+
+echo "set xlabel \"x label ({/Times-Italic p})\"
+set ylabel \"y label\"
 set key bottom right
-set out \"$filename-$change.eps\"" >> $filename.gnuplot
+set out \"$filename.eps\"" >> $filename.gnuplot
 
-echo "	plot \"$file\" u 1:(\$2) every :::0::0 ti \"nonmerged    \" with linespoint lw 5" >> $filename.gnuplot
-echo "# ! epstopdf $filename-$change.eps" >> $filename-$change.gnuplot
+echo "	plot \"$file\" u 1:(\$2) every :::0::0 ti \"learning    \" with linespoint lw 5" >> $filename.gnuplot
+echo "# ! epstopdf $filename.eps" >> $filename.gnuplot
 
-gnuplot $filename-$change.gnuplot
+gnuplot $filename.gnuplot
