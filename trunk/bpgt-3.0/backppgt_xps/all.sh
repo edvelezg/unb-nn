@@ -17,3 +17,4 @@
 
 dir=`pwd`
 echo -e "Hi,\n\n Your script in $dir is done ;)" | mail -s "Job's Done" "edvelez.g@gmail.com"
+
