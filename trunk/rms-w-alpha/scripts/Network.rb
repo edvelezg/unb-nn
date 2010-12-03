@@ -11,7 +11,7 @@ class Network
     @layers = []
     @alpha = 0.7 # usually between 0.7 and 0.95
     @epsilon = 0.03 # usually between 0.03 and 0.1
-    @best_weights = nil
+    @best_weights = []
     @best_error = 999
     
     @structure = [2, 3, 1]
@@ -53,9 +53,11 @@ class Network
   def save_weights(error)
     raise "error cannot be greater than or equal to 999" if error >= 999
     @best_error = error
-    # @best_weights = Marshal.load(Marshal.dump(@layers))
-  end
-  
+    # best_weights = []
+    # layers.each do |e|
+    #    @best_weights << [e.weights, e.bias]
+    # end
+  end  
 
   def bpgt(inputs, strt_p, end_p, tars, rate, op_file, num)
     p = strt_p
