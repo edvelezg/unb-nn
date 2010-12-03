@@ -14,7 +14,7 @@ class Network
     @best_weights = []
     @best_error = 999
     
-    @structure = [2, 3, 1]
+    @structure = network_structure
     for i in 0..@structure.size-1
       lay = Layer.new
       structure[i].times do |n|
@@ -34,7 +34,7 @@ class Network
           wgt_array << ((rand 2000)/1000.0) - 1
           delta_wgt_array << 0.0
         end
-        layers[i-1].bias << ((rand 2000)/1000.0) - 1 # This is the bias
+        layers[i-1].bias << rand # ((rand 2000)/1000.0) - 1 # This is the bias
         layers[i-1].delta_bias << 0.0 # This is the bias
         layers[i].weights << wgt_array
         layers[i].delta_weights << delta_wgt_array
