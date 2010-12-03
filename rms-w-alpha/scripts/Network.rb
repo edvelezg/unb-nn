@@ -31,10 +31,10 @@ class Network
         delta_wgt_array = []
         layers[i-1].nrns.each_index do |k|
           # print "#{j},#{k} "
-          wgt_array << rand
+          wgt_array << ((rand 2000)/1000.0) - 1
           delta_wgt_array << 0.0
         end
-        layers[i-1].bias << rand # This is the bias
+        layers[i-1].bias << ((rand 2000)/1000.0) - 1 # This is the bias
         layers[i-1].delta_bias << 0.0 # This is the bias
         layers[i].weights << wgt_array
         layers[i].delta_weights << delta_wgt_array
