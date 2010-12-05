@@ -3,7 +3,7 @@ require "Layer"
 require "CSVFile"
 
 class Network
-  attr_accessor :layers, :alpha, :epsilon, :structure
+  attr_accessor :layers, :alpha, :epsilon, :structure, :change
   attr_reader :best_weights, :best_error
   
   def initialize(network_structure = [2, 3, 1])
@@ -13,6 +13,7 @@ class Network
     @epsilon = 0.03 # usually between 0.03 and 0.1
     @best_weights = []
     @best_error = 999
+    @change = 0.01
     
     @structure = network_structure
     for i in 0..@structure.size-1
@@ -30,23 +31,14 @@ class Network
         wgt_array = []
         delta_wgt_array = []
         layers[i-1].nrns.each_index do |k|
-          # print "#{j},#{k} "
-          wgt_array << ((rand 2000)/1000.0) - 1
+          wgt_array << rand
           delta_wgt_array << 0.0
         end
-        layers[i-1].bias << rand # ((rand 2000)/1000.0) - 1 # This is the bias
+        layers[i-1].bias << rand # This is the bias
         layers[i-1].delta_bias << 0.0 # This is the bias
         layers[i].weights << wgt_array
         layers[i].delta_weights << delta_wgt_array
-        
-        # puts
-      end
-      # layers[i].weights.each { |e| p e }
-      # p layers[i-1].bias
-      # puts
-      # layers[i].delta_weights.each { |e| p e }
-      # p layers[i-1].delta_bias
-      # puts      
+      end  
     end
   end
   
@@ -205,13 +197,13 @@ class Network
 
   def alter_weight(i,j,k)
     old_weight = layers[i].weights[j][k]
-    layers[i].weights[j][k] +=  0.01
+    layers[i].weights[j][k] +=  change
     return layers[i].weights[j][k] - old_weight
   end
 
   def alter_bias(i,j)
     old_weight = layers[i].bias[j]
-    layers[i].bias[j] +=  0.01
+    layers[i].bias[j] +=  change
     return layers[i].bias[j] - old_weight
   end
 
@@ -221,7 +213,7 @@ class Network
       raise "i must never be less than 1, layer 0 is input layer"
     end
     
-    layers[i].weights[j][k] -= 0.01
+    layers[i].weights[j][k] -= change
 
     if drms != 0.0
       layers[i].delta_weights[j][k] = (alpha * layers[i].delta_weights[j][k]) - (epsilon * drms)
@@ -240,7 +232,7 @@ class Network
       raise "Bias must not be an output neuron"
     end
 
-    layers[i].bias[j] -= 0.01
+    layers[i].bias[j] -= change
     
     if drms != 0.0
       layers[i].delta_bias[j] = (alpha * layers[i].delta_bias[j]) - (epsilon * drms)
@@ -313,8 +305,8 @@ class Network
           old_rms = calc_rms(input, strt_p, end_p, target)
           wgt_dif = alter_weight(i, j, k)
           new_rms = calc_rms(input, strt_p, end_p, target)
-          # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
-          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+          # puts "#{new_rms[d]} - #{old_rms[d]} / change =  #{(new_rms[d] - old_rms[d])/change}"
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/change }
           update_weight(wgt_dif, drms[0], i, j, k)
         end
       end
@@ -323,7 +315,7 @@ class Network
         old_rms = calc_rms(input, strt_p, end_p, target)
         wgt_dif = alter_bias(i-1, l)
         new_rms = calc_rms(input, strt_p, end_p, target)
-        new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+        new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/change }
         update_bias(wgt_dif, drms[0], i-1, l)
         # tr_file.puts "bias error is now #{new_rms[0]}"
       end
