@@ -18,5 +18,5 @@ target = [[1], [0], [0], [1]]
 # p net.eval([0,1])
 
 tr_file = File.open("training.txt", "w")
-300.times { |n| tr_file.puts "#{n+1}\t#{net.rms_train2(inputs, target)}" }
+300.times { |n| tr_file.puts "#{n+1}\t#{net.rms_train_improved(inputs, target)}" }
 tr_file.close
