@@ -27,7 +27,7 @@ target = csv_ip.out_data
   out_f = File.open("output.txt", "w") 
   tr_f = File.open("training.txt", "w") 
     
-  300.times { |n| tr_f.puts "#{n}\t#{net.rms_train2(inputs, target)}" }
+  300.times { |n| tr_f.puts "#{n}\t#{net.rms_train_improved(inputs, target)}" }
 
   puts "Test data"
   for j in 0..inputs.size-1

@@ -37,7 +37,7 @@ class Layer
   end
   
   def tanh(k)
-    return (Math.exp(k*2.0)-1)/(Math.exp(k*2.0)+1)
+    return Math.tanh(k)
   end
   
   def update_neuron (idx, k)

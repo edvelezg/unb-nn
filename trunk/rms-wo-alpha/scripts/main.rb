@@ -6,7 +6,7 @@ require "CSVFile"
 require "Network"
 require "../normalize/Normalize"
 
-num = ARGV[0]
+num = 1
 
 @@ver = false
 

@@ -153,7 +153,7 @@ module NeuralNetwork
       return error/(inputs.size-1)        
     end
     
-    def rms_train2(inputs, outputs)
+    def rms_train_improved(inputs, outputs)
       change     = 0.01
       multiplier = 0.01
       new_rms    = 0.0

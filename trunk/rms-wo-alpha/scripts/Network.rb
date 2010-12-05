@@ -162,14 +162,13 @@ class Network
   end
 
   def calc_rms(inputs, strt_p, end_p, targets)
+    raise "must be at least two points" if end_p == 0
     # body
     sum = Array.new(layers[layers.length-1].count,0)
     p = strt_p
     while p <= end_p
-      diff = []
       op_nrns = ffwd(inputs[p])
       op_nrns.each_index do |i|
-        diff << (op_nrns[i].output - targets[p][i])
         sum[i] += (op_nrns[i].output - targets[p][i])**2
       end
       p += 1
@@ -200,7 +199,7 @@ class Network
     layers[i].weights[j][k] -= 0.01
 
     if drms != 0.0
-      layers[i].weights[j][k] -= drms*1.0
+      layers[i].weights[j][k] -= drms*0.01
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
@@ -218,7 +217,7 @@ class Network
     layers[i].bias[j] -= 0.01
 
     if drms != 0.0
-      layers[i].bias[j] -= drms*1.0
+      layers[i].bias[j] -= drms*0.01
     else
       raise "WARNING: Flat slope warning, something may be wrong with the network"
     end
@@ -279,27 +278,29 @@ class Network
     new_rms = [] # just make it so that it can be returned.
     for i in 1..layers.length-1
       # Adding to weight history
-      layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
+      # layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
 
       layers[i].weights.each_index do |j|
         layers[i].weights[j].each_index do |k|
+          # puts "@weights[i][j][k] #{layers[i].weights[j][k]}"
           drms    = []
           old_rms = calc_rms(input, strt_p, end_p, target)
           wgt_dif = alter_weight(i, j, k)
           new_rms = calc_rms(input, strt_p, end_p, target)
-          # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
-          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+          # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}
+          new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01}
           update_weight(wgt_dif, drms[0], i, j, k)
         end
       end
       layers[i-1].bias.each_index do |l|
+        # puts "@bias[#{i-1}][#{l}] #{layers[i-1].bias[l]}"
         drms    = []
         old_rms = calc_rms(input, strt_p, end_p, target)
         wgt_dif = alter_bias(i-1, l)
         new_rms = calc_rms(input, strt_p, end_p, target)
-        new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01 }
+        # puts "#{new_rms[d]} - #{old_rms[d]} / 0.01 =  #{(new_rms[d] - old_rms[d])/0.01}"
+        new_rms.each_index { |d| drms << (new_rms[d] - old_rms[d])/0.01}
         update_bias(wgt_dif, drms[0], i-1, l)
-        tr_file.puts "bias error is now #{new_rms[0]}"
       end
     end
     return new_rms[0]
