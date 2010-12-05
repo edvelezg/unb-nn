@@ -39,7 +39,6 @@ def run_with_cnt_nrns(iterations, seed, norm_file, cnt_nrns)
     tr_f.puts "#{i}\t#{error}"
   end
   tr_f.close
-  
 
   #   for j in 0...example.size-1
   #     net.train(example[j], result[j])
