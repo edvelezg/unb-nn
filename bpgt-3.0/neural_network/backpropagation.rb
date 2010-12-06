@@ -91,7 +91,7 @@ module NeuralNetwork
       :momentum => "By default 0.1. Set this parameter to 0 to disable "+
           "momentum."
 
-    attr_accessor :structure, :weights, :activation_nodes, :best_weights
+    attr_accessor :structure, :weights, :activation_nodes, :best_weights, :delta_weights
     attr_reader :best_error
 
     # Creates a new network specifying the its architecture.
@@ -177,6 +177,37 @@ module NeuralNetwork
             else
               puts "WARNING: Flat slope warning, something may be wrong with the network"
               exit
+            end
+            
+          end
+        end
+      end
+      return new_rms
+    end
+    
+    def rms_train_alpha_eps(inputs, outputs, alpha = 0.7, epsilon = 0.03)
+      change     = 0.01
+      new_rms    = 0.0
+      
+      init_network if !@weights
+      init_delta_weights if !@delta_weights
+      
+      @weights.each_index do |n|
+        @structure[n+1].times do |j|
+          @activation_nodes[n].each_index do |i|
+
+            old_rms =  rms_calc(inputs, outputs)
+            @weights[n][i][j] +=  change
+            new_rms =  rms_calc(inputs, outputs)
+            drms = (new_rms - old_rms)/change
+
+            # Update Weight
+            @weights[n][i][j] -= change
+            if drms != 0.0
+              @delta_weights[n][i][j] = (alpha * @delta_weights[n][i][j]) - (epsilon * drms)
+              @weights[n][i][j] = @weights[n][i][j] + @delta_weights[n][i][j]
+            else
+              puts "WARNING: Flat slope warning, something may be wrong with the network"
             end
             
           end
@@ -298,6 +329,18 @@ module NeuralNetwork
         Array.new(nodes_origin) do |j|
           Array.new(nodes_target) do |k|
             @initial_weight_function.call(i, j, k)
+          end
+        end
+      end
+    end
+    
+    def init_delta_weights
+      @delta_weights = Array.new(@structure.length-1) do |i|
+        nodes_origin = @activation_nodes[i].length
+        nodes_target = @structure[i+1]
+        Array.new(nodes_origin) do |j|
+          Array.new(nodes_target) do |k|
+            @delta_weights[i][j][k] = 0.0
           end
         end
       end
