@@ -1,4 +1,4 @@
-# Author::    Sergio Fierens
+# Author::    Sergio Fierens # Edited by:: Eduardo Gutarra
 # License::   MPL 1.1
 # Project::   ai4r
 # Url::       http://ai4r.rubyforge.org/
@@ -70,7 +70,7 @@ module NeuralNetwork
   # * http://en.wikipedia.org/wiki/Multilayer_perceptron
   #
   # = About the project
-  # Author::    Sergio Fierens
+  # Author::    Sergio Fierens # Edited by:: Eduardo Gutarra
   # License::   MPL 1.1
   # Url::       http://ai4r.rubyforge.org
   class Backpropagation
@@ -340,7 +340,7 @@ module NeuralNetwork
         nodes_target = @structure[i+1]
         Array.new(nodes_origin) do |j|
           Array.new(nodes_target) do |k|
-            @delta_weights[i][j][k] = 0.0
+            0.0
           end
         end
       end
