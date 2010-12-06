@@ -30,7 +30,7 @@ def run_with_seed(iterations, seed, norm_file)
   # net.learning_rate                       = 0.25
   
   for i in 1...iterations
-    error = net.rms_train_improved(example, result)
+    error = net.rms_train_alpha_eps(example, result)
     if error < net.best_error
       net.save_weights(error) # doesn't work yet
       best_iteration = i
