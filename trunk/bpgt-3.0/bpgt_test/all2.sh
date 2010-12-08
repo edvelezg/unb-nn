@@ -13,8 +13,8 @@
 # 	mv training.eps ../graphs/training_${arr[i]}.eps
 # done
 
-./benchmark_top.rb 10 500 # seeds, iterations
+./benchmark_top.rb 10 1000 > "time-nrn_cnt.txt" # seeds, iterations
+./benchmark_its.rb 3 100 > "time-itrns.txt" # seeds, iterations
 
 dir=`pwd`
-echo -e "Hi,\n\n Your script in $dir is done ;)" | mail -s "Job's Done" "edvelez.g@gmail.com"
-
+echo -e "Hi,\n\n Your script in $dir is done. Topologies ;)" | mail -s "Job's Done" "edvelez.g@gmail.com"
