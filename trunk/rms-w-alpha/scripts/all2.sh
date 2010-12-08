@@ -13,7 +13,7 @@
 # 	mv training.eps ../graphs/training_${arr[i]}.eps
 # done
 
-./main.rb 17 50000 # seeds, iterations
+./benchmark_top.rb 10 1000 > "time-results.txt" # seeds, iterations
 
 dir=`pwd`
 echo -e "Hi,\n\n Your script in $dir is done. Topologies ;)" | mail -s "Job's Done" "edvelez.g@gmail.com"

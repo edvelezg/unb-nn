@@ -94,7 +94,7 @@ class Network
   def up_weights(rate)
     lay_idx = layers.size-1
     while lay_idx >= 1
-      layers[lay_idx].old_weights.push(Marshal.load(Marshal.dump(layers[lay_idx].weights))) # adds weights to weight history
+      # layers[lay_idx].old_weights.push(Marshal.load(Marshal.dump(layers[lay_idx].weights))) # adds weights to weight history
       layers[lay_idx].nrns.each_index do |j|
         rho = layers[lay_idx].nrns[j].delta
         layers[lay_idx].weights[j].each_index do |k|
@@ -219,7 +219,7 @@ class Network
       layers[i].delta_weights[j][k] = (alpha * layers[i].delta_weights[j][k]) - (epsilon * drms)
       layers[i].weights[j][k] = layers[i].weights[j][k] + layers[i].delta_weights[j][k]
     else
-      raise "WARNING: Flat slope warning, something may be wrong with the network"
+      puts "WARNING: Flat slope warning, something may be wrong with the network"
     end
   end
 
@@ -297,8 +297,7 @@ class Network
     new_rms = [] # just make it so that it can be returned.
     for i in 1..layers.length-1
       # Adding to weight history
-      layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
-
+      # layers[i].old_weights << Marshal.load(Marshal.dump(layers[i].weights))
       layers[i].weights.each_index do |j|
         layers[i].weights[j].each_index do |k|
           drms    = []
