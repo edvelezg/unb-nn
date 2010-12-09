@@ -87,8 +87,8 @@ neural networks which emulate the process of learning. These neural networks are
 include 1. nonlinearity, 2. Input-Output mapping, and 3 adaptivity. Neural networks can make predictions when similar patterns or new
 patterns are presented. Neural networks have applications in natural speech recognition, something, something among others.
 
-In this report we will examine two different learning algorithms for feedforward neural networks the back-propagation and the RMS
-reductions.
+In this report we will examine two different training algorithms for feedforward neural networks. One algorithm is the back-propagation
+training algorithm and the other is the Root mean square reduction algorithm.
 
 \section{Feedforward Neural Networks} % (fold)
 \label{sec:feedforward_neural_networks}
@@ -97,15 +97,6 @@ In a feedforward neural network only neurons of adjacent layers are interconnect
 only interconnected forwards. Every layer of the neural network has connections to the next layer but there are no connections
 backward.
 
-
-% section feedforward_neural_networks (end)
-
-The term “backpropagation” describes how this type of neural network is trained. Backpropagation is a form of supervised training. When
-using a supervised training method, the network must be provided with both sample inputs and anticipated out- puts. The anticipated
-outputs are compared against the actual outputs for given input. Using the anticipated outputs, the backpropagation training algorithm
-then takes a calculated error and adjusts the weights of the various layers backwards from the out- put layer to the input layer. The
-exact process by which backpropagation occurs will also be discussed later in this chapter.
-
 The backpropagation and feedforward algorithms are often used together; howev- er, this is by no means a requirement. It would be quite
 permissible to create a neural network that uses the feedforward algorithm to determine its output and does not use the backpropagation
 training algorithm. Similarly, if you choose to create a neural net- work that uses backpropagation training methods, you are not
@@ -113,6 +104,12 @@ necessarily limited to a feedforward algorithm to determine the output of the ne
 the feedforward backpropagation neural network, exam- ples can be found. In this book, we will examine only the case in which the
 feedforward and backpropagation algorithms are used together. We will begin this discussion by examining how a feedforward neural
 network functions.
+
+% section feedforward_neural_networks (end)
+
+Backpropagation is a method of supervised learning. It is used to train our feedforward neural network. To use the backpropagation
+algorithm we provide it with both sample inputs and expected or target outputs. The expected outputs are then compared against the
+target outputs for a given sample. Using the target outputs, the backpropagation training algorithm then calculates error and adjusts the weights of the various layers backwards from the output layer to the input layer.
 
 
 % section introduction (end)
