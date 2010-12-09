@@ -20,6 +20,7 @@
 \usepackage{color}
 \usepackage{subfig}
 \usepackage{hyperref}
+\usepackage{algorithm}
 \usepackage{algorithmic}
 
 % Uncomment some of the following if you use the features
@@ -79,13 +80,37 @@
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-Introduction
+Artificial Neural networks are computational models that mimic the architecture the structure and/or functional aspects of biological
+neural networks such as the human brain. Neural networks are made up of multiple processing elements called neurons. These neurons are
+interconnected and work in parallel to perform various complex tasks. make predictions when similar patterns or new patterns are presented. Neural
+networks have applications in natural speech recognition, something, something among others.
+
+In this report we will examine two different learning algorithms for feedforward neural networks the back-propagation and the RMS
+reductions.
+
+\section{Feedforward Neural Networks} % (fold)
+\label{sec:feedforward_neural_networks}
+
+The feedforward network in which all neurons of adjacent layers are interconnected
+
+
+% section feedforward_neural_networks (end)
+
 
 % section introduction (end)
 
 
 \section{Algorithms and Procedures} % (fold)
 \label{sec:algorithms_and_procedures}
+
+\subsection{Data Structure} % (fold)
+\label{sub:data_structure}
+
+% subsection data_structure (end)
+
+\subsection{Algorithms} % (fold)
+\label{sub:algorithms}
+
 $E$ is a set of examples
 $e$ is a single example
 $I(e)$ set of inputs in a single example
@@ -101,6 +126,87 @@ Each iteration of this loop we will call an epoch
 		\STATE UpdateWeights
 	\ENDFOR
 \end{algorithmic}
+
+\begin{algorithm}
+{
+\begin{algorithmic}[1]
+\STATE \textbf{input:}  Unsorted table $t$ with $n$ rows and $c$ columns.
+\STATE \textbf{output:} a sorted table
+\STATE Form
+$K$~different versions of $t$, sorted differently: $t^{(1)},t^{(2)},\dots, t^{(K)}$ 
+
+\STATE $\beta \leftarrow $ empty list
+\STATE pick an element in $t^{(1)}$ randomly, add it to $\beta$ and remove it from all $t^{(i)}$'s
+\WHILE{$\mathrm{size}(\beta)<n$ }
+\STATE let $r$ be the latest element added to $\beta$
+\STATE Given $i\in \{1,2,\dots,K\}$, there are up to two neighbors in sorted order within list $t^{(i)}$; out of up to $2K$ such neighbors, pick a nearest neighbor $r'$ to $r$ in Hamming distance.
+\STATE Add $r'$ to $\beta$ and remove it from all $t^{(i)}$'s
+\ENDWHILE
+\STATE \textbf{return} $\beta$
+\end{algorithmic}
+}
+\caption{\label{algo:multiplelists}The \textsc{Multiple Lists} heuristic}
+
+\end{algorithm}
+
+\begin{algorithm}
+{
+	\textbf{Main algorithm:}
+\begin{algorithmic}[1]
+\STATE \textbf{input:} a table $t$ and a block size $p$
+\STATE \textbf{output:} a sorted table
+%\STATE $\alpha \leftarrow $the columns in non-decreasing order of cardinality
+%\STATE $\beta \leftarrow $ empty list \owen{beta is unused}\daniel{leftover from a copy/paste?}
+\STATE each value in each tuple is assigned a Boolean value (initially false) indicating whether the value is DC
+\FOR{$k=1,2,\dots, c-1$}
+%\STATE append column $k$ to list $\beta$
+\STATE sort table $t$ %on the first $k$~columns %\owen{$\beta$, else $\beta$ unused} %the first $k$~columns 
+using the DC order with parameter $k$ (see below)
+\FOR{every run of identical values in column $k$}
+\STATE Mark %$x-\lfloor x/p \rfloor p$~values 
+                                       $x \bmod p$~values 
+as DC where $x$ is the length of the run 
+\ENDFOR
+\ENDFOR
+\STATE sort $t$ using the DC order with $k=c$
+\STATE \textbf{return} $t$
+\end{algorithmic}
+}
+%\hrule
+\textbf{DC order:}
+{
+\begin{algorithmic}[1]
+\STATE \textbf{input:} two $c$-tuples $x,y$, each component of each tuple might be marked as DC; a positive integer $k$ (we assume $k-1\leq c$)
+\STATE \textbf{output:} 1,0,-1 depending on whether $x$ is greater, equal or smaller than $y$ 
+\FOR{$i = 1,2,\dots,k-1$}
+\IF{neither $x_i$ nor $y_i$ are DC}
+\STATE \textbf{return} 1 if $x_i>y_i$ or -1 if $x_i<y_i$
+\ELSIF{$y_i$ is DC}
+\STATE \textbf{return} 1
+\ELSIF{$x_i$ is DC}
+\STATE \textbf{return} -1
+\ENDIF
+\ENDFOR
+\FOR{$i = k,k+1,\dots,c$}
+\STATE \textbf{return} 1 if $x_i>y_i$ , -1 if $x_i<y_i$
+\ENDFOR
+\STATE \textbf{return} 0 
+\end{algorithmic}
+}
+\caption{\label{algo:dcsort}The \textsc{DCSort} heuristic %\daniel{I tried to clean up further the pseudocode.}%\daniel{Pseudocode was buggy as remarked by Owen. }
+%\owen{wonder whether we should revisit our for loop pseudocode syntax, which
+%suggests that $i$ could take values from the set in any order.}\daniel{Fixed.}
+}
+
+\end{algorithm}
+
+
+% subsection algorithms (end)
+
+\section{Procedure} % (fold)
+\label{sec:procedure}
+
+% section procedure (end)
 
 % section algorithms_and_procedures (end)
 
