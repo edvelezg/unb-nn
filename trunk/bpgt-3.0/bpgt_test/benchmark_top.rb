@@ -85,7 +85,7 @@ info = []
 Benchmark.bm do |x|
   for nrn_cnt in 1..nrns_cnt
     # info is [best_iteration, net.best_error, seed, net.best_weights]
-    x.report("nrns cnt:#{nrn_cnt} ") { info << run_with_cnt_nrns(iterations, 5, norm_file, nrn_cnt) }
+    x.report("#{nrn_cnt}\t") { info << run_with_cnt_nrns(iterations, 5, norm_file, nrn_cnt) }
   end
 end
 
