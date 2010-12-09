@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+gnuplot "time-itrns.gnuplot"
+gnuplot "time-nrn-cnt.gnuplot"
+
 rm training.gnuplot    
 rm output.gnuplot
 
