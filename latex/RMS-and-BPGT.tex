@@ -1,0 +1,145 @@
+\documentclass[11pt]{article}
+
+\usepackage[numbers,sort&compress]{natbib}  
+%% Daniel added this, should help citations look nicer. You may need to delete temp files and rebuild the latex document from a clean start.
+
+\newcommand{\daniel}[1]{{\textbf{{\small{\color{magenta}DL}: #1{\color{magenta}$\circ$}}}}} 
+\newcommand{\owen}[1]{\textbf{{\small{\color{red}OK}: #1{\color{red}$\circ$}}}} 
+\newcommand{\ed}[1]{\textbf{{\small{\color{blue}ED}: #1{\color{blue}$\circ$}}}}
+
+%\renewcommand{\daniel}[1]{}
+%\renewcommand{\owen}[1]{}
+%\renewcommand{\ed}[1]{}
+
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+% Setup for fullpage use
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage{subfig}
+\usepackage{hyperref}
+\usepackage{algorithmic}
+
+% Uncomment some of the following if you use the features
+%
+% Running Headers and footers
+%\usepackage{fancyhdr}
+
+% Multipart figures
+%\usepackage{subfigure}
+
+% More symbols
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+%\usepackage{latexsym}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\pdffalse % we are not running PDFLaTeX
+%\else
+%\pdfoutput=1 % we are running PDFLaTeX
+%\pdftrue
+%\fi
+
+% \ifpdf
+\usepackage[pdftex]{graphicx}
+% \else
+% \usepackage{graphicx}
+% \fi
+
+\title{RMS and Backpropagation for Neural Networks}
+\author{Eduardo Gutarra}
+
+% \date{2010--06--13}
+
+\begin{document}
+	
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+	
+\maketitle
+	
+\section{Introduction} % (fold)
+\label{sec:introduction}
+
+Introduction
+
+% section introduction (end)
+
+
+\section{Algorithms and Procedures} % (fold)
+\label{sec:algorithms_and_procedures}
+$E$ is a set of examples
+$e$ is a single example
+$I(e)$ set of inputs in a single example
+$T(e)$ set of target outputs for a given example
+$O(e)$ are the target outputs of the example
+Each iteration of this loop we will call an epoch
+
+\begin{algorithmic}
+	\FOR {$e \in E$} 
+		\STATE $O(e) \gets$ FeedForward($I(e)$)
+		\STATE CalculateOutputDeltas($O(e)$, $T(e)$)
+		\STATE CalculateInternalDeltas
+		\STATE UpdateWeights
+	\ENDFOR
+\end{algorithmic}
+
+% section algorithms_and_procedures (end)
+
+\section{Results} % (fold)
+\label{sec:results}
+
+\subsection{Time Complexity} % (fold)
+\label{sub:time_complexity}
+
+To determine the number of operations performed in each epoch of the learning algorithm we count the weights between the layers of the
+neural network. To do this we consider that the number of weights between two layers of neurons is the product of the number of neurons
+of each layer. Therefore the total number of weights for the entire network is $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ where $N_{i}$ is the
+number of neurons in each layer, and $n$ is the total number of layers. For the backpropagation algorithm we obtained that the number
+of operations in a single epoch depends on the number of weights and bias. Therefore it has linear complexity $O(n)$ with respect to
+the number of neurons. In the RMS algorithm the number of operations in a single epoch of the RMS algorithm is squared because we run
+the feedforward algorithm for each change we do on a single weight.
+
+% subsection time_complexity (end)
+
+% section results (end)
+
+\section{Discussion} % (fold)
+\label{sec:discussion}
+
+% section discussion (end)
+
+\section{Conclusion} % (fold)
+\label{sec:conclusion}
+
+% section conclusion (end)
+
+\section{Experiments} % (fold)
+\label{sec:experiments}
+
+These are the experiments
+
+% section experiments (end)
+	
+    
+\bibliographystyle{plain}
+\bibliography{../../bib/lemur}
+\end{document} 
