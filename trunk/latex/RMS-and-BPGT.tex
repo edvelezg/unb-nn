@@ -111,7 +111,6 @@ Backpropagation is a method of supervised learning. It is used to train our feed
 algorithm we provide it with both sample inputs and expected or target outputs. The expected outputs are then compared against the
 target outputs for a given sample. Using the target outputs, the backpropagation training algorithm then calculates error and adjusts the weights of the various layers backwards from the output layer to the input layer.
 
-
 % section introduction (end)
 
 
@@ -133,58 +132,62 @@ $T(e)$ set of target outputs for a given example
 $O(e)$ are the target outputs of the example
 Each iteration of this loop we will call an epoch
 
-\begin{algorithmic}
+% \begin{algorithmic}
+% 	\FOR {$e \in E$} 
+% 		\STATE $O(e) \gets$ FeedForward($I(e)$)
+% 		\STATE CalculateOutputDeltas($O(e)$, $T(e)$)
+% 		\STATE CalculateInternalDeltas
+% 		\STATE UpdateWeights
+% 	\ENDFOR
+% \end{algorithmic}
+
+% \begin{algorithm}
+% {
+% \begin{algorithmic}[1]
+% \STATE \textbf{input:}  Unsorted table $t$ with $n$ rows and $c$ columns.
+% \STATE \textbf{output:} a sorted table
+% \STATE Form
+% $K$~different versions of $t$, sorted differently: $t^{(1)},t^{(2)},\dots, t^{(K)}$ 
+% 
+% \STATE $\beta \leftarrow $ empty list
+% \STATE pick an element in $t^{(1)}$ randomly, add it to $\beta$ and remove it from all $t^{(i)}$'s
+% \WHILE{$\mathrm{size}(\beta)<n$ }
+% \STATE let $r$ be the latest element added to $\beta$
+% \STATE Given $i\in \{1,2,\dots,K\}$, there are up to two neighbors in sorted order within list $t^{(i)}$; out of up to $2K$ such neighbors, pick a nearest neighbor $r'$ to $r$ in Hamming distance.
+% \STATE Add $r'$ to $\beta$ and remove it from all $t^{(i)}$'s
+% \ENDWHILE
+% \STATE \textbf{return} $\beta$
+% \end{algorithmic}
+% }
+% \caption{\label{algo:multiplelists}The \textsc{Multiple Lists} heuristic}
+
+\begin{algorithm}
+{
+	\textbf{Main algorithm:}
+\begin{algorithmic}[1]
+% \STATE \textbf{input:} a table $t$ and a block size $p$
+% \STATE \textbf{output:} a sorted table
+% %\STATE $\alpha \leftarrow $the columns in non-decreasing order of cardinality
+% %\STATE $\beta \leftarrow $ empty list \owen{beta is unused}\daniel{leftover from a copy/paste?}
+% \STATE each value in each tuple is assigned a Boolean value (initially false) indicating whether the value is DC
+% \FOR{$k=1,2,\dots, c-1$}
+% %\STATE append column $k$ to list $\beta$
+% \STATE sort table $t$ %on the first $k$~columns %\owen{$\beta$, else $\beta$ unused} %the first $k$~columns 
+% using the DC order with parameter $k$ (see below)
+% \FOR{every run of identical values in column $k$}
+% \STATE Mark %$x-\lfloor x/p \rfloor p$~values 
+%                                        $x \bmod p$~values 
+% as DC where $x$ is the length of the run 
+% \ENDFOR
+% \ENDFOR
+% \STATE sort $t$ using the DC order with $k=c$
+% \STATE \textbf{return} $t$
 	\FOR {$e \in E$} 
 		\STATE $O(e) \gets$ FeedForward($I(e)$)
 		\STATE CalculateOutputDeltas($O(e)$, $T(e)$)
 		\STATE CalculateInternalDeltas
 		\STATE UpdateWeights
 	\ENDFOR
-\end{algorithmic}
-
-\begin{algorithm}
-{
-\begin{algorithmic}[1]
-\STATE \textbf{input:}  Unsorted table $t$ with $n$ rows and $c$ columns.
-\STATE \textbf{output:} a sorted table
-\STATE Form
-$K$~different versions of $t$, sorted differently: $t^{(1)},t^{(2)},\dots, t^{(K)}$ 
-
-\STATE $\beta \leftarrow $ empty list
-\STATE pick an element in $t^{(1)}$ randomly, add it to $\beta$ and remove it from all $t^{(i)}$'s
-\WHILE{$\mathrm{size}(\beta)<n$ }
-\STATE let $r$ be the latest element added to $\beta$
-\STATE Given $i\in \{1,2,\dots,K\}$, there are up to two neighbors in sorted order within list $t^{(i)}$; out of up to $2K$ such neighbors, pick a nearest neighbor $r'$ to $r$ in Hamming distance.
-\STATE Add $r'$ to $\beta$ and remove it from all $t^{(i)}$'s
-\ENDWHILE
-\STATE \textbf{return} $\beta$
-\end{algorithmic}
-}
-\caption{\label{algo:multiplelists}The \textsc{Multiple Lists} heuristic}
-
-\end{algorithm}
-
-\begin{algorithm}
-{
-	\textbf{Main algorithm:}
-\begin{algorithmic}[1]
-\STATE \textbf{input:} a table $t$ and a block size $p$
-\STATE \textbf{output:} a sorted table
-%\STATE $\alpha \leftarrow $the columns in non-decreasing order of cardinality
-%\STATE $\beta \leftarrow $ empty list \owen{beta is unused}\daniel{leftover from a copy/paste?}
-\STATE each value in each tuple is assigned a Boolean value (initially false) indicating whether the value is DC
-\FOR{$k=1,2,\dots, c-1$}
-%\STATE append column $k$ to list $\beta$
-\STATE sort table $t$ %on the first $k$~columns %\owen{$\beta$, else $\beta$ unused} %the first $k$~columns 
-using the DC order with parameter $k$ (see below)
-\FOR{every run of identical values in column $k$}
-\STATE Mark %$x-\lfloor x/p \rfloor p$~values 
-                                       $x \bmod p$~values 
-as DC where $x$ is the length of the run 
-\ENDFOR
-\ENDFOR
-\STATE sort $t$ using the DC order with $k=c$
-\STATE \textbf{return} $t$
 \end{algorithmic}
 }
 %\hrule
@@ -208,12 +211,17 @@ as DC where $x$ is the length of the run
 \STATE \textbf{return} 0 
 \end{algorithmic}
 }
-\caption{\label{algo:dcsort}The \textsc{DCSort} heuristic %\daniel{I tried to clean up further the pseudocode.}%\daniel{Pseudocode was buggy as remarked by Owen. }
+\caption{\label{algo:dcsort}The Backpropagation Training Algorithm %\daniel{I tried to clean up further the pseudocode.}%\daniel{Pseudocode was buggy as remarked by Owen. }
 %\owen{wonder whether we should revisit our for loop pseudocode syntax, which
 %suggests that $i$ could take values from the set in any order.}\daniel{Fixed.}
 }
 
 \end{algorithm}
+
+
+%\owen{wonder whether we should revisit our for loop pseudocode syntax, which
+%suggests that $i$ could take values from the set in any order.}\daniel{Fixed.}
+
 
 
 % subsection algorithms (end)
@@ -225,7 +233,7 @@ as DC where $x$ is the length of the run
 
 % section algorithms_and_procedures (end)
 
-\section{Results} % (fold)
+\section{Experiments and Results} % (fold)
 \label{sec:results}
 
 \subsection{Time Complexity} % (fold)
@@ -243,23 +251,10 @@ the feedforward algorithm for each change we do on a single weight.
 
 % section results (end)
 
-\section{Discussion} % (fold)
-\label{sec:discussion}
-
-% section discussion (end)
-
 \section{Conclusion} % (fold)
 \label{sec:conclusion}
 
-% section conclusion (end)
-
-\section{Experiments} % (fold)
-\label{sec:experiments}
-
-These are the experiments
-
-% section experiments (end)
-	
+% section conclusion (end)	
     
 \bibliographystyle{plain}
 \bibliography{../../bib/lemur}
