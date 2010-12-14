@@ -1,4 +1,4 @@
-# Author::    Sergio Fierens
+# Author::    Sergio Fierens # Edited by:: Eduardo Gutarra
 # License::   MPL 1.1
 # Project::   ai4r
 # Url::       http://ai4r.rubyforge.org/
