@@ -81,14 +81,33 @@
 \label{sec:introduction}
 
 Artificial Neural networks are computational models that mimic the architecture the structure and/or functional aspects of biological
-neural networks such as the human brain. They are made up of multiple processing elements called neurons which are largely
-interconnected. These neurons work in parallel to perform various complex tasks. Our interest in this report is confined to a class of
-neural networks which emulate the process of learning. These neural networks are characterized by properties and capabilities which
-include 1. nonlinearity, 2. Input-Output mapping, and 3 adaptivity. Neural networks can make predictions when similar patterns or new
-patterns are presented. Neural networks have applications in natural speech recognition, something, something among others.
+neural networks such as the human brain. They are comprised of multiple processing elements called neurons which are interconnected
+through links. Often, these links have a weights associated to them called synaptic weights. These weights scale the signals received
+for different neurons, allowing emphasis on certain features of the patterns processed. Neurons are also often grouped together in
+layers or slabs. Neural networks may be composed of 1 or more layers. These neurons work in parallel to perform various complex tasks.
+Each Neuron aggregates input that is scales the synaptic weights and calculates an output with an activation function. The inputs to
+the neuron may be outputs from other neurons or the environment.
 
-In this report we will examine two different algorithms for training feedforward neural networks. One algorithm is the Backpropagation
-algorithm and the other is the Root Mean Square (RMS) Minimization algorithm.
+Neural networks possess important advantages and capabilities as computational models those include their capability to solve problems
+of nonlinear nature, input-output mapping and adaptivity~\cite{Haykin:1994:NNC:541500}. They have also been applied successfully in the
+following categories of applications:
+
+\begin{itemize}
+\item Function approximation or regression analysis
+\item Classification, including pattern and sequence recognition, novelty detection and sequential decision making.
+\item Data processing, including filtering, clustering, blind signal separation and compression.
+\end{itemize}
+
+The processing of a neural network begins when an external pattern made up of signal is captured by an input layer.
+
+One of the greatest advantages of using a neural network is that we do not program it with a configuration to solve a problem. It is
+actually programmed to learn and adapt to solve a problem. Neural networks have two types of learning supervised and unsupervised
+learning. Supervised learning consists in giving a network a set of points and allowing to correct its prediction by giving it the
+expected output. UNsupervised learning is often used when the network cannot be provided with a target output.
+
+Our interest in this report is confined to a class of neural networks which emulate the process of learning. In this report we will
+examine two different algorithms for training feedforward neural networks. One algorithm is the Backpropagation algorithm and the other
+is the Root Mean Square (RMS) Minimization algorithm.
 
 \section{Feedforward Neural Networks} % (fold)
 \label{sec:feedforward_neural_networks}
@@ -96,6 +115,13 @@ algorithm and the other is the Root Mean Square (RMS) Minimization algorithm.
 In a feedforward neural network only neurons of adjacent layers are interconnected and the orientation is always forward. Neurons are
 only interconnected forwards. Every layer of the neural network has connections to the next layer but there are no connections
 backward.
+
+The feed forward neural network begins with an input layer which may be connected to a hidden layer or directly to an output layer. In
+a feedforward neural network adjacent layers of neurons are interconnected. The first layer is the input layer which directly connects
+to the external environment through which the input patterns are presented to the network. The last layer is the output layer which
+produces the output pattern to the external environment. All other layers are considered hidden layers, and may or may not be present.
+The input layer provides the means through which the external environment can affect it.
+
 
 The backpropagation and feedforward algorithms are often used together; howev- er, this is by no means a requirement. It would be quite
 permissible to create a neural network that uses the feedforward algorithm to determine its output and does not use the backpropagation
@@ -253,9 +279,12 @@ the feedforward algorithm for each change we do on a single weight.
 
 \section{Conclusion} % (fold)
 \label{sec:conclusion}
+The Backpropagation algorithm has time complexity within $O(n)$, which is faster than the RMS Minimization algorithm with a time complexity of $O(n^{2})$ when varying the number of neurons in the middle layer.
+The Backpropagation algorithm reached a smaller error for the simple examples that the RMS Minimization algorithm.
+As observed in some results, the neural network may get stuck in local minima unable to arrive to better solutions. We noticed this in both the Backpropagation and RMS Minimization algorithms.
 
 % section conclusion (end)	
     
 \bibliographystyle{plain}
-\bibliography{../../bib/lemur}
+\bibliography{../bib/eds}
 \end{document} 
