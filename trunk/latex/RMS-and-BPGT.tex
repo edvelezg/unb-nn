@@ -20,7 +20,7 @@
 \usepackage{color}
 \usepackage{subfig}
 \usepackage{hyperref}
-\usepackage{algorithm}
+\usepackage[noend]{algorithm2e}
 \usepackage{algorithmic}
 
 % Uncomment some of the following if you use the features
@@ -119,9 +119,32 @@ backwards.
 The feed forward neural network begins with an input layer which may be connected to a hidden layer or directly to an output layer. The
 first layer is the input layer. It directly connects to the external environment through which the input patterns are presented to the
 network. The last layer is the output layer which produces the output pattern to the external environment. All other layers are
-considered hidden layers, and may or may not be present. The input layer provides the means through which the external environment can
-affect it.
+considered hidden and may or may not be present. The input layer provides the means through which the external environment can
+affect it. (see Algorithm~\ref{alg:feedforward})
 
+\begin{algorithm}% [H]
+\KwIn{Set of inputs from the environment}
+\KwOut{Set of output values calculated by the feedforward neural network}
+\SetLine
+\ForEach{layer from the first non-input layer to the output,}
+{
+	\ForEach{unit on the current layer,}
+	{
+		Set the accumulated input value for this unit to zero\;
+			\ForEach{ input connection to this unit,} 
+			{
+				Compute the modulated input across this connection\;
+				Add the modulated input to the accumulated input\;
+			}
+		Convert the accumulated input to its corresponding output\;
+		Store the output value for the unit in the layer structure\;
+	}
+	Return the output values from the top-most layer structure\;
+}
+
+\caption{The Feedforward algorithm (taken from~\cite{skapura})}
+\label{alg:feedforward}
+\end{algorithm}
 
 
 % section feedforward_neural_networks (end)
@@ -137,7 +160,7 @@ affect it.
 
 % subsection data_structure (end)
 
-\subsection{Algorithms} % (fold)
+\subsection{Algorithms} % (fold)r
 \label{sub:algorithms}
 
 \subsection{Backpropagation training algorithm} % (fold)
@@ -209,7 +232,7 @@ Each iteration of this loop we will call an epoch
 % \ENDFOR
 % \STATE sort $t$ using the DC order with $k=c$
 % \STATE \textbf{return} $t$
-	\FOR {$e \in E$} 
+	\FOR {\textbf{each} $e \in E$} 
 		\STATE $O(e) \gets$ FeedForward($I(e)$)
 		\STATE CalculateOutputDeltas($O(e)$, $T(e)$)
 		\STATE CalculateInternalDeltas
