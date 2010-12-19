@@ -86,11 +86,13 @@ through links. Often, these links have a weights associated to them called synap
 for different neurons, allowing the network to process patterns to generate an output pattern. Neurons are often grouped together in
 layers or slabs and a neural network may be composed of 1 or more of these~\cite{skapura}.
 
-These neurons work in parallel to perform various complex tasks. Each Neuron aggregates input that is scales the synaptic weights and
-calculates an output with an activation function. The inputs to the neuron may be outputs from other neurons or the environment. Neural
-networks possess important advantages and capabilities as computational models those include their capability to solve problems of
-nonlinear nature, input-output mapping and adaptivity~\cite{Haykin:1994:NNC:541500}. They have also been applied successfully in the
-following categories of applications:
+These neurons work in parallel to perform various complex tasks. Each Neuron aggregates input that is scaled by the synaptic weights and
+calculates an output through an activation function. The inputs to the neuron may be outputs from other neurons or the environment.
+Neural networks possess important advantages and capabilities as computational models. Among these include their ability to solve
+problems of nonlinear nature, their ability to do input-output mapping through a learning process and adaptation to new
+situations~\cite{Haykin:1994:NNC:541500}.
+
+They have also been applied successfully in the following categories of applications:
 
 \begin{itemize}
 \item Function approximation or regression analysis
@@ -106,7 +108,7 @@ learning. Supervised learning consists in giving a network a set of points and a
 expected output. Unsupervised learning is often used when the network cannot be provided with a target output.
 
 Our interest in this report is confined to a class of neural networks which emulate the process of learning. In this report we will
-examine two different algorithms for training feedforward neural networks. One algorithm is the Backpropagation algorithm and the other
+examine two different algorithms for training feedforward neural networks. One algorithm is the Back-propagation algorithm and the other
 is the Root Mean Square (RMS) Minimization algorithm.
 
 \section{Feedforward Neural Networks} % (fold)
@@ -157,6 +159,8 @@ affect it. (see Algorithm~\ref{alg:feedforward})
 \subsection{Data Structure} % (fold)
 \label{sub:data_structure}
 
+The data structures we used 
+
 % subsection data_structure (end)
 
 \subsection{Algorithms} % (fold)r
@@ -172,10 +176,11 @@ affect it. (see Algorithm~\ref{alg:feedforward})
 \ForEach{ example $e$ in a set of examples $E$}
 {
 	Calculate $O(e)$ for $I(e)$ with feedforward (see Algorithm~\ref{alg:feedforward})\;
-	call function CalculateOutputDeltas($O(e)$, $T(e)$)\;
-	call function CalculateInternalDeltas\;
-	call function UpdateWeights\;
+	Call function CalculateOutputDeltas($O(e)$, $T(e)$)\;
+	Call function CalculateInternalDeltas\;
+	Call function UpdateWeights\;
 }
+\textbf{CalculateInternalDeltas:}
 
 \caption{The Feedforward algorithm (Taken from~\cite{skapura})}
 \label{alg:feedforward}
