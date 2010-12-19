@@ -89,7 +89,8 @@ together in layers or slabs and a neural network may be composed of 1 or more of
 neural network is illustrated in Figure~\ref{fig:figures_ffwdnn}.
 
 The overall behavior of the neural network is determined by the individual behavior of each neuron. A neuron gathers input from the
-external environment or neighboring neurons that are connected to it. The neuron then aggregates the modulated input and passes that information to an activation function.
+external environment or neighboring neurons that are connected to it. It then aggregates the modulated input and passes that information
+to an activation function.
 
 Neural networks possess important advantages and capabilities as computational models. Among these include their ability to: solve
 problems of nonlinear nature, perform input-output mapping through a learning process, adaptation to new situations, and their inherent
@@ -130,10 +131,12 @@ network has connections to the next layer and there are no connections oriented 
 The feedforward neural network begins with an input layer which may be connected to a hidden layer or directly to an output layer. The
 first layer is the input layer. It connects directly to the external environment and captures the input patterns presented to the
 network. The last layer is the output layer which produces the output pattern to the external environment. All other layers are
-considered hidden and may or may not be present.
+considered hidden and may or may not be present. The signal received is modulated by the weighting value of the connection. The
+modulated inputs are then integrated. (summed). An activation value is determined. (I don’t understand how? Separate function F they
+don’t talk much about.) ai(t) = Fi(ai(t-1), net_i(t)). F is not activation function!
 
 The processing of a feedforward neural network begins when an external pattern made up of signals is captured by an input layer (see
-Algorithm~\ref{alg:feedforward}).
+Algorithm~\ref{alg:feedforward}). Each unit receives stimulation from other units, except the input layer.
 
 \begin{algorithm}% [H]
 \KwIn{Set of inputs from the environment}
@@ -173,10 +176,11 @@ Algorithm~\ref{alg:feedforward}).
 We do not have to implement neural networks to study them, it is possible to simulate their execution to solve problems in a computer.
 We build data structures in order to represent the neural network. A neural network can be thought of as a directed graph, where the
 neurons are nodes, and the synaptic weights are the arcs of the graph. Because we focus on feed-forward networks, our graphs can further
-be simplified, and do not require a full matrix to represent all possible connections between the neurons. Instead we use a list of
-matrices where each matrix stores the synaptic weights of the incoming connections of neurons in the previous layer to neurons in the current layer (see Figure~\ref{fig:}).
+be specified as directed acyclic graphs. This graphs do not require a full matrix to represent all possible connections between the
+neurons. Instead we use a list of matrices where each matrix stores the synaptic weights of the incoming connections of neurons in the
+previous layer to neurons in the current layer (see Figure~\ref{fig:}). 
 
-
+We may also add an additional free parameter that does not link to other neuron, and has a constant input. This parameter is called the bias, and allows the neural network 
 % subsection data_structure (end)
 
 \subsection{Algorithms} % (fold)r
@@ -329,10 +333,10 @@ likewise feedforward networks may be trained with other methods. In this report,
 To determine the number of operations performed in each epoch of the learning algorithm we count the weights between the layers of the
 neural network. To do this we consider that the number of weights between two layers of neurons is the product of the number of neurons
 of each layer. Therefore the total number of weights for the entire network is $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ where $N_{i}$ is the
-number of neurons in each layer, and $n$ is the total number of layers. For the backpropagation algorithm we obtained that the number
-of operations in a single epoch depends on the number of weights and bias. Therefore it has linear complexity $O(n)$ with respect to
-the number of neurons. In the RMS algorithm the number of operations in a single epoch of the RMS algorithm is squared because we run
-the feedforward algorithm for each change we do on a single weight.
+number of neurons in each layer, and $n$ is the total number of layers. For the back-propagation algorithm we obtained that the number
+of operations in a single epoch depends on the number of weights and bias. Therefore it has linear complexity $O(n)$ with respect to the
+number of neurons. In the RMS algorithm the number of operations in a single epoch of the RMS algorithm is squared because we run the
+feedforward algorithm for each change we do on a single weight.
 
 % subsection time_complexity (end)
 
