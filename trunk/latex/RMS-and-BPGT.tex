@@ -82,47 +82,55 @@
 
 Artificial neural networks are computational models that mimic the architecture, structure and/or functional aspects of biological
 neural networks such as the human brain. They are comprised of multiple processing elements called neurons which are interconnected
-through links. Often, these links have a weights associated to them called synaptic weights. These weights scale the signals received
-for different neurons, allowing the network to process patterns to generate an output pattern. Neurons are often grouped together in
-layers or slabs and a neural network may be composed of 1 or more of these~\cite{skapura}.
+through links. Often, these links have weights associated to them called synaptic weights. These weights scale the signals received from
+different neurons, allowing the network to process patterns and generate an output pattern. The synaptic weights are free parameters
+that may be changed, allowing the neural network to change its behavior. In artificial neural networks, neurons are often grouped
+together in layers or slabs and a neural network may be composed of 1 or more of these~\cite{skapura}. As an example, a feedforward
+neural network is illustrated in Figure~\ref{fig:figures_ffwdnn}.
 
-These neurons work in parallel to perform various complex tasks. Each Neuron aggregates input that is scaled by the synaptic weights and
-calculates an output through an activation function. The inputs to the neuron may be outputs from other neurons or the environment.
-Neural networks possess important advantages and capabilities as computational models. Among these include their ability to solve
-problems of nonlinear nature, their ability to do input-output mapping through a learning process and adaptation to new
-situations~\cite{Haykin:1994:NNC:541500}.
+Neural networks possess important advantages and capabilities as computational models. Among these include their ability to: solve
+problems of nonlinear nature, perform input-output mapping through a learning process, adaptation to new situations, and their inherent
+parallelism~\cite{Haykin:1994:NNC:541500}. One of the greatest advantages of using a neural network is that we do not program it with a
+configuration to solve a problem. It is actually programmed to learn and adapt to solve a problem. Neural networks have two types of
+learning supervised and unsupervised learning. Supervised learning consists in giving a network a set of points and allowing to correct
+its prediction by giving it the expected output. Unsupervised learning is often used when the network cannot be provided with a target
+output, and therefore works with evolutionary models.
 
-They have also been applied successfully in the following categories of applications:
-
-\begin{itemize}
-\item Function approximation or regression analysis
-\item Classification, including pattern and sequence recognition, novelty detection and sequential decision making.
-\item Data processing, including filtering, clustering, blind signal separation and compression.
-\end{itemize}
-
-The processing of a neural network begins when an external pattern made up of signals is captured by an input layer.
-
-One of the greatest advantages of using a neural network is that we do not program it with a configuration to solve a problem. It is
-actually programmed to learn and adapt to solve a problem. Neural networks have two types of learning supervised and unsupervised
-learning. Supervised learning consists in giving a network a set of points and allowing to correct its prediction by giving it the
-expected output. Unsupervised learning is often used when the network cannot be provided with a target output.
+Even though biological neurons are 6 orders of magnitude slower than the integrated circuits found in today's computer processors. They
+work as a massively parallel system allowing efficient solutions to complex problems such as facial recognition. These problems are
+still a challenge today for artificial neural networks. Today's artificial neural networks have been successfully applied in
+applications such as: Function approximation or regression analysis and Classification, including pattern and sequence recognition among
+others.
 
 Our interest in this report is confined to a class of neural networks which emulate the process of learning. In this report we will
 examine two different algorithms for training feedforward neural networks. One algorithm is the Back-propagation algorithm and the other
 is the Root Mean Square (RMS) Minimization algorithm.
 
+\begin{figure}[]
+	\centering
+		\subfloat[\label{fig:figures_ffwdnn} A feedforward neural network with labeled constituents]{	
+				\includegraphics[height=0.30\columnwidth]{figures/ffwdnn.pdf}
+		}
+		\subfloat[\label{fig:figures_Neuron} A neuron and its constituents]{	
+				\includegraphics[height=0.25\columnwidth]{figures/Neuron.pdf}
+		}
+		\caption{feedforward neural network and its processing element the neuron}
+	\label{fig:figures_ffwdnn_Neuron}	
+\end{figure}
+
 \section{Feedforward Neural Networks} % (fold)
 \label{sec:feedforward_neural_networks}
 
-In a feedforward neural network only neurons of adjacent layers are interconnected and the orientation is always forward. Neurons are
-only interconnected forwards. Every layer of the neural network has connections to the next layer and there are no connections oriented
-backwards.
+In a feedforward neural network only neurons of adjacent layers are interconnected with synaptic weights. Each layer of the neural
+network has connections to the next layer and there are no connections oriented backwards.
 
-The feed forward neural network begins with an input layer which may be connected to a hidden layer or directly to an output layer. The
-first layer is the input layer. It directly connects to the external environment through which the input patterns are presented to the
+The feedforward neural network begins with an input layer which may be connected to a hidden layer or directly to an output layer. The
+first layer is the input layer. It connects directly to the external environment and captures the input patterns presented to the
 network. The last layer is the output layer which produces the output pattern to the external environment. All other layers are
-considered hidden and may or may not be present. The input layer provides the means through which the external environment can
-affect it. (see Algorithm~\ref{alg:feedforward})
+considered hidden and may or may not be present.
+
+The processing of a feedforward neural network begins when an external pattern made up of signals is captured by an input layer (see
+Algorithm~\ref{alg:feedforward}).
 
 \begin{algorithm}% [H]
 \KwIn{Set of inputs from the environment}
@@ -159,10 +167,11 @@ affect it. (see Algorithm~\ref{alg:feedforward})
 \subsection{Data Structure} % (fold)
 \label{sub:data_structure}
 
-We do not implement the neural network but we simulate it in a computer. We build data structures in order to represent the neural
-network. A neural network can be thought of as a directed graph, where the neurons are nodes, and the synaptic weights are the arcs of
-the graph. Because we focus on feed-forward networks, our graphs can further be simplified, and we do not require a full matrix to
-represent all connections between the neurons.
+We do not have to implement neural networks to study them, it is possible to simulate their execution to solve problems in a computer.
+We build data structures in order to represent the neural network. A neural network can be thought of as a directed graph, where the
+neurons are nodes, and the synaptic weights are the arcs of the graph. Because we focus on feed-forward networks, our graphs can further
+be simplified, and do not require a full matrix to represent all possible connections between the neurons. Instead we use a list of
+matrices where each matrix stores the synaptic weights of the incoming connections of neurons in the previous layer to neurons in the current layer (see Figure~\ref{fig:}).
 
 
 % subsection data_structure (end)
@@ -190,21 +199,20 @@ represent all connections between the neurons.
 \label{alg:feedforward}
 \end{algorithm}
 
-Backpropagation is a method of supervised learning. It is used to train our feedforward neural network. To use the backpropagation
+Back-propagation is a method of supervised learning. It is used to train our feedforward neural network. To use the back-propagation
 algorithm we provide it with both example inputs and target outputs. The outputs generated by the neural network are then compared
-against the target outputs of the given example. Using the target outputs, the backpropagation training algorithm then calculates error
+against the target outputs of the given example. Using the target outputs, the back-propagation training algorithm then calculates error
 and adjusts the weights of the various layers backwards from the output layer to the input layer.
 
-Backpropagation is often used to train feedforward neural networks; however it can be used to train other types of networks, and
-likewise feedforward networks may be trained with other methods. In this report, we only examine the case where the backpropagation
-training algorithm is applied to a feedforward neural network.
+Back-propagation is often used to train feedforward neural networks; however it can be used to train other types of networks, and
+likewise feedforward networks may be trained with other methods. In this report, we only examine the case where back-propagation is used to train a feedforward neural network.
 
-$E$ is a set of examples
-$e$ is a single example
-$I(e)$ set of inputs in a single example
-$T(e)$ set of target outputs for a given example
-$O(e)$ are the target outputs of the example
-Each iteration of this loop we will call an epoch
+% $E$ is a set of examples
+% $e$ is a single example
+% $I(e)$ set of inputs in a single example
+% $T(e)$ set of target outputs for a given example
+% $O(e)$ are the target outputs of the example
+% Each iteration of this loop we will call an epoch
 
 % \begin{algorithmic}
 % 	\FOR {$e \in E$} 
@@ -265,11 +273,10 @@ Each iteration of this loop we will call an epoch
 \end{algorithmic}
 }
 %\hrule
-\textbf{DC order:}
+\textbf{CalculateOutputDeltas:}
 {
 \begin{algorithmic}[1]
-\STATE \textbf{input:} two $c$-tuples $x,y$, each component of each tuple might be marked as DC; a positive integer $k$ (we assume $k-1\leq c$)
-\STATE \textbf{output:} 1,0,-1 depending on whether $x$ is greater, equal or smaller than $y$ 
+\STATE \textbf{input:} expected output for an example $T(e)$ and output $O(e)$ obtained from the feedforward function with example $e$ 
 \FOR{$i = 1,2,\dots,k-1$}
 \IF{neither $x_i$ nor $y_i$ are DC}
 \STATE \textbf{return} 1 if $x_i>y_i$ or -1 if $x_i<y_i$
