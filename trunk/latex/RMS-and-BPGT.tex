@@ -126,17 +126,19 @@ is the Root Mean Square (RMS) Minimization algorithm.
 \label{sec:feedforward_neural_networks}
 
 In a feedforward neural network only neurons of adjacent layers are interconnected with synaptic weights. Each layer of the neural
-network has connections to the next layer and there are no connections oriented backwards.
+network has connections to the next layer and there are no connections oriented backwards. The feedforward neural network begins with an
+input layer which may be connected to a hidden layer or directly to an output layer. The first layer is the input layer. It connects
+directly to the external environment and captures the input patterns presented to the network. The last layer is the output layer which
+produces the output pattern to the external environment. All other layers are considered hidden and may or may not be present.
 
-The feedforward neural network begins with an input layer which may be connected to a hidden layer or directly to an output layer. The
-first layer is the input layer. It connects directly to the external environment and captures the input patterns presented to the
-network. The last layer is the output layer which produces the output pattern to the external environment. All other layers are
-considered hidden and may or may not be present. The signal received is modulated by the weighting value of the connection. The
-modulated inputs are then integrated. (summed). An activation value is determined. (I don’t understand how? Separate function F they
-don’t talk much about.) ai(t) = Fi(ai(t-1), net_i(t)). F is not activation function!
-
-The processing of a feedforward neural network begins when an external pattern made up of signals is captured by an input layer (see
-Algorithm~\ref{alg:feedforward}). Each unit receives stimulation from other units, except the input layer.
+The processing of a feedforward neural network begins when an external pattern made is copied to the input layer. The neurons of the
+input layer communicate the pattern to the following layers through synapses. The pattern is then received by neurons of non-input
+layers and modulated by the weight of their connections. We denote weights as $W_{jk}$, where $j$ is the neighbor neuron, and $k$ is the
+neuron . Each neuron receives stimulation from other neurons, except the input layer which captures the pattern. Once the inputs are
+modulated, they are integrated and an activation value is determined. Often the activation value is just the integration of the
+modulated inputs, but may also be a function $F_{i}(a_{i}(t-1), net_{i}(t))$, where $a_{i}(t-1)$ is the activation at the previous time
+step and $net_{i}(t)$ is the integration of modulated inputs. (see Algorithm~\ref{alg:feedforward}
+)
 
 \begin{algorithm}% [H]
 \KwIn{Set of inputs from the environment}
