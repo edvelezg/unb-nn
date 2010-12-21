@@ -200,7 +200,7 @@ We may also add an additional free parameter that does not link to other neuron,
 \SetLine
 \ForEach{ example $e$ in a set of examples $E$}
 {
-	Calculate $O(e)$ for $I(e)$ with feedforward (see Algorithm~\ref{alg:feedforward})\;
+	Calculate $O(e)$ for $I(e)$ with feedforward (refer to Algorithm~\ref{alg:feedforward})\;
 	Call function CalculateOutputDeltas($O(e)$, $T(e)$)\;
 	Call function CalculateInternalDeltas\;
 	Call function UpdateWeights\;
@@ -211,9 +211,44 @@ We may also add an additional free parameter that does not link to other neuron,
 Get output values $O(e)$ from the output layer neurons\;
 \ForEach{ individual output value $O(e)_i$ }
 {
-	Calculate \textbf{error} as $O(e)_i$ - $T(e)_i$\;
-	Calculate \textbf{error} as $O(e)_i$ - $T(e)_i$\;
+	Calculate error $\epsilon$ as $O(e)_i$ - $T(e)_i$\;
+	Calculate \textbf{$\delta_{O(e)_{i}} = \partial{f(O(e)_{i})}  \times \epsilon $}\;
+	Add $\delta_{O(e)_{i}}$ to set of deltas $\Lambda$
 }  
+
+\textbf{CalculateInternalDeltas:}
+
+Let $\Lambda_{i+1}$ be the next layer's set of deltas\;
+\ForEach{ non-output layer $i$}
+{
+	\ForEach{ neuron $j$ in this layer } 
+	{
+		\ForEach{ neuron $k$ of the next layer} 
+		{
+			Calculate error $\epsilon$ as sum of $\Lambda_{i+1,k} W_{ijk}$\;
+		}
+		$\Lambda_{i,j} = \partial{f( \epsilon \times \mbox{neuron} j\mbox{'s output} )}$\;
+	}
+} 
+
+% def calculate_internal_deltas
+%   prev_deltas = @deltas.last
+%   (@activation_nodes.length-2).downto(1) do |layer_index|
+%     layer_deltas = []
+%     @activation_nodes[layer_index].each_index do |j|
+%       error = 0.0
+%       # puts "@structure[layer_index+1].times: #{@structure[layer_index+1].times}"
+%       @structure[layer_index+1].times do |k|
+%         error += prev_deltas[k] * @weights[layer_index][j][k]
+%       end
+%       layer_deltas[j] = (@derivative_propagation_functions[layer_index-1].call(
+%         @activation_nodes[layer_index][j]) * error)
+%     end
+%     prev_deltas = layer_deltas
+%     @deltas.unshift(layer_deltas)
+%     # raise "TODO: Fix this code"          
+%   end
+% end
 
 % output_deltas = []
 % output_values.each_index do |output_index|
@@ -224,9 +259,8 @@ Get output values $O(e)$ from the output layer neurons\;
 % @deltas = [output_deltas]
 
 
-\textbf{CalculateInternalDeltas:}
 
-\caption{The Feedforward algorithm (Taken from~\cite{skapura})}
+\caption{The Back-propagation Algorithm }
 \label{alg:feedforward}
 \end{algorithm}
 
@@ -380,5 +414,5 @@ both the Backpropagation and RMS Minimization algorithms.
 % section conclusion (end)	
     
 \bibliographystyle{plain}
-\bibliography{../bib/eds}
+\bibliography{bib/eds}
 \end{document} 
