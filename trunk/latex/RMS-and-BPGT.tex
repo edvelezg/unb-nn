@@ -205,6 +205,25 @@ We may also add an additional free parameter that does not link to other neuron,
 	Call function CalculateInternalDeltas\;
 	Call function UpdateWeights\;
 }
+
+\textbf{CalculateOutputDeltas($O(e)$, $T(e)$):}
+
+Get output values $O(e)$ from the output layer neurons\;
+\ForEach{ individual output value $O(e)_i$ }
+{
+	Calculate \textbf{error} as $O(e)_i$ - $T(e)_i$\;
+	Calculate \textbf{error} as $O(e)_i$ - $T(e)_i$\;
+}  
+
+% output_deltas = []
+% output_values.each_index do |output_index|
+%   error = expected_values[output_index] - output_values[output_index]
+%   output_deltas << @derivative_propagation_functions.last.call(
+%     output_values[output_index]) * error
+% end
+% @deltas = [output_deltas]
+
+
 \textbf{CalculateInternalDeltas:}
 
 \caption{The Feedforward algorithm (Taken from~\cite{skapura})}
