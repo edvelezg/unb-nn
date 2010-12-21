@@ -201,9 +201,9 @@ We may also add an additional free parameter that does not link to other neuron,
 \ForEach{ example $e$ in a set of examples $E$}
 {
 	Calculate $O(e)$ for $I(e)$ with feedforward (refer to Algorithm~\ref{alg:feedforward})\;
-	Call function CalculateOutputDeltas($O(e)$, $T(e)$)\;
-	Call function CalculateInternalDeltas\;
-	Call function UpdateWeights\;
+	Call function \textbf{CalculateOutputDeltas}($O(e)$, $T(e)$)\;
+	Call function \textbf{CalculateInternalDeltas}\;
+	Call function \textbf{UpdateWeights}\;
 }
 
 \textbf{CalculateOutputDeltas($O(e)$, $T(e)$):}
@@ -223,30 +223,40 @@ Let $\Lambda_{i+1}$ be the next layer's set of deltas\;
 {
 	\ForEach{ neuron $j$ in this layer } 
 	{
+	Initialize error $\epsilon$ as $0.0$\;
 		\ForEach{ neuron $k$ of the next layer} 
 		{
-			Calculate error $\epsilon$ as sum of $\Lambda_{i+1,k} W_{ijk}$\;
+			Calculate $\epsilon$ as $\epsilon + \Lambda_{i+1,k} W_{ijk}$\;
 		}
-		$\Lambda_{i,j} = \partial{f( \epsilon \times \mbox{neuron} j\mbox{'s output} )}$\;
+		$\Lambda_{i,j} = \partial{f( \epsilon \times \mbox{neuron } j\mbox{'s output} )}$\;
 	}
 } 
 
-% def calculate_internal_deltas
-%   prev_deltas = @deltas.last
-%   (@activation_nodes.length-2).downto(1) do |layer_index|
-%     layer_deltas = []
-%     @activation_nodes[layer_index].each_index do |j|
-%       error = 0.0
-%       # puts "@structure[layer_index+1].times: #{@structure[layer_index+1].times}"
-%       @structure[layer_index+1].times do |k|
-%         error += prev_deltas[k] * @weights[layer_index][j][k]
+\textbf{UpdateWeights:}
+
+\tcc{$\eta$ is the learning rate}
+\ForEach{ layer $i$ }
+{
+	\ForEach{ neuron $j$ in this layer } 
+	{
+		\ForEach{ neuron $k$ of the next layer} 
+		{
+			Calculate $\Delta W_{ijk}$ as $\Lambda_{i,j} \times \mbox{neuron } j\mbox{'s output}$\;
+			$W_{ijk} \leftarrow \eta \times \Delta{W_{ijk}}   $\;
+		}
+	}
+} 
+
+% def update_weights
+%   (@weights.length-1).downto(0) do |n|
+%     @weights[n].each_index do |i|
+%       @weights[n][i].each_index do |j|
+%         change = @deltas[n][j]*@activation_nodes[n][i]
+%         @weights[n][i][j] += ( learning_rate * change +
+%             momentum * @last_changes[n][i][j])
+%         @last_changes[n][i][j] = change
 %       end
-%       layer_deltas[j] = (@derivative_propagation_functions[layer_index-1].call(
-%         @activation_nodes[layer_index][j]) * error)
 %     end
-%     prev_deltas = layer_deltas
-%     @deltas.unshift(layer_deltas)
-%     # raise "TODO: Fix this code"          
 %   end
 % end
 
