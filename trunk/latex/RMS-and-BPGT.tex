@@ -88,9 +88,11 @@ that may be changed, allowing the neural network to change its behavior. In arti
 together in layers or slabs and a neural network may be composed of 1 or more of these~\cite{skapura}. As an example, a feedforward
 neural network is illustrated in Figure~\ref{fig:figures_ffwdnn}.
 
-The entire behavior of the neural network is determined by the individual behaviors of the neurons that comprise it. Each neuron gathers
-input from the external environment or other neurons. The neuron then generates a signal that may be input to other neurons or the final
-output. Neuron's modulate and aggregate the input and passes that information to an activation function.
+The entire behavior of the neural network is determined by the individual behaviors of neurons that comprise it. Each neuron gathers
+input from the external environment or other neurons. The neuron then generate a signal that may be input to other neurons or the final
+output. This process continues throughout the network until a response is produced on the external environment. Neurons modulate and
+aggregate the input to calculate an activation value. The activation value may be the same or it could be a function of the aggregation.
+The activation value then is passed as a parameter to an activation function, which determines the output of the neuron (See Figure~\ref{fig:figures_single_neuron}).
 
 Neural networks possess important advantages and capabilities as computational models. Among these include their ability to: solve
 problems of nonlinear nature, perform input-output mapping through a learning process, adaptation to new situations, and their inherent
@@ -98,7 +100,7 @@ parallelism~\cite{Haykin:1994:NNC:541500}. One of the greatest advantages of usi
 configuration to solve a problem. It is actually programmed to learn and adapt to solve a problem. Neural networks have two types of
 learning supervised and unsupervised learning. Supervised learning consists in giving a network a set of points and allowing to correct
 its prediction by giving it the expected output. Unsupervised learning is often used when the network cannot be provided with a target
-output, and therefore works with evolutionary models.
+output, and therefore works with evolutionary models. We focus on supervised learning for this report.
 
 Even though biological neurons are 6 orders of magnitude slower than the integrated circuits found in today's computer processors. They
 work as a massively parallel system allowing efficient solutions to complex problems such as facial recognition. These problems are
@@ -115,10 +117,11 @@ Mean Square (RMS) Minimization algorithm.
 		\subfloat[\label{fig:figures_ffwdnn} A feedforward neural network with labeled constituents]{	
 				\includegraphics[height=0.30\columnwidth]{figures/ffwdnn.pdf}
 		}
-		\subfloat[\label{fig:figures_Neuron} A neuron and its constituents]{	
-				\includegraphics[height=0.25\columnwidth]{figures/Neuron.pdf}
+		\hspace{2mm} 
+		\subfloat[\label{fig:figures_single_neuron} A neuron $j$ with input $x_{k}$ from with synaptic weight $w_{jk}$. The neuron integrates the inputs modulated by their respective weights, and calculates an output with activation function $f$]{	
+				\includegraphics[height=0.20\columnwidth]{figures/single_neuron.pdf}
 		}
-		\caption{feedforward neural network and its processing element the neuron}
+		\caption{A feedforward neural network and a magnified view of its processing element the neuron}
 	\label{fig:figures_ffwdnn_Neuron}	
 \end{figure}
 
