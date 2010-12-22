@@ -33,12 +33,3 @@ info = File.open('info.yaml') { |file| YAML.load(file) }
 info = info.sort_by { |e| e[1] }
 
 test_with_weights(info[0][3], "input.nor")
-
-
-# info.each do |e|
-#   e[3].each do |x|
-#     x.each do |r|
-#       p r 
-#     end
-#   end
-# end
