@@ -11,7 +11,6 @@
 %\renewcommand{\owen}[1]{}
 %\renewcommand{\ed}[1]{}
 
-
 % Use utf-8 encoding for foreign characters
 \usepackage[utf8]{inputenc}
 \usepackage{url}
@@ -20,7 +19,7 @@
 \usepackage{color}
 \usepackage{subfig}
 \usepackage{hyperref}
-\usepackage[noend]{algorithm2e}
+\usepackage{algorithm2e} % \usepackage[noend]{algorithm2e}
 \usepackage{algorithmic}
 
 % Uncomment some of the following if you use the features
@@ -182,20 +181,57 @@ We do not have to implement neural networks to study them, it is possible to sim
 We build data structures in order to represent the neural network. A neural network can be thought of as a directed graph, where the
 neurons are nodes, and the synaptic weights are the arcs of the graph. Because we focus on feed-forward networks, our graphs can further
 be specified as directed acyclic graphs. This graphs do not require a full matrix to represent all possible connections between the
-neurons. Instead we use a list of matrices where each matrix stores the synaptic weights of the incoming connections of neurons in the
-previous layer to neurons in the current layer (see Figure~\ref{fig:}). 
+neurons. Instead we use an array of matrices where each matrix stores the synaptic weights of the departing connections from the current neuron in the current layer to the neurons of the next layer (see Figure~\ref{fig:figures_ffwdnn_DS}).
 
-We may also add an additional free parameter that does not link to other neuron, and has a constant input. This parameter is called the bias, and allows the neural network 
+\begin{figure}[]
+	\centering
+		\subfloat[\label{fig:figures_ffwdnn2}]{	
+				\includegraphics[width=0.45\columnwidth]{figures/ffwdnn2.pdf}
+		}
+		\hspace{2mm}
+		\subfloat[\label{fig:figures_ffwdnn3}]{	
+				\includegraphics[width=0.45\columnwidth]{figures/ffwdnn3.pdf}
+		}
+
+		\subfloat[\label{fig:figures_DataStructure1}]{	
+				\includegraphics[width=0.35\columnwidth]{figures/DataStructure1.pdf}
+		}
+		\hspace{4mm} 
+		\subfloat[\label{fig:figures_DataStructure2}]{	
+				\includegraphics[width=0.35\columnwidth]{figures/DataStructure2.pdf}
+		}
+		\caption{Feedforward neural networks (a and b) with their corresponding computer representation (c and d). Figures~\ref{fig:figures_ffwdnn2} and \ref{fig:figures_DataStructure1} represent a neural network without bias parameters. Figures~\ref{fig:figures_ffwdnn3} and \ref{fig:figures_DataStructure2} represent a neural network with bias parameters}
+	\label{fig:figures_ffwdnn_DS}	
+\end{figure}
+
+\[
+\left(
+\begin{array}{ccc}
+1 & 2 & 3\\
+4 & 5 & 6\\
+\end{array}
+\right)
+\]
+
+We may also add an additional free parameter that does not link to other neuron, and has a constant input. We call this parameter the bias, and it allows the activation functions to translate along the y-axis. We include the bias as one more row of elements for each matrix that represents connections between neurons (see Figure~\ref{fig:}).
+
 % subsection data_structure (end)
 
 \subsection{Algorithms} % (fold)r
 \label{sub:algorithms}
 
-\subsection{Backpropagation training algorithm} % (fold)
-\label{sub:backpropagation_training_algorithm}
+\subsubsection{Backpropagation training algorithm} % (fold)
+\label{ssub:backpropagation_training_algorithm}
+
 
 \begin{algorithm}% [H]
 \KwIn{Set of examples $E$}
+\tcc{$e$ is a single example} 
+\tcc{$I(e)$ set of inputs in a single example}
+\tcc{$T(e)$ set of target outputs for a given example}
+\tcc{$O(e)$ are the target outputs of the example}
+\tcc{Each iteration of this loop we will call an epoch}
+
 % \KwOut{Set of output values calculated by the feedforward neural network}
 \SetLine
 \ForEach{ example $e$ in a set of examples $E$}
@@ -282,106 +318,36 @@ and adjusts the weights of the various layers backwards from the output layer to
 Back-propagation is often used to train feedforward neural networks; however it can be used to train other types of networks, and
 likewise feedforward networks may be trained with other methods. In this report, we only examine the case where back-propagation is used to train a feedforward neural network.
 
-% $E$ is a set of examples
-% $e$ is a single example
-% $I(e)$ set of inputs in a single example
-% $T(e)$ set of target outputs for a given example
-% $O(e)$ are the target outputs of the example
-% Each iteration of this loop we will call an epoch
-
-% \begin{algorithmic}
-% 	\FOR {$e \in E$} 
-% 		\STATE $O(e) \gets$ FeedForward($I(e)$)
-% 		\STATE CalculateOutputDeltas($O(e)$, $T(e)$)
-% 		\STATE CalculateInternalDeltas
-% 		\STATE UpdateWeights
-% 	\ENDFOR
-% \end{algorithmic}
-
-% \begin{algorithm}
-% {
-% \begin{algorithmic}[1]
-% \STATE \textbf{input:}  Unsorted table $t$ with $n$ rows and $c$ columns.
-% \STATE \textbf{output:} a sorted table
-% \STATE Form
-% $K$~different versions of $t$, sorted differently: $t^{(1)},t^{(2)},\dots, t^{(K)}$ 
-% 
-% \STATE $\beta \leftarrow $ empty list
-% \STATE pick an element in $t^{(1)}$ randomly, add it to $\beta$ and remove it from all $t^{(i)}$'s
-% \WHILE{$\mathrm{size}(\beta)<n$ }
-% \STATE let $r$ be the latest element added to $\beta$
-% \STATE Given $i\in \{1,2,\dots,K\}$, there are up to two neighbors in sorted order within list $t^{(i)}$; out of up to $2K$ such neighbors, pick a nearest neighbor $r'$ to $r$ in Hamming distance.
-% \STATE Add $r'$ to $\beta$ and remove it from all $t^{(i)}$'s
-% \ENDWHILE
-% \STATE \textbf{return} $\beta$
-% \end{algorithmic}
-% }
-% \caption{\label{algo:multiplelists}The \textsc{Multiple Lists} heuristic}
-
-\begin{algorithm}
-{
-	\textbf{Main algorithm:}
-\begin{algorithmic}[1]
-% \STATE \textbf{input:} a table $t$ and a block size $p$
-% \STATE \textbf{output:} a sorted table
-% %\STATE $\alpha \leftarrow $the columns in non-decreasing order of cardinality
-% %\STATE $\beta \leftarrow $ empty list \owen{beta is unused}\daniel{leftover from a copy/paste?}
-% \STATE each value in each tuple is assigned a Boolean value (initially false) indicating whether the value is DC
-% \FOR{$k=1,2,\dots, c-1$}
-% %\STATE append column $k$ to list $\beta$
-% \STATE sort table $t$ %on the first $k$~columns %\owen{$\beta$, else $\beta$ unused} %the first $k$~columns 
-% using the DC order with parameter $k$ (see below)
-% \FOR{every run of identical values in column $k$}
-% \STATE Mark %$x-\lfloor x/p \rfloor p$~values 
-%                                        $x \bmod p$~values 
-% as DC where $x$ is the length of the run 
-% \ENDFOR
-% \ENDFOR
-% \STATE sort $t$ using the DC order with $k=c$
-% \STATE \textbf{return} $t$
-	\FOR {\textbf{each} $e \in E$} 
-		\STATE $O(e) \gets$ FeedForward($I(e)$)
-		\STATE CalculateOutputDeltas($O(e)$, $T(e)$)
-		\STATE CalculateInternalDeltas
-		\STATE UpdateWeights
-	\ENDFOR
-\end{algorithmic}
-}
-%\hrule
-\textbf{CalculateOutputDeltas:}
-{
-\begin{algorithmic}[1]
-\STATE \textbf{input:} expected output for an example $T(e)$ and output $O(e)$ obtained from the feedforward function with example $e$ 
-\FOR{$i = 1,2,\dots,k-1$}
-\IF{neither $x_i$ nor $y_i$ are DC}
-\STATE \textbf{return} 1 if $x_i>y_i$ or -1 if $x_i<y_i$
-\ELSIF{$y_i$ is DC}
-\STATE \textbf{return} 1
-\ELSIF{$x_i$ is DC}
-\STATE \textbf{return} -1
-\ENDIF
-\ENDFOR
-\FOR{$i = k,k+1,\dots,c$}
-\STATE \textbf{return} 1 if $x_i>y_i$ , -1 if $x_i<y_i$
-\ENDFOR
-\STATE \textbf{return} 0 
-\end{algorithmic}
-}
-\caption{\label{algo:dcsort}The Backpropagation Training Algorithm %\daniel{I tried to clean up further the pseudocode.}%\daniel{Pseudocode was buggy as remarked by Owen. }
-%\owen{wonder whether we should revisit our for loop pseudocode syntax, which
-%suggests that $i$ could take values from the set in any order.}\daniel{Fixed.}
-}
-
-\end{algorithm}
-
-
-% subsection backpropagation_training_algorithm (end)
+\begin{figure}[]
+	\centering
+		\subfloat[\label{fig:figures_backpgtn1}]{	
+				\includegraphics[width=0.49\columnwidth]{figures/backpgtn1.png}
+		}
+		\subfloat[\label{fig:figures_backpgtn2}]{	
+				\includegraphics[width=0.49\columnwidth]{figures/backpgtn2.png}
+		}
+		
+		\subfloat[\label{fig:figures_backpgtn3}]{	
+				\includegraphics[width=0.49\columnwidth]{figures/backpgtn3.png}
+		}
+		\subfloat[\label{fig:figures_backpgtn4}]{	
+				\includegraphics[width=0.49\columnwidth]{figures/backpgtn4.png}
+		}
+		
+		\subfloat[\label{fig:figures_backpgtn5}]{	
+				\includegraphics[width=0.49\columnwidth]{figures/backpgtn5.png}
+		}
+		\subfloat[\label{fig:figures_backpgtn6}]{	
+				\includegraphics[width=0.49\columnwidth]{figures/backpgtn6.png}
+		}
+		
+		\caption{An illustration of the Back-propagation algorithm. (Taken from \cite{vlsibackp_t})}
+	\label{fig:figures_backpgtn}	
+\end{figure}
 
 
 
-%\owen{wonder whether we should revisit our for loop pseudocode syntax, which
-%suggests that $i$ could take values from the set in any order.}\daniel{Fixed.}
-
+% subsubsection backpropagation_training_algorithm (end)
 
 % subsection algorithms (end)
 
