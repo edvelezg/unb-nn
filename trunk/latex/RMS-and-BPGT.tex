@@ -143,6 +143,7 @@ step and $net_{i}(t)$ is the integration of modulated inputs. (see Algorithm~\re
 )
 
 \begin{algorithm}% [H]
+\dontprintsemicolon
 \KwIn{Set of inputs from the environment}
 \KwOut{Set of output values calculated by the feedforward neural network}
 \SetLine
@@ -228,6 +229,7 @@ may be trained with other methods. In this report, we only examine the case wher
 )
 
 \begin{algorithm}% [H]
+\dontprintsemicolon
 \KwIn{Set of examples $E$}
 \tcc{$e$ is a single example} 
 \tcc{$I(e)$ set of inputs in a single example}
@@ -258,7 +260,7 @@ Get output values $O(e)$ from the output layer neurons\;
 \textbf{CalculateInternalDeltas:}
 
 Let $\Lambda_{i+1}$ be the next layer's set of deltas\;
-\ForEach{ non-output layer $i$}
+\ForEach{ non-output layer $i$ from the penultimate to the first}
 {
 	\ForEach{ neuron $j$ in this layer } 
 	{
@@ -323,15 +325,103 @@ Let $\Lambda_{i+1}$ be the next layer's set of deltas\;
 \label{sub:rms_minimization_algorithm}
 
 Another algorithm we use to train the feedforward neural network is the Root Mean Square (RMS) Minimization algorithm. In this algorithm we also provide example
-inputs and target outputs to the network. We run the feedforward algorithm to generate the corresponding outputs to the presented inputs in our neural network.
-The RMS minimization algorithm consists in taking a pair of inputs and for each. blah
+inputs and target outputs to the network. We run the feedforward algorithm with each set example and generate the corresponding outputs from the neural network. After generating the outputs we calculate the root mean square between the output given by the neural network and the target output provided in the example. Then a small change is made to one of the weights of the neural network, and the feedforward algorithm is used again to calculate outputs with the change. The RMS algorithm then change the output. the presented inputs in our neural network.
+
+% def rms_train_alpha_eps(inputs, outputs, alpha = 0.7, epsilon = 0.03)
+%   change     = 0.01
+%   new_rms    = 0.0
+%   
+%   init_network if !@weights
+%   init_delta_weights if !@delta_weights
+%   
+%   @weights.each_index do |n|
+%     @structure[n+1].times do |j|
+%       @activation_nodes[n].each_index do |i|
+% 
+%         old_rms =  rms_calc(inputs, outputs)
+%         @weights[n][i][j] +=  change
+%         new_rms =  rms_calc(inputs, outputs)
+%         drms = (new_rms - old_rms)/change
+% 
+%         # Update Weight
+%         @weights[n][i][j] -= change
+%         if drms != 0.0
+%           @delta_weights[n][i][j] = (alpha * @delta_weights[n][i][j]) - (epsilon * drms)
+%           @weights[n][i][j] = @weights[n][i][j] + @delta_weights[n][i][j]
+%         else
+%           puts "WARNING: Flat slope warning, something may be wrong with the network"
+%         end
+%         
+%       end
+%     end
+%   end
+%   return new_rms
+% end
+
+\begin{algorithm}% [H]
+\dontprintsemicolon
+\KwIn{Set of examples $E$, constants $\alpha$ and $\epsilon$}
+\tcc{Each iteration of this loop we will call an epoch}
+Set $\Delta W$ to $0.01$\;
+\SetLine
+\ForEach{layer $i$ from the first non-input layer to the output,}
+{
+	\ForEach{layer $i$ from the first non-input layer to the output,}
+	{
+		\ForEach{neuron $j$ on the current layer,}
+		{
+				\ForEach{ connection $k$ to a neuron of the next layer,} 
+				{
+					Calculate $\mbox{RMS}_{\mbox{o}}$ as \textbf{CalculateRMS}($E$)\;
+					Set $W_{ijk}$ to $W_{ijk}$ + $\Delta W$\;
+					Calculate $\mbox{RMS}_{\mbox{n}}$ as \textbf{CalculateRMS}($E$)\;
+				
+					Calculate $\Delta RMS$ as $ \frac{\mbox{RMS}_{\mbox{n}}-\mbox{RMS}_{\mbox{o}}}{\Delta W} $\;
+				
+					\If{ $\Delta RMS \neq 0.0 $}{
+					  Calculate $\Delta W_{ijk}$ as $\alpha \times \Delta W_{ijk} - \epsilon \times \Delta RMS$\;
+					  Calculate $W_{ijk}$ as $W_{ijk} + \Delta W_{ijk}$\;
+					}
+				}
+		}
+	}
+}
+
+\textbf{CalculateRMS($E$)}:
+
+\tcc{$e$ is a single example} 
+\tcc{$I(e)$ set of inputs in a single example}
+\tcc{$T(e)$ set of target outputs for a given example}
+\tcc{$O(e)$ are the target outputs of the example}
+Set $\epsilon$ to $0.0$\;
+\ForEach{example $e$ in the set of examples $E$} 
+{
+	$O(e)$ $\leftarrow$  Call feedforward algorithm with $I(e)$ (see Algorithm~\ref{alg:feedforward})\;
+	\ForEach{ output $O(e)_i$ obtained from the neural network }
+	{
+		Calculate $\epsilon$ as $\epsilon + (O(e)_{i} - T(e)_{i})^{2}$
+	} 
+	
+}
+\Return $\frac{\epsilon}{\mbox{num}(E) - 1}$ \tcc*{ $\mbox{num}(E)$ is the total number of examples in $E$}
+\vspace{5mm} 
+\caption{The RMS Minimization Algorithm}
+\label{alg:RMSminimization}
+\end{algorithm}
+
 
 % subsection rms_minimization_algorithm (end)
 
 \section{Procedure} % (fold)
 \label{sec:procedure}
 
-% section procedure (end)
+Our procedures involve a set of system experiments where we test the RMS and back-propagation training methods. We compare the time complexity between both
+training methods as well as their accuracy after being trained. The set of examples to train the network were generated by taking two numerical inputs and adding
+them to generate the expected output. This data is normalized so that its range is between -1 and 1. The feedforward neural network is configured with $2$
+neurons in the input layer, $3$ in the middle layer and $1$ in the output layer. The neurons in the middle layer use a hyperbolic tangent activation function,
+and the neurons in the output layer use a linear function. In our procedures we change the number of neurons in the middle layer, the number of iterations ... 
+
+%section procedure (end)
 
 % section algorithms_and_procedures (end)
 
@@ -348,6 +438,14 @@ number of neurons in each layer, and $n$ is the total number of layers. For the 
 of operations in a single epoch depends on the number of weights and bias. Therefore it has linear complexity $O(n)$ with respect to the
 number of neurons. In the RMS algorithm the number of operations in a single epoch of the RMS algorithm is squared because we run the
 feedforward algorithm for each change we do on a single weight.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[height=3in]{../docs/TimeNrns.pdf}
+	\caption{Comparison between back-propagation and RMS minimization learning algorithms in time as we increase the number of neurons in the middle layer. Note that back-propagation has linear growth, and RMS minimization has quadratic growth.}
+	\label{fig:docs_TimeNrns}
+\end{figure}
+
 
 % subsection time_complexity (end)
 
