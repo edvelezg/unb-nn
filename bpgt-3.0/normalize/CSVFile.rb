@@ -50,6 +50,33 @@ class CSVFile
     end
     return file_data
   end
+  
+  def read_data(num_in, num_out, num_lines)
+    if inFile.nil? == false
+      @count = 0
+      File.foreach(inFile) do |line|
+        if @count >= num_lines
+          break;
+        end
+        
+        arr = line.chomp.split(',')
+        float_array = arr.map { |x| x.to_f }
+        arr_in = []
+        arr_out = []
+        for i in 0...num_in
+          arr_in << float_array[i]
+        end
+                
+        in_data.push(arr_in)
+        for j in num_in...(num_in+num_out)
+          arr_out << float_array[j]
+        end
+        out_data.push(arr_out)
+        @count = @count + 1
+      end
+    end
+    return file_data
+  end
 end
 
 # ip1 = CSVFile.new("input.csv")
