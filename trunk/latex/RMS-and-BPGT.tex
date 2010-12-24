@@ -190,8 +190,8 @@ neuron in the current layer to the neurons of the next layer (see Figures~\ref{f
 \ref{fig:figures_DataStructure1}).
 
 We may also add an additional free parameter that does not link to other neuron, and has a constant input. We call this parameter the
-bias, and it allows the activation functions to translate along the y-axis. We include the bias as one more row of elements for each
-matrix that represents connections between neurons (see Figure~\ref{fig:figures_ffwdnn3} and \ref{fig:figures_DataStructure2}).
+bias, and it allows the activation functions to translate along the y-axis. We include the bias as one more row of elements in each
+weight matrix that represents connections between neurons (see Figures~\ref{fig:figures_ffwdnn3} and \ref{fig:figures_DataStructure2}).
 
 \begin{figure}[]
 	\centering
@@ -226,7 +226,7 @@ errors and adjusts the weights of the various layers backwards from the output l
 
 Back-propagation is often used to train feedforward neural networks but it can also be used to train other types of networks, and
 likewise feedforward networks may be trained with other methods. In this report, we only examine back-propagation when it is used to
-train a feedforward neural network. Algorithm~\ref{alg:backpropagation} illustrates in further detail Back-propagation.
+train a feedforward neural network. Algorithm~\ref{alg:backpropagation} illustrates the process in further detail.
 
 \begin{algorithm}% [H]
 \dontprintsemicolon
@@ -325,13 +325,15 @@ Let $\Lambda_{i+1}$ be the next layer's set of deltas\;
 \label{sub:rms_minimization_algorithm}
 
 Another algorithm we use to train the feedforward neural network is the Root Mean Square (RMS) Minimization algorithm (see
-Algorithm~\ref{alg:RMSminimization} ). For this algorithm we also provide example inputs and target outputs. We run the feedforward
+Algorithm~\ref{alg:RMSminimization}). For this algorithm we also provide example inputs and target outputs. We run the feedforward
 algorithm with each example generating the corresponding outputs of the neural network. After generating the outputs we calculate the
-root mean square between outputs given by the neural network and target output provided by the example. We keep this calculation as
-$\mbox{RMS}_\mbox{old}$. Next, a small change is made to one of the weights of the neural network, and the feedforward algorithm is
-called again to calculate new outputs for the neural network. We again, take the root mean square between outputs and targets which we
-call $\mbox{RMS}_\mbox{new}$. We then calculate a slope by taking the difference between $\mbox{RMS}_\mbox{old}$ and
-$\mbox{RMS}_\mbox{new}$, and divide by the change we made to the weight.
+root mean square between outputs given by the neural network and target output provided by the example. We keep this calculation as $\mbox{RMS}_{\mbox{old}}$.
+Next, a small change is made to one of the weights of the neural network, and the feedforward algorithm is called again to calculate new
+outputs for the neural network. We again, take the root mean square between outputs and targets which we call $\mbox{RMS}_{\mbox{new}}$.
+We then calculate a slope by taking the difference between $\mbox{RMS}_{\mbox{old}}$ and $\mbox{RMS}_{\mbox{new}}$, and divide by the change
+we made to the weight.
+
+
 
 We use this slope to determine what change needs to be made to improve the RMS between the output of our network and the target from the
 example. Unlike the back-propagation method, this method performs a $num(E)$ feedforward passes, where $num(E)$ is the number of
@@ -463,7 +465,6 @@ As observed in some results, the neural network may get stuck in local minima un
 both the Backpropagation and RMS Minimization algorithms.
 
 % section conclusion (end)	
-    
 \bibliographystyle{plain}
 \bibliography{bib/eds}
 \end{document} 
