@@ -384,8 +384,8 @@ Set $\epsilon$ to $0.0$\;
 	} 
 	
 }
-\Return $\frac{\epsilon}{\mbox{num}(E) - 1}$\; \tcc*{ $\mbox{num}(E)$ is the total number of examples in $E$}
-\vspace{5mm} 
+\Return $\frac{\epsilon}{\mbox{num}(E) - 1}$ \tcc*{ $\mbox{num}(E)$ is the total number of examples in $E$}
+\vspace{5mm}
 \caption{The RMS Minimization Algorithm}
 \label{alg:RMSminimization}
 \end{algorithm}
@@ -409,11 +409,11 @@ and accuracy.
 \subsection{Time Complexity} % (fold)
 \label{sub:time_complexity}
 
-We tested the time complexity of both algorithms in different aspects. We look at how time changed when we varied the number of neurons
-in the middle layer. Time grew linearly for the back-propagation algorithm when the number of neurons is varied whereas in the RMS
+We tested the time complexity of both algorithms in different aspects. We look at how time changes when we vary the number of neurons
+in the middle layer. Time grows linearly for the back-propagation algorithm when the number of neurons is varied whereas in the RMS
 Minimization algorithm it grows quadratically.
 
-Looking at the time complexity analytically we count the number of operations made by both algorithms. To determine the number of
+Looking at the time complexity analytically we c5ount the number of operations made by both algorithms. To determine the number of
 operations performed at each epoch of the learning algorithm we count the weights between the layers of the neural network. To do this
 we consider that the number of weights between two layers of neurons is the product between the total neurons in two adjacent layers.
 Therefore the total number of weights for the entire network is $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ where $N_{i}$ is the number of neurons in
