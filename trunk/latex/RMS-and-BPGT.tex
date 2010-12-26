@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 
+% \usepackage[style=authoryear,natbib=true]{biblatex}
 \usepackage[numbers,sort&compress]{natbib}  
 %% Daniel added this, should help citations look nicer. You may need to delete temp files and rebuild the latex document from a clean start.
 
@@ -324,25 +325,23 @@ Let $\Lambda_{i+1}$ be the next layer's set of deltas\;
 \subsection{RMS Minimization Algorithm} % (fold)
 \label{sub:rms_minimization_algorithm}
 
-Another algorithm we use to train the feedforward neural network is the Root Mean Square (RMS) Minimization algorithm (see
-Algorithm~\ref{alg:RMSminimization}). For this algorithm we also provide example inputs and target outputs. We run the feedforward
-algorithm with each example generating the corresponding outputs of the neural network. After generating the outputs we calculate the
-root mean square between outputs given by the neural network and target output provided by the example. We keep this calculation as $\mbox{RMS}_{\mbox{old}}$.
+Another algorithm we use to train the feedforward neural network is the Root Mean Square (RMS) Minimization algorithm. For this
+algorithm we also provide example inputs and target outputs. We run the feedforward algorithm with each individual example generating
+the corresponding outputs of the neural network. After generating the outputs we calculate the root mean square between outputs given by
+the neural network and target output provided by the example. We keep this calculation as $\mbox{RMS}_{\mbox{old}}$.
+
 Next, a small change is made to one of the weights of the neural network, and the feedforward algorithm is called again to calculate new
 outputs for the neural network. We again, take the root mean square between outputs and targets which we call $\mbox{RMS}_{\mbox{new}}$.
-We then calculate a slope by taking the difference between $\mbox{RMS}_{\mbox{old}}$ and $\mbox{RMS}_{\mbox{new}}$, and divide by the change
-we made to the weight.
-
-
-
-We use this slope to determine what change needs to be made to improve the RMS between the output of our network and the target from the
-example. Unlike the back-propagation method, this method performs a $num(E)$ feedforward passes, where $num(E)$ is the number of
-examples used to train the network.
+We then calculate a slope by taking the difference between $\mbox{RMS}_{\mbox{old}}$ and $\mbox{RMS}_{\mbox{new}}$, and divide by the
+change made to the weight. We use this slope to determine what change needs to be made to improve the RMS between the output of our
+network and the target from the example. Unlike the back-propagation method, this method performs a $\mbox{num}(E)$ feedforward passes,
+where $\mbox{num}(E)$ is the number of examples used to train the network. The process is illustrated in further detail in
+Algorithm~\ref{alg:RMSminimization}.
 
 \begin{algorithm}% [H]
 \dontprintsemicolon
 \KwIn{Set of examples $E$, constants $\alpha$ and $\epsilon$}
-\tcc{Each iteration of this loop we will call an epoch}
+\tcc{We call each iteration of this loop an epoch}
 Set $\Delta W$ to $0.01$\;
 \SetLine
 \ForEach{layer $i$ from the first non-input layer to the output,}
@@ -413,22 +412,64 @@ We tested the time complexity of both algorithms in different aspects. We look a
 in the middle layer. Time grows linearly for the back-propagation algorithm when the number of neurons is varied whereas in the RMS
 Minimization algorithm it grows quadratically.
 
-Looking at the time complexity analytically we c5ount the number of operations made by both algorithms. To determine the number of
-operations performed at each epoch of the learning algorithm we count the weights between the layers of the neural network. To do this
-we consider that the number of weights between two layers of neurons is the product between the total neurons in two adjacent layers.
-Therefore the total number of weights for the entire network is $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ where $N_{i}$ is the number of neurons in
-each layer, and $n$ is the total number of layers. For the back-propagation algorithm, the number of operations in a single epoch
-depends on the number of weights and biases. For the biases we count one bias for each neuron that is not in the input layer.
+To look at the time complexity analytically we can count the number of operations made by both algorithms. The number of operations is
+for many stages of the different algorithms equal the number of weights between the different layers of the neural network. The number
+of weights between two layers of neurons is the product between the total neurons in two adjacent layers. Therefore the total number of
+weights for the entire network is $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ where $N_{i}$ is the number of neurons in each layer, and $n$ is the
+total number of layers. For the back-propagation algorithm, the number of operations in a single epoch depends on the number of weights
+and biases. To account for the biases we count one bias for each neuron that is not in the input layer. Therefore the total number of
+biases is $\sum_{i=1}^{n}N_{i}$
 
-For the back-propagation algorithm we run the feedforward algorithm once, and then calculate an error for the first output layer. The
+For the back-propagation algorithm we run the feedforward algorithm once. We then calculate an error for the first output layer. The
 error is then propagated backwards to each layer where each needed change to the weights is calculated. After this propagation the
 weights are added modified. All this steps require the same set of $n$ operations for each weight as it propagates backwards, and $n$
 operations as it makes the changes to the weights. Therefore this algorithm has a linear complexity $O(n)$ with respect to the number of
 neurons in the middle layer.
 
+The RMS Minimization algorithm calculates RMS twice in order to determine what weight adjustments it needs to make. Each RMS calculation
+scans through all of the examples, and each example requires a call from the feedforward algorithm 
+
+for each weight of the . We then
+calculate an error for the first output layer. The error is then propagated backwards to each layer where each needed change to the
+weights is calculated. After this propagation the weights are added modified. All this steps require the same set of $n$ operations for
+each weight as it propagates backwards, and $n$ operations as it makes the changes to the weights. Therefore this algorithm has a linear
+complexity $O(n)$ with respect to the number of neurons in the middle layer.
+
+\begin{table}
+	\begin{center}
+		\label{tab:backpropagation}
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Number of calls & Stage & \# of ops. at stage & total\\
+		\hline
+		1 & FeedForward & $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ & $\sum_{i=0}^{n-1}N_{i}N_{i+1}$\\
+		1 & CalculateOutputDeltas & num(O(e)) & num(O(e))\\
+		1 & CalculateInternalDeltas & $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ & $\sum_{i=0}^{n-1}N_{i}N_{i+1}$\\
+		1 & UpdateWeights & $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ & $\sum_{i=0}^{n-1}N_{i}N_{i+1}$\\
+		\hline
+		\end{tabular}	
+		\caption{Estimated number of operations performed at each stage of the Back-propagation algorithm.}
+	\end{center}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\label{tab:RMSminimization}
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Number of calls & Stage & \# of ops. at stage & total\\
+		\hline
+		num($E$) & CalculateRMS & 1 & num(W)\\
+		$2\mbox{num(W)}$ & FeedForward & num(W) & $\mbox{num(W)}^2$\\
+		\hline
+		\end{tabular}
+		\caption{Estimated number of operations performed at each stage of the Back-propagation algorithm.}
+	\end{center}
+\end{table}
+
+
 For the RMS algorithm the number of operations in a single epoch depends on both the number of weights and the number of is squared
 because we run the feedforward algorithm for each change we do on a single weight.
-
 
 \begin{figure}[]
 	\centering
@@ -456,13 +497,16 @@ because we run the feedforward algorithm for each change we do on a single weigh
 \section{Conclusion} % (fold)
 \label{sec:conclusion}
 
-The Backpropagation algorithm has time complexity within $O(n)$, which is faster than the RMS Minimization algorithm with a time
+The Back-propagation algorithm has time complexity within $O(n)$, which is faster than the RMS Minimization algorithm with a time
 complexity of $O(n^{2})$ when varying the number of neurons in the middle layer. 
 
-The Backpropagation algorithm reached a smaller error for the simple examples that the RMS Minimization algorithm.
+The Back-propagation algorithm reached a smaller error for the simple examples that the RMS Minimization algorithm.
 
 As observed in some results, the neural network may get stuck in local minima unable to arrive to better solutions. We noticed this in
-both the Backpropagation and RMS Minimization algorithms.
+both the Back-propagation and RMS Minimization algorithms.
+
+The Back-propagation demonstrates in these experiments to be more scalable than the RMS Minimization algorithm in terms of numbers of
+neurons in the network.
 
 % section conclusion (end)	
 \bibliographystyle{plain}
