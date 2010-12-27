@@ -420,11 +420,11 @@ Figure~\ref{fig:docs_graphs_TimeNrns}). Finally, in all our system experiments, 
 To look at the time complexity analytically we estimate the number of operations made by both algorithms. The number of operations is
 proportional to the number of weights and biases in the neural network in many stages of the different algorithms. The number of weights
 between two layers of neurons is the product between the total number of neurons in two adjacent layers. Therefore the total number of
-weights for the entire network is $\sum_{i=0}^{n-1}N_{i}N_{i+1}$ where $N_{i}$ is the number of neurons in each layer, and $n$ is the
+weights for the entire network is $\sum_{i=1}^{n}N_{i-1}N_{i}$ where $N_{i}$ is the number of neurons in each layer, and $n$ is the
 total number of layers. For the back-propagation algorithm, the number of operations in a single epoch depends on the number of weights
 and biases. To account for the biases we count one bias for each neuron that is not in the input layer. Therefore the total number of
 biases is $\sum_{i=1}^{n}N_{i}$. We denote the total number of connections including weights and biases as
-$c=\sum_{i=0}^{n-1}N_{i}N_{i+1} + \sum_{i=1}^{n}N_{i}$.
+$c=\sum_{i=1}^{n}N_{i-1}N_{i} + \sum_{i=1}^{n}N_{i}$.
 
 For each iteration of the back-propagation algorithm we run the feedforward algorithm for every example in the set of examples $E$. The
 feedforward algorithm has a number of operations that is proportional to the number of connections in the neural network, which we
