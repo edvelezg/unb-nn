@@ -16,7 +16,7 @@ def run_with_seed(iterations, seed, norm_file)
   tr_f   = File.open("training-#{seed}.txt", "w")
   csv_ip = CSVFile.new(norm_file)
 
-  csv_ip.read_data(2,1,10)
+  csv_ip.read_data(2,1,100)
   
   example = csv_ip.in_data
   result = csv_ip.out_data
