@@ -78,8 +78,8 @@ def test_with_weights(weights, norm_file)
   end  
 end
 
-norm      = Normalize.new("damping_data.csv")
-norm_file = norm.normalize
+# norm      = Normalize.new("damping_data.csv") #no need to normalize
+norm_file = "damping_data.csv"
 
 info = []
 Benchmark.bm do |x|
