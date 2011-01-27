@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./benchmark_seeds.rb 20 10000 > "times.txt" # seeds, iterations
+./benchmark_seeds.rb 10 40000 > "times.txt" # seeds, iterations
 
 dir=`pwd`
 echo -e "$dir finished." | mail -s "Job's Done" "edvelez.g@gmail.com"
