@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-file = File.open("damping_data.txt", "w")
+file = File.open("damping_data.csv", "w")
 
 @Amp   = 1
 @alpha = -3
@@ -20,5 +20,5 @@ for i in 1..100
   old_v = new_v
   new_v = next_v
   next_v = damping_fn(i*change)
-  file.puts "#{(i-1)*change},#{new_v},#{old_v},#{next_v}"
+  file.puts "#{new_v},#{old_v},#{next_v}"
 end
