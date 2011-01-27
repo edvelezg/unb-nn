@@ -9,7 +9,7 @@ def test_with_weights(weights, norm_file)
   net = NeuralNetwork::Backpropagation.new([2, 3, 1])
 
   csv_ip = CSVFile.new(norm_file)
-  csv_ip.read_data(2,1)
+  csv_ip.read_data(2,1,100)
 
   example = csv_ip.in_data
   result = csv_ip.out_data
