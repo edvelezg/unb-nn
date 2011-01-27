@@ -14,6 +14,14 @@ def test_with_weights(weights, norm_file)
   example = csv_ip.in_data
   result = csv_ip.out_data
 
+  example.each do |e|
+    p e
+  end
+  
+  result.each do |e|
+    p e
+  end
+
   net = NeuralNetwork::Backpropagation.new([2, 3, 1])
 
   net.propagation_functions[0]            = lambda { |x| Math.tanh(x) } # lambda { |x| 1/(1+Math.exp(-1*(x))) } { |x| Math.tanh(x) } { |x| x } { |x| Math.tanh(x) }
@@ -32,7 +40,7 @@ end
 info = File.open('info.yaml') { |file| YAML.load(file) }
 info = info.sort_by { |e| e[1] }
 
-test_with_weights(info[0][3], "input.nor")
+test_with_weights(info[0][3], "damping_data.nor")
 
 
 # info.each do |e|
