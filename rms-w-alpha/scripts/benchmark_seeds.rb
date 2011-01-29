@@ -59,6 +59,8 @@ end
 
 info = info.sort_by { |item| [item[1]] }
 
+File.open('info.yaml', 'w') { |file| YAML.dump(obj, file) }
+
 rs_f = File.open("results.txt", "w")
 rs_f.puts "best_iteration\tbest_error\tseed"
 info.each do |e|
