@@ -24,9 +24,18 @@ def test_with_weights(weights, norm_file)
 
   net.config_weights(weights)
 
-  for j in 0..example.size-1
-    puts "#{j}\t#{net.eval(example[j])[0]}\t#{result[j]}"
+  example = [1.0,1.00991404871281]
+  # p result
+  for j in 0...100
+    nn_output = net.eval(example)[0]
+    puts "#{j}\t#{nn_output}\t#{result[j]}"
+    example[1] = example[0]
+    example[0] = nn_output
   end  
+  
+  # for j in 0..example.size-1
+  #   
+  # end  
 end
 
 info = File.open('info.yaml') { |file| YAML.load(file) }
