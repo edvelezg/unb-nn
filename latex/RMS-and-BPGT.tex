@@ -548,7 +548,12 @@ We configure the network to use the best set of weights found during the $10$ tr
 data it was trained with to see how well it has learned. Initially we used perfect data, in which we supplied the input parameters to
 the network, $x(t)$ and $x(t-1)$ for all the time steps $t$. Given those parameters the neural network predicts $x(t+1)$. We then
 compare graphically (see Figure~\ref{fig:bpgt-3.0_damping_test_output}), the predicted output of the neural network with the expected
-output obtained through equation \ref{eqn:damping}. To further test the network, we give it initially positions $x(1)$ and $x(0)$. The network then predicts an $x(2)$ position. It then uses the output and previous information to predict $x(3)$. This process continues recursively all positions for all time steps are generated (see Figure~\ref{fig:bpgt-3.0_damping_test_final_output}). Comparing Figures~\ref{fig:bpgt-3.0_damping_test_output} and \ref{fig:bpgt-3.0_damping_test_final_output} we notice that the predicted output from the neural network deviates more from the expected output as time is advanced. \textbf{How do I explain that there is some error accumulation}.
+output obtained through equation \ref{eqn:damping}. To further test the network, we give it initially positions $x(1)$ and $x(0)$. The
+network then predicts an $x(2)$ position. It then uses the output and previous information to predict $x(3)$. This process continues
+recursively all positions for all time steps are generated (see Figure~\ref{fig:bpgt-3.0_damping_test_final_output}). Comparing
+Figures~\ref{fig:bpgt-3.0_damping_test_output} and \ref{fig:bpgt-3.0_damping_test_final_output} we notice that the predicted output from
+the neural network deviates more from the expected output as time is advanced. \textbf{How do I explain that there is some error
+accumulation}.
  
 \begin{table}
 	\begin{center}
