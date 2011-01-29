@@ -13,7 +13,7 @@
 # 	mv training.eps ../graphs/training_${arr[i]}.eps
 # done
 
-./benchmark_seeds.rb 20 10000 # seeds, iterations
+./benchmark_seeds.rb 10 10000 # seeds, iterations
 
 dir=`pwd`
 echo -e "Hi,\n\n Your script in $dir is done ;)" | mail -s "Job's Done" "edvelez.g@gmail.com"
