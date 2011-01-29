@@ -32,6 +32,10 @@ end
 info = File.open('info.yaml') { |file| YAML.load(file) }
 info = info.sort_by { |e| e[1] }
 
+info.each do |e|
+  puts "#{e[2]}\t#{e[1]}"
+end
+
 test_with_weights(info[0][3], "damping_data.csv")
 
 
