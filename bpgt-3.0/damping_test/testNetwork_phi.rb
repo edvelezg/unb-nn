@@ -5,6 +5,14 @@ require "../normalize/CSVFile"
 require "../neural_network/backpropagation"
 require "yaml"
 
+@Amp   = 1
+@alpha = -3
+@beta  = 20
+
+def damping_fn(x)
+  return @Amp*Math.exp(@alpha*(x))*Math.cos(@beta*(x))
+end
+
 def test_with_weights(weights, norm_file)
   net = NeuralNetwork::Backpropagation.new([2, 3, 1])
 
@@ -24,11 +32,11 @@ def test_with_weights(weights, norm_file)
 
   net.config_weights(weights)
 
-  example = [1.0,1.00991404871281]
+  example = [-0.233299886674807,-0.244068341428122]
   # p result
   for j in 0...100
     nn_output = net.eval(example)[0]
-    puts "#{(j+1)*0.01}\t#{nn_output}\t#{result[j]}"
+    puts "#{(j+49)*0.01}\t#{nn_output}\t#{damping_fn((j+49)*0.01)}"
     example[1] = example[0]
     example[0] = nn_output
   end  
