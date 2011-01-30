@@ -525,8 +525,8 @@ following equation:
 	x(t) = Ae^{-\alpha t}\cos{\beta t+\phi}.
 \end{eqnarray}
 Here, the position $x$ is determined by the amplitude $A$, the time $t$, and the constants $\alpha$ and $\beta$. Using this formula we
-calculate the position of the mass, for a given time. We chose an amplitude $A=1$, and constants $\alpha$ and $\beta$ equal to $-3$ and
-$20$ respectively. We let $\phi=0$ for the first experiments, where we test the network on the same data it has learned.
+calculate the position of the mass, for a given time. We chose an amplitude $A=1$, and set the constants $\alpha$ and $\beta$ to $-3$
+and $20$ respectively. We let $\phi=0$ for the first experiments, where we test the network on the same data it has learned.
 
 Because we want the neural network to learn the behavior of this curve, we feed it the following $2$ inputs: The position in the
 previous time step $x(t-1)$, and the position for the current time step $x(t)$. As the target output we have the position of the mass in
@@ -544,20 +544,20 @@ seed $0$. The change in error for each iteration in the training session seeds $
 Figure~\ref{fig:bpgt-3.0_damping_test_Trainings}. Logarithmic scale is used for this plot because the error descends dramatically in the
 first iterations and slows down for later iterations. We observed that seed $0$ reaches a minimum in an earlier iteration than seed $9$.
 Conclusively one can observe that some initial configurations will reach a local minimum before all iterations are completed. This is a
-common problem when training neural networks, therefore different starting configurations should be attempted to find the global
-minimum.
+common problem when training neural networks, therefore different starting configurations should be attempted to increase the chances of
+finding the global minimum.
 
 We configure the network to use the best set of weights found during the $10$ training sessions. It is then tested with the same input
 data it was trained with to see how well it has learned. Initially we used perfect data, in which we supplied the input parameters to
 the network, $x(t)$ and $x(t-1)$ for all the time steps $t$. Given those parameters the neural network predicts $x(t+1)$. We then
 compare graphically (see Figure~\ref{fig:bpgt-3.0_damping_test_output}), the predicted output of the neural network with the expected
-output obtained through equation \ref{eqn:damping}. To further test the network, we give it initially positions $x(1)$ and $x(0)$. The
-network then predicts an $x(2)$ position. It then uses the output and previous information to predict $x(3)$. This process continues
-recursively all positions for all time steps are generated (see Figure~\ref{fig:bpgt-3.0_damping_test_final_output}). Comparing
-Figures~\ref{fig:bpgt-3.0_damping_test_output} and \ref{fig:bpgt-3.0_damping_test_final_output} we notice that the predicted output from
-the neural network deviates more from the expected output as time is advanced. \textbf{How do I explain that there is some error
-accumulation}.
- 
+output obtained through equation \ref{eqn:damping}. To further test the network, we give it initially positions $x(0.01)$ and $x(0)$.
+The network then predicts an $x(0.02)$ position. It then uses its own output and previous information to predict $x(0.03)$. This process
+continues recursively until all positions for $100$ time steps are generated (see Figure~\ref{fig:bpgt-3.0_damping_test_final_output}).
+Comparing Figures~\ref{fig:bpgt-3.0_damping_test_output} and \ref{fig:bpgt-3.0_damping_test_final_output} we notice that the predicted
+output from the neural network deviates more from the expected output as time is advanced. \textbf{How do I explain that there is some
+error accumulation}.
+
 \begin{table}
 	\begin{center}
 		\begin{tabular}{|c|c|}
@@ -588,6 +588,13 @@ accumulation}.
 	\label{fig:bpgt-3.0_damping_test_Trainings}
 \end{figure}
 
+Previously, we tested the network with data points that were taught before or that were within the bounds marked by the points the
+neural network had been shown. Finally, we test the neural network on a different initial condition. We let $\phi=10$, and by doing so
+we expose the neural network to some data it has not encountered before. Furthermore, the data is not within the bounds of data points
+that were taught to the neural network. The neural network makes a prediction for the unknown data points when $t > 0.5$. A comparison
+between the neural networks prediction and the expected output using equation \ref{eqn:damping} is illustrated in
+Figure~\ref{fig:bpgt-3.0_damping_test_output_phi}.
+
 \begin{figure}[]
 	\centering
 	\subfloat[\label{fig:bpgt-3.0_damping_test_output}]{	
@@ -600,8 +607,6 @@ accumulation}.
 	\label{fig:bpgt-3.0_damping_test_output_comp}	
 \end{figure}
 
-Finally, we test the neural network for a mass given at a different initial position $\phi$.
-
 
 \begin{figure}[htbp]
 	\centering
@@ -609,7 +614,6 @@ Finally, we test the neural network for a mass given at a different initial posi
 	\caption{Comparison between target output and expected output for the neural network when $\phi=0.5$.}
 	\label{fig:bpgt-3.0_damping_test_output_phi}
 \end{figure}
-
 
 % subsection a_more_complex_problem (end)
 
