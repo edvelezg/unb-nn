@@ -593,7 +593,7 @@ neural network had been shown. Finally, we test the neural network on a differen
 we expose the neural network to some data it has not encountered before. Furthermore, the data is not within the bounds of data points
 that were taught to the neural network. The neural network makes a prediction for the unknown data points when $t > 0.5$. A comparison
 between the neural networks prediction and the expected output using equation \ref{eqn:damping} is illustrated in
-Figure~\ref{fig:bpgt-3.0_damping_test_output_phi}.
+Figure~\ref{fig:bpgt-3.0_damping_test_output_phi}. Based on this illustration, we observe that the network is capable of making a sane prediction on data points that it has not previously encountered.
 
 \begin{figure}[]
 	\centering
@@ -611,7 +611,7 @@ Figure~\ref{fig:bpgt-3.0_damping_test_output_phi}.
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=0.85\columnwidth]{../bpgt-3.0/damping_test/output_phi.pdf}
-	\caption{Comparison between target output and expected output for the neural network when $\phi=0.5$.}
+	\caption{Comparison between predicted output and expected output for the neural network when $\phi=10$. Unknown data to the neural network starts when $t > 0.5$}
 	\label{fig:bpgt-3.0_damping_test_output_phi}
 \end{figure}
 
