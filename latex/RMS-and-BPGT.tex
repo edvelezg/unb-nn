@@ -522,7 +522,7 @@ of a spring that is connected to a fixed object. Ideally without the effect of f
 an harmonic oscillator. However if we add a damper ... \textbf{I need help here}. To simulate this physical phenomenon we used the
 following equation:
 \begin{eqnarray}\label{eqn:damping}
-	x(t) = Ae^{-\alpha t}\cos{\beta t}.
+	x(t) = Ae^{-\alpha t}\cos{\beta t+\phi}.
 \end{eqnarray}
 Here, the position $x$ is determined by the amplitude $A$, the time $t$, and the constants $\alpha$ and $\beta$. Using this formula we
 calculate the position of the mass, for a given time. Because we want the neural network to learn the behaviour of this curve, we feed
@@ -580,7 +580,7 @@ accumulation}.
 
 \begin{figure}[htbp]
 	\centering
-		\includegraphics[width=0.49\columnwidth]{../bpgt-3.0/damping_test/Trainings.pdf}
+		\includegraphics[width=0.85\columnwidth]{../bpgt-3.0/damping_test/Trainings.pdf}
 	\caption{Training session comparison for seeds $0$ and $9$. We observe that seed $0$ reaches a local minimum before it completes all iterations}
 	\label{fig:bpgt-3.0_damping_test_Trainings}
 \end{figure}
@@ -602,9 +602,15 @@ accumulation}.
 	\label{fig:bpgt-3.0_damping_test_output_comp}	
 \end{figure}
 
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.85\columnwidth]{../bpgt-3.0/damping_test/output_phi.pdf}
+	\caption{Comparison between target output and expected output for the neural network when $\phi=0.5$.}
+	\label{fig:bpgt-3.0_damping_test_output_phi}
+\end{figure}
+
+
 % subsection a_more_complex_problem (end)
-
-
 
 % section results (end)
 
