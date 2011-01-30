@@ -525,11 +525,12 @@ following equation:
 	x(t) = Ae^{-\alpha t}\cos{\beta t+\phi}.
 \end{eqnarray}
 Here, the position $x$ is determined by the amplitude $A$, the time $t$, and the constants $\alpha$ and $\beta$. Using this formula we
-calculate the position of the mass, for a given time. We chose an amplitude $A=1$, and constants $\alpha$ and $\beta$ equal to $-3$ and $20$ respectively. We considered $\phi=0$ for the initial experiments, and for the last experiment we considered $\phi=10$.
+calculate the position of the mass, for a given time. We chose an amplitude $A=1$, and constants $\alpha$ and $\beta$ equal to $-3$ and
+$20$ respectively. We let $\phi=0$ for the first experiments, where we test the network on the same data it has learned.
 
-Because we want the neural network to learn the behavior of this curve, we feed
-it the following $2$ inputs: The position in the previous time step $x(t-1)$, and the position for the current time step $x(t)$. As the
-target output we have the position of the mass in the next time step, $x(t+1)$.
+Because we want the neural network to learn the behavior of this curve, we feed it the following $2$ inputs: The position in the
+previous time step $x(t-1)$, and the position for the current time step $x(t)$. As the target output we have the position of the mass in
+the next time step, $x(t+1)$.
 
 We configured the neural network with $2$ neurons in the input layer, $3$ in the middle layer and $1$ in the output layer. The
 hyperbolic tangent function was used as the activation function for the neurons in the middle layer, and for the output neuron a linear
