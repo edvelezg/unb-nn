@@ -38,14 +38,9 @@ def test_with_weights(norm_file, best_iteration, seed)
   outfile  = File.open("../output/output-#{seed}.txt", "w")
   net.test(example, 0, csv_ip.count-1, result, outfile)
   outfile.close
-  
-  # for j in 0..example.size-1
-  #   out_f.puts "#{j}\t#{(net.ffwd(example[j])).output}\t#{result[j]}"
-  # end  
-  
 end
 
-test_with_weights("../input/input.nor", 10, 10)
+test_with_weights("../input/input.nor", 9379, 9)
 
 
 # info.each do |e|
