@@ -62,7 +62,7 @@
 % \usepackage{graphicx}
 % \fi
 
-\title{RMS and Backpropagation for Feedforward Neural Networks}
+\title{RMS Minimization and Backpropagation for Feedforward Neural Networks}
 \author{Eduardo Gutarra}
 
 % \date{2010--06--13}
@@ -211,7 +211,7 @@ weight matrix that represents connections between neurons (see Figures~\ref{fig:
 		\subfloat[\label{fig:figures_DataStructure2}]{	
 				\includegraphics[width=0.35\columnwidth]{figures/DataStructure2.pdf}
 		}
-		\caption{Feedforward neural networks (a and b) with their corresponding computer representation (c and d). Figures~\ref{fig:figures_ffwdnn2} and \ref{fig:figures_DataStructure1} represent a neural network without bias parameters. Figures~\ref{fig:figures_ffwdnn3} and \ref{fig:figures_DataStructure2} represent a neural network with bias parameters}
+		\caption{Feedforward neural networks (a and b) with their corresponding computer representation (c and d). Figures (a) and (c) represent a neural network without bias parameters. Figures (b) and (d) represent a neural network with bias parameters}
 	\label{fig:figures_ffwdnn_DS}	
 \end{figure}
 
@@ -225,7 +225,7 @@ algorithm we provide it with both example inputs and target outputs. The outputs
 against the target outputs of the given example. Using the target outputs, the back-propagation training algorithm then calculates
 errors and adjusts the weights of the various layers backwards from the output layer to the input layer. The degree of adjustment in the
 weights and bias can be scaled. The scaling factor used is called the learning rate $\eta$, and it determines how quickly the neural
-network attempts to learn a mapping of input to output.
+network attempts to learn the mapping of input to output.
 
 Back-propagation is often used to train feedforward neural networks but it can also be used to train other types of networks, and
 likewise feedforward networks may be trained with other methods. In this report, we only examine back-propagation when it is used to
@@ -511,17 +511,34 @@ because we run the feedforward algorithm for each change we do on a single weigh
 \label{sub:training_accuracy}
 
 Here we talk about the difference in training accuracy between the back-propagation and RMS minimization algorithms. To test the
-training accuracy of both algorithms. We chose a simple problem that takes as input $2$ numbers and produces as output their sum. To
-generate the sample data we let variables $x$ and $y$ range from $0$ to $10$ and add them in all $121$ possible ways. Thus the network
-is trained on a sample of $121$ different sets of inputs and outputs
+training accuracy of both algorithms. We chose a simple problem that takes as input $2$ numbers and computes their sum as the output. To
+generate the sample data we use two input variables $x$ and $y$ that range from $0$ to $10$. We add them in all $121$ possible
+combinations, thus the network is trained on a sample of $121$ different sets of inputs and outputs.
 
 We configured the neural network with $2$ neurons in the input layer, $3$ in the middle layer and $1$ in the output layer. We use a
 hyperbolic tangent activation function for the neurons in the middle layer, and a linear activation function for the output neurons. The
-feedforward neural network was trained on $121$ sample points for $10000$ iterations. The data was normalized between $-1$ and $1$ to help the neural network.
+feedforward neural network was trained on $121$ sample points for $10000$ iterations. These sample points were normalized between $-1$
+and $1$ to be more suitable for the chosen activation function. For the back-propagation algorithm we set the learning rate $\eta=0.25$.
+For RMS Minimization we set the constants $\epsilon=0.03$ and $\alpha=0.7$. Both algorithms were used to train the network to add the
+normalized sample input. $10$ different training sessions were attempted, each one with its respective set of initial weights which we
+differentiate with a seed. The results of the different training sessions for RMS Minimization and Back-propagations are summarized in
+Table~\ref{tab:training_sessions}. Overall the back-propagation algorithm trained the neural network to a higher degree of accuracy. A comparison between the expected output and the output produced by the neural networks after training with back-propagation and RMS minimization are illustrated in Figures\ref{fig:rms-w-alpha_graphs_output-9} and \ref{fig:bpgt-3.0_bpgt_test_output-5} respectively.
+
+\begin{figure}[]
+	\centering
+		\subfloat[\label{fig:bpgt-3.0_bpgt_test_output-5}]{	
+				\includegraphics[width=0.49\columnwidth]{../bpgt-3.0/bpgt_test/output-5.pdf}
+		}
+		\subfloat[\label{fig:rms-w-alpha_graphs_output-9}]{	
+				\includegraphics[width=0.49\columnwidth]{../rms-w-alpha/graphs/output-9.pdf}
+		}
+		\caption{Outputs for the best resulting neural network after training with Back-propagation (a) and RMS Minimization (b).}
+	\label{fig:output_rms-w-alpha_bpgt}	
+\end{figure}
 
 \begin{table}
 	\begin{center}
-			\subfloat[abas]{
+			\subfloat[RMS Minimization Training Sessions]{
 			\begin{tabular}{|c|c|}
 			\hline
 			Seed & Error\\
@@ -540,7 +557,8 @@ feedforward neural network was trained on $121$ sample points for $10000$ iterat
 			\hline
 			\end{tabular}
 			} 
-			\subfloat[basea]{
+			\hspace{15mm} 
+			\subfloat[Back-propagation Training Sessions]{
 			\begin{tabular}{|c|c|}
 			\hline
 			Seed & Error\\
@@ -560,23 +578,9 @@ feedforward neural network was trained on $121$ sample points for $10000$ iterat
 			\end{tabular}	
 			} 
 	\end{center}
-	\caption{caption}
-	\label{label}
+	\caption{RMS Error resulting from different initial random weight configurations for the neural network. }
+	\label{tab:training_sessions}
 \end{table}
-
-
-\begin{figure}[]
-	\centering
-		\subfloat[\label{fig:bpgt-3.0_bpgt_test_output-5}]{	
-				\includegraphics[width=0.49\columnwidth]{../bpgt-3.0/bpgt_test/output-5.pdf}
-		}
-		\subfloat[\label{fig:rms-w-alpha_graphs_output-9}]{	
-				\includegraphics[width=0.49\columnwidth]{../rms-w-alpha/graphs/output-9.pdf}
-		}
-		\caption{blah blah}
-	\label{fig:output_rms-w-alpha_bpgt}	
-\end{figure}
-
 
 % subsection training_accuracy (end)
 
