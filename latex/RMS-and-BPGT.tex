@@ -585,11 +585,6 @@ accumulation}.
 	\label{fig:bpgt-3.0_damping_test_Trainings}
 \end{figure}
 
-
-% So far we have the neural network learning with the backpropagation algorithm. We should include an image of the training curve for it. We should talk about the seed that performed the best and how we save the configuration. 
-% 
-% Also how we tested the neural network with some perfect data to predict the next time step and. Oh should mention the number of iterations we used to train the network. So a nice picture comparing the perfect data with another picture comparing the self generated data. Finally we talk about how the neural network has no problems in generating new data when starting at different points of the curve
-
 \begin{figure}[]
 	\centering
 	\subfloat[\label{fig:bpgt-3.0_damping_test_output}]{	
@@ -601,6 +596,9 @@ accumulation}.
 		\caption{Output comparison between perfect data (a) and predicted data (b) as input for the neural network. It can be observed in figure (b) that the error is greater and increases as time is increased. Yet, the network can rely on its own generated data relatively well.}
 	\label{fig:bpgt-3.0_damping_test_output_comp}	
 \end{figure}
+
+Finally, we test the neural network for a mass given at a different initial position $\phi$.
+
 
 \begin{figure}[htbp]
 	\centering
