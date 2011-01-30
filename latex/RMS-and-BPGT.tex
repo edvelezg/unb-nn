@@ -440,6 +440,7 @@ Because the the adjustments are done for every weight and bias, the total number
 number of connections. The analysis for back-propagation is summarized in Table~\ref{tab:backpropagation}.
 
 \begin{table}
+	\label{tab:backpropagation}
 	\begin{center}
 		\begin{tabular}{ccc}
 		\hline
@@ -455,10 +456,10 @@ number of connections. The analysis for back-propagation is summarized in Table~
 		\end{tabular}
 		\caption{Estimated number of operations performed at each stage of the Back-propagation algorithm. Here, $c$ is the number of connections, $i$ is the number iterations, $o$ is the number of outputs, and $\mbox{num}(E)$ is the number of examples.}
 	\end{center}
-	\label{tab:backpropagation}
 \end{table}
 
 \begin{table}
+	\label{tab:RMSminimization}
 	\begin{center}
 		\begin{tabular}{ccc}
 		\hline
@@ -472,7 +473,6 @@ number of connections. The analysis for back-propagation is summarized in Table~
 		\end{tabular}	
 	\end{center}
 	\caption{Estimated number of operations performed at each stage of the RMS minimization algorithm. Here, $c$ is the number of connections, $i$ is the number iterations, and $\mbox{num}(E)$ is the number of examples.}
-	\label{tab:RMSminimization}
 \end{table}
 
 In each iteration of the RMS Minimization algorithm the method \textbf{CalculateRMS} is calculated twice for every connection. The two
