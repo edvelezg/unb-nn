@@ -36,7 +36,7 @@ def test_with_weights(weights, norm_file)
   # p result
   for j in 0...100
     nn_output = net.eval(example)[0]
-    puts "#{(j+49)*0.01}\t#{nn_output}\t#{damping_fn((j+49)*0.01)}"
+    puts "#{(j+1)*0.01}\t#{nn_output}\t#{damping_fn((j+49)*0.01)}"
     example[1] = example[0]
     example[0] = nn_output
   end  
@@ -50,7 +50,6 @@ info = File.open('info.yaml') { |file| YAML.load(file) }
 info = info.sort_by { |e| e[1] }
 
 test_with_weights(info[0][3], "damping_data.csv")
-
 
 # info.each do |e|
 #   e[3].each do |x|
