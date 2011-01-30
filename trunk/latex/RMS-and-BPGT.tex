@@ -525,7 +525,9 @@ following equation:
 	x(t) = Ae^{-\alpha t}\cos{\beta t+\phi}.
 \end{eqnarray}
 Here, the position $x$ is determined by the amplitude $A$, the time $t$, and the constants $\alpha$ and $\beta$. Using this formula we
-calculate the position of the mass, for a given time. Because we want the neural network to learn the behaviour of this curve, we feed
+calculate the position of the mass, for a given time. We chose an amplitude $A=1$, and constants $\alpha$ and $\beta$ equal to $-3$ and $20$ respectively. We considered $\phi=0$ for the initial experiments, and for the last experiment we considered $\phi=10$.
+
+Because we want the neural network to learn the behavior of this curve, we feed
 it the following $2$ inputs: The position in the previous time step $x(t-1)$, and the position for the current time step $x(t)$. As the
 target output we have the position of the mass in the next time step, $x(t+1)$.
 
