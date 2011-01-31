@@ -144,10 +144,10 @@ step and $net_{i}(t)$ is the integration of modulated inputs. (see Algorithm~\re
 )
 
 \begin{algorithm}% [H]
-\dontprintsemicolon
+\DontPrintSemicolon
 \KwIn{Set of inputs from the environment}
 \KwOut{Set of output values calculated by the feedforward neural network}
-\SetLine
+\SetAlgoLined
 \ForEach{layer from the first non-input layer to the output,}
 {
 	\ForEach{unit on the current layer,}
@@ -232,7 +232,7 @@ likewise feedforward networks may be trained with other methods. In this report,
 train a feedforward neural network. Algorithm~\ref{alg:backpropagation} illustrates the process in further detail.
 
 \begin{algorithm}% [H]
-\dontprintsemicolon
+\DontPrintSemicolon
 \KwIn{Set of examples $E$}
 \tcc{$e$ is a single example} 
 \tcc{$I(e)$ set of inputs in a single example}
@@ -241,7 +241,7 @@ train a feedforward neural network. Algorithm~\ref{alg:backpropagation} illustra
 \tcc{Each iteration of this loop we an epoch}
 
 % \KwOut{Set of output values calculated by the feedforward neural network}
-\SetLine
+\SetAlgoLined
 \ForEach{ example $e$ in a set of examples $E$}
 {
 	Calculate $O(e)$ for $I(e)$ with feedforward (refer to Algorithm~\ref{alg:feedforward})\;
@@ -341,11 +341,11 @@ where $\mbox{num}(E)$ is the number of examples used to train the network. The p
 Algorithm~\ref{alg:RMSminimization}.
 
 \begin{algorithm}% [H]
-\dontprintsemicolon
+\DontPrintSemicolon
 \KwIn{Set of examples $E$, constants $\alpha$ and $\epsilon$}
 \tcc{We call each iteration of this loop an epoch}
 Set $\Delta W$ to $0.01$\;
-\SetLine
+\SetAlgoLined
 \ForEach{layer $i$ from the first non-input layer to the output,}
 {
 	\ForEach{layer $i$ from the first non-input layer to the output,}
@@ -370,7 +370,7 @@ Set $\Delta W$ to $0.01$\;
 }
 
 \textbf{CalculateRMS($E$)}:
-\dontprintsemicolon
+\DontPrintSemicolon
 \tcc{$e$ is a single example} 
 \tcc{$I(e)$ set of inputs in a single example}
 \tcc{$T(e)$ set of target outputs for a given example}
