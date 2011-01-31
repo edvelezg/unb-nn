@@ -588,8 +588,8 @@ Table~\ref{tab:training_sessions}. Overall the back-propagation algorithm traine
 \label{sub:a_more_complex_problem}
 
 To test the network we chose a more complicated problem. The problem consists in predicting the behavior of a mass attached to the end
-of a spring that is connected to a fixed object. Ideally without the effect of friction and other \textbf{phenomena}, the system becomes
-an harmonic oscillator. However if we add a damper ... \textbf{I need help here}. To simulate this physical phenomenon we used the
+of a spring that is connected to a fixed object. Ideally without the effect of friction and damping, the system becomes
+an ideal harmonic oscillator. However if we add the effect of damping the system will eventually run out of energy and converge to zero.  To simulate this physical phenomenon we used the
 following equation:
 \begin{eqnarray}\label{eqn:damping}
 	x(t) = Ae^{-\alpha t}\cos{\beta t+\phi}.
@@ -606,6 +606,7 @@ We configured the neural network with $2$ neurons in the input layer, $3$ in the
 hyperbolic tangent function was used as the activation function for the neurons in the middle layer, and for the output neuron a linear
 activation function was used. The feedforward neural network was trained on $100$ sample points for $40000$ iterations with a learning
 rate of $0.25$ using the back-propagation algorithm.
+
 
 The weights of the neural network were initialized randomly. The neural network was trained using $10$ different randomized sets of
 weights. The weights for the neural network producing the least error with the target output were saved. The different training sessions
