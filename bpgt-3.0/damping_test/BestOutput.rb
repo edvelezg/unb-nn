@@ -25,16 +25,16 @@ def test_with_weights(weights, norm_file)
   net.config_weights(weights)
 
   for j in 0..example.size-1
-    puts "#{j}\t#{net.eval(example[j])[0]}\t#{result[j]}"
+    puts "#{(j+1)*0.01}\t#{net.eval(example[j])[0]}\t#{result[j]}"
   end  
 end
 
 info = File.open('info.yaml') { |file| YAML.load(file) }
 info = info.sort_by { |e| e[1] }
 
-info.each do |e|
-  puts "#{e[2]}\t#{e[1]}"
-end
+# info.each do |e|
+#   puts "#{e[2]}\t#{e[1]}"
+# end
 
 test_with_weights(info[0][3], "damping_data.csv")
 
