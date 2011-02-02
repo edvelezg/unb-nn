@@ -184,8 +184,8 @@ is the Back-propagation algorithm and the other is the Root Mean Square (RMS) Mi
 \label{sub:data_structure}
 
 We do not have to implement neural networks to study them; it is possible to simulate their execution to solve problems in a computer
-with a single processing element. We build data structures in order to represent it and simulate its behavior with a
-computer~\cite{skapura}. A neural network can be thought of as a directed graph, where the neurons are nodes, and the synaptic weights
+with a single processing element. To do this we build data structures that represent neurons and behave as processing
+elements~\cite{skapura}. A neural network can be thought of as a directed graph, where the neurons are nodes, and the synaptic weights
 are the arcs of the graph. Because we focus on feedforward networks, our graphs can further be specified as directed acyclic graphs.
 These graphs do not require a full matrix to represent connections between the neurons. Instead, we use an array of matrices where each
 matrix stores the synaptic weights of the departing connections from the current neuron in the current layer to the neurons of the next
