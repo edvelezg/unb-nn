@@ -1,5 +1,5 @@
 set term postscript enhanced color 24
-set title "Output Comparison for {/Symbol f} = 0.5"
+set title "Output Comparison for {/Symbol f} = 10"
 set auto x
 set xlabel "Time (secs)"
 set ylabel "Predicted Position"
