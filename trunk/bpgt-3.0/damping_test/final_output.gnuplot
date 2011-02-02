@@ -1,7 +1,7 @@
 set term postscript enhanced color 24
 set title "Output Comparison Using Predicted Data"
 set auto x
-set xlabel "Time Step (expressed in units)"
+set xlabel "Time (secs)"
 set ylabel "Predicted Position"
 set key bottom right
 set out "final_output.eps"
