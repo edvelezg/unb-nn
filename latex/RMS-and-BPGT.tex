@@ -718,12 +718,11 @@ that it has not previously encountered, but suffers inaccuracy mostly when the o
 \section{Conclusion} % (fold)
 \label{sec:conclusion}
 
-To summarize the results of the experiments we arrived at the following $5$ main conclusions:
+To summarize the results of the experiments we arrived at the following $4$ main conclusions:
 
 \begin{enumerate}
 
-\item The Back-propagation algorithm has a time complexity of $O(n)$, which is faster than the RMS Minimization algorithm with a time
-complexity of $O(n^{2})$ when varying the number of neurons in the middle layer.
+\item The Back-propagation algorithm has a time complexity of $O(\mbox{num}(E)i(2c+o+b))$, while RMS Minimization has a time complexity of $O(2c^2\mbox{num}(E)i)$. When varying the number of neurons in the middle layer, the Back-propagation method exhibits linear growth which is faster than the RMS Minimization method that exhibits quadratic growth. Thus the Back-propagation algorithm is more scalable in terms of the number of neurons.
 
 \item The Back-propagation algorithm attained a higher degree of accuracy than the RMS Minimization algorithm for the addition
 experiment.
@@ -731,12 +730,10 @@ experiment.
 \item As observed in some of the experimental results, the learning algorithms could get stuck in local minima unable to arrive at
 better solutions. We noticed this in both the Back-propagation and RMS Minimization algorithms.
 
-\item The Back-propagation demonstrates in these experiments to be more scalable than the RMS Minimization algorithm in terms of numbers
-of neurons in the network.
-
-\item Finally, the back-propagation neural network demonstrates ability to approximate solutions to linear differential problems even on
-data not previously shown to it. However, it is important to note that its accuracy wanes as it progressively continues to generate
-other points. Mostly due to accumulating errors from previous calculations.
+\item Finally, the back-propagation neural network demonstrates ability to approximate a solution to our linear differential problem
+even on data not previously shown to it. However, it is important to note that it loses accuracy when the positions approach $0$.
+Accuracy also wanes as it progressively continues to generate other points. This was due to accumulating errors from previous
+calculations.
 
 \end{enumerate}
 
