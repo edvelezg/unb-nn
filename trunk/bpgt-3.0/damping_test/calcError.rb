@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 file1 = File.open('final_output_e.txt', "w")
 file2 = File.open('output_phi_e.txt', "w")
 file3 = File.open('output_e.txt', "w")
