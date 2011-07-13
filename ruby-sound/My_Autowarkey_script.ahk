@@ -59,8 +59,7 @@ DragAndDrop()
   iMouseGotoY := A_ScreenHeight*5//6
   Click, Right, %iMouseGotoX%, %iMouseGotoY%
   Click, Left, %iMousePosX%, %iMousePosY%
-  BirdGotoX := %iMouseGotoX%
-  BirdGotoY := %iMouseGotoY%
+  SendPlay, 2
 ; Sleep, 1000
 ; SendInput, 2
 ; Click, Right, %BirdGotoX%, %BirdGotoY%
@@ -86,15 +85,12 @@ MoveMouseToPos()
 ; SendInput, 1
 }
 
-
 BirdPickUp()
 {
-  SendPlay, 2
   SendPlay, e
   Click, Right, %BirdGotoX%, %BirdGotoY%
   SendPlay, f
   SendPlay, +z
-  SendPlay, 1
 }
 
 ClickMouseInPosition(iSpellQWERHotkey)
@@ -303,7 +299,6 @@ Mbutton::MoveMouseToPos()
 +s::SendInput, {Numpad1}
 !s::SendInput, {Numpad2}
 +!s::SendInput, +{Numpad2}
-+!r::Run C:\Users\Viper\Documents\UNB-Courses\NN\ruby\ruby-sound\HearThat
 ;!q::DragAndDrop()
 +!q::DragAndDrop()
 
