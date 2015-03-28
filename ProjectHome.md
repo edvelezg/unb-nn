@@ -1,0 +1,1 @@
+neural network notes and stuff.
